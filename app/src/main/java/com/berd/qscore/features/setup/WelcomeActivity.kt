@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivitySetupBinding
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.location.LocationHelper
 import kotlinx.coroutines.launch
 import splitties.toast.toast
@@ -25,6 +26,10 @@ class WelcomeActivity : AppCompatActivity() {
         it.userHomeButton.setOnClickListener {
             setupLocation()
         }
+
+        if (Prefs.userLocation != null) {
+            toast("Already have location: ${Prefs.userLocation}")
+        }
     }
 
     private fun setupLocation() {
@@ -33,11 +38,13 @@ class WelcomeActivity : AppCompatActivity() {
                 val location = LocationHelper.requestLocation(this@WelcomeActivity, null)
                 if (location != null) {
                     toast("Location found: $location")
+                    Prefs.userLocation = location
                 }
             }
         } else {
-            //We have location already
+            //We have location already (wtf)
             toast("Location found: ${LocationHelper.currentLocation}")
+            Prefs.userLocation = LocationHelper.currentLocation
         }
     }
 }
