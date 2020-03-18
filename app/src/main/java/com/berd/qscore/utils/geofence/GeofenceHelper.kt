@@ -46,7 +46,7 @@ object GeofenceHelper {
             .build()
 
         val request = GeofencingRequest.Builder().apply {
-            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER or GeofencingRequest.INITIAL_TRIGGER_EXIT)
             addGeofences(arrayListOf(geofence))
         }.build()
 
