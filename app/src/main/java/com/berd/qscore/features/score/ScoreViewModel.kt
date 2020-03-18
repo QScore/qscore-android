@@ -14,6 +14,7 @@ import timber.log.Timber
 class ScoreViewModel : ViewModel() {
 
     sealed class State {
+        object StartingUp : State()
         object Home : State()
         object Away : State()
     }

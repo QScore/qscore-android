@@ -14,6 +14,7 @@ import com.berd.qscore.features.score.ScoreViewModel.State.Home
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
+import kotlinx.android.synthetic.main.activity_score.*
 import kotlinx.coroutines.launch
 
 class ScoreActivity : AppCompatActivity() {
@@ -51,18 +52,27 @@ class ScoreActivity : AppCompatActivity() {
     private fun observeEvents() {
         viewModel.viewState.observe(this, Observer { state ->
             when (state) {
+                ScoreViewModel.State.StartingUp -> handleStartingUp()
                 Home -> handleHome()
                 Away -> handleAway()
             }
         })
     }
 
+    private fun handleStartingUp() {
+        startupText.visible()
+        awayText.gone()
+        homeText.gone()
+    }
+
     private fun handleHome() = binding.apply {
+        startupText.gone()
         awayText.gone()
         homeText.visible()
     }
 
     private fun handleAway() = binding.apply {
+        startupText.gone()
         awayText.visible()
         homeText.gone()
     }
