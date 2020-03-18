@@ -29,8 +29,8 @@ class ScoreActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         observeEvents()
-        viewModel.onCreate()
         startLocationService()
+        viewModel.onCreate()
     }
 
     private fun startLocationService() {
