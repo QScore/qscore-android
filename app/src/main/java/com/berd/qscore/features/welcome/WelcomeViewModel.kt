@@ -1,4 +1,4 @@
-package com.berd.qscore.features.setup
+package com.berd.qscore.features.welcome
 
 import androidx.lifecycle.ViewModel
 

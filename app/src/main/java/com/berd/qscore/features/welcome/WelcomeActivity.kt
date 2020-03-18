@@ -1,13 +1,16 @@
-package com.berd.qscore.features.setup
+package com.berd.qscore.features.welcome
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivitySetupBinding
+import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.location.LocationHelper
 import kotlinx.coroutines.launch
+import splitties.activities.start
 import splitties.toast.toast
 
 class WelcomeActivity : AppCompatActivity() {
@@ -24,27 +27,20 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun setupViews() = binding.let {
         it.userHomeButton.setOnClickListener {
-            setupLocation()
-        }
-
-        if (Prefs.userLocation != null) {
-            toast("Already have location: ${Prefs.userLocation}")
+            lifecycleScope.launch {
+                saveCurrentLocation()
+                start<ScoreActivity>()
+            }
         }
     }
 
-    private fun setupLocation() {
-        if (!LocationHelper.hasLocation) {
-            lifecycleScope.launch {
-                val location = LocationHelper.requestLocation(this@WelcomeActivity, null)
-                if (location != null) {
-                    toast("Location found: $location")
-                    Prefs.userLocation = location
-                }
-            }
-        } else {
-            //We have location already (wtf)
-            toast("Location found: ${LocationHelper.currentLocation}")
-            Prefs.userLocation = LocationHelper.currentLocation
+    private suspend fun saveCurrentLocation() {
+        val location = LocationHelper.requestLocation(this@WelcomeActivity, null)
+        if (location != null) {
+            toast("Location found: $location")
+            Prefs.userLocation = location
+            GeofenceHelper.clearGeofences()
+            GeofenceHelper.addGeofence(location)
         }
     }
 }

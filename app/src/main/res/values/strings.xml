@@ -7,4 +7,5 @@
     <string name="location_error_message">Sorry, we couldn\'t determine your location.  Please check your location settings.</string>
     <string name="location_error_settings">Settings</string>
     <string name="location_error_not_now">Not now</string>
+    <string name="qscore">QScore</string>
 </resources>

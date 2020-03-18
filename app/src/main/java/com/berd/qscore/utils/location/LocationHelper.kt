@@ -35,29 +35,40 @@ object LocationHelper {
 
     val hasLocation get() = currentLocation != null
 
+    val hasLocationPermissions: Boolean get() {
+        val permissionState = ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
+        return permissionState == PackageManager.PERMISSION_GRANTED
+    }
+
     var currentLocation: LatLngPair? = null
         private set
 
-    suspend fun requestLocation(activity: FragmentActivity, fragment: Fragment?): LatLngPair? {
+    suspend fun setupLocationPermission(activity: FragmentActivity, fragment: Fragment?): Boolean {
         return try {
-            if (!hasLocationPermissions()) {
+            if (!hasLocationPermissions) {
                 val hasPermission = requestLocationPermission(activity, fragment)
                 if (!hasPermission) {
-                    return null
+                    return false
                 }
             }
             checkLocationSettings(activity)
-            currentLocation = requestCurrentLocation()
-            currentLocation
         } catch (e: ApiException) {
             //Location settings are not adequate
             handleLocationSettingsError(activity, fragment, e)
-            null
+            false
         } catch (e: IntentSender.SendIntentException) {
-            null
+            false
         } catch (e: PermissionException) {
-            null
+            false
         }
+    }
+
+    suspend fun requestLocation(activity: FragmentActivity, fragment: Fragment?): LatLngPair? {
+        if (!setupLocationPermission(activity, fragment)) {
+            return null
+        }
+        currentLocation = requestCurrentLocation()
+        return currentLocation
     }
 
     private suspend fun requestCurrentLocation(): LatLngPair? {
@@ -78,11 +89,6 @@ object LocationHelper {
                 it.resume(locationResult?.lastLocation)
             }
         }, null)
-    }
-
-    private fun hasLocationPermissions(): Boolean {
-        val permissionState = ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
-        return permissionState == PackageManager.PERMISSION_GRANTED
     }
 
     private suspend fun requestLocationPermission(
