@@ -14,14 +14,17 @@ import com.google.android.gms.location.LocationServices
 import timber.log.Timber
 
 object GeofenceHelper {
+
     private val context = Injector.appContext
+    const val REQUEST_ID = "GEOFENCE_REQUEST_ID"
 
     private val pendingIntent: PendingIntent by lazy {
         PendingIntent.getService(
             context,
             0,
             Intent(context, GeofenceIntentService::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private val geofenceClient: GeofencingClient by lazy {
@@ -32,11 +35,11 @@ object GeofenceHelper {
 
     fun addGeofence(location: LatLngPair) {
         val geofence = Geofence.Builder()
-            .setRequestId("Test")
+            .setRequestId(REQUEST_ID)
             .setCircularRegion(
                 location.lat,
                 location.lng,
-                5000000f
+                50f
             )
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)

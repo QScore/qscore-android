@@ -6,7 +6,7 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes.*
 import com.google.android.gms.location.GeofencingEvent
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
 
 class GeofenceIntentService : IntentService(GeofenceIntentService.javaClass.simpleName) {
@@ -17,7 +17,7 @@ class GeofenceIntentService : IntentService(GeofenceIntentService.javaClass.simp
     }
 
     companion object {
-        private val eventSubject = PublishSubject.create<Event>()
+        private val eventSubject = ReplaySubject.create<Event>(1)
         val events = eventSubject as Observable<Event>
     }
 
