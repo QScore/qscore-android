@@ -4,11 +4,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivityScoreBinding
 import com.berd.qscore.features.score.ScoreViewModel.State.Away
 import com.berd.qscore.features.score.ScoreViewModel.State.Home
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.location.LocationHelper
+import kotlinx.coroutines.launch
 
 class ScoreActivity : AppCompatActivity() {
 
@@ -24,6 +27,15 @@ class ScoreActivity : AppCompatActivity() {
         setContentView(view)
         observeEvents()
         viewModel.onCreate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkLocation()
+    }
+
+    private fun checkLocation() = lifecycleScope.launch {
+        LocationHelper.requestCurrentLocation(this@ScoreActivity, null)
     }
 
     private fun observeEvents() {

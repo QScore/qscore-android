@@ -22,7 +22,7 @@ class GeofenceIntentService : IntentService(GeofenceIntentService.javaClass.simp
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        Timber.d(">>Received geofence event: $intent")
+        Timber.d(">>Handling intent: $intent")
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         if (geofencingEvent.hasError()) {
             val errorMessage = when (geofencingEvent.errorCode) {
@@ -37,8 +37,14 @@ class GeofenceIntentService : IntentService(GeofenceIntentService.javaClass.simp
 
         // Get the transition type.
         when (geofencingEvent.geofenceTransition) {
-            Geofence.GEOFENCE_TRANSITION_ENTER -> eventSubject.onNext(Event.Entered)
-            Geofence.GEOFENCE_TRANSITION_EXIT -> eventSubject.onNext(Event.Exited)
+            Geofence.GEOFENCE_TRANSITION_ENTER -> {
+                Timber.d(">>User came home")
+                eventSubject.onNext(Event.Entered)
+            }
+            Geofence.GEOFENCE_TRANSITION_EXIT -> {
+                Timber.d(">>User left home")
+                eventSubject.onNext(Event.Exited)
+            }
         }
     }
 }

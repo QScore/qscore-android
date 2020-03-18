@@ -19,7 +19,7 @@ class SplashViewModel() : ViewModel() {
     val events = _events.observable
 
     fun onCreate() = viewModelScope.launch {
-        delay(1000)
+        delay(1500)
         if (Prefs.userLocation == null) {
             _events.send(LaunchWelcomeActivity)
         } else {
