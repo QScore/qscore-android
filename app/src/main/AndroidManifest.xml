@@ -3,8 +3,9 @@
     package="com.berd.qscore">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Required if your app targets Android 10 (API level 29) or higher -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".QscoreApplication"
@@ -25,7 +26,13 @@
 
         <service
             android:name=".features.geofence.GeofenceIntentService"
-            android:exported="true" />
+            android:exported="false" />
+
+        <service
+            android:name=".features.geofence.QLocationService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

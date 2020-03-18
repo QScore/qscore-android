@@ -35,7 +35,7 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private suspend fun saveCurrentLocation() {
-        val location = LocationHelper.requestLocation(this@WelcomeActivity, null)
+        val location = LocationHelper.requestLastLocation(this@WelcomeActivity, null)
         if (location != null) {
             toast("Location found: $location")
             Prefs.userLocation = location

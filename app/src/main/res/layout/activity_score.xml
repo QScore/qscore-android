@@ -7,6 +7,17 @@
     tools:context=".features.score.ScoreActivity">
 
     <TextView
+        android:id="@+id/startupText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Starting up..."
+        android:textColor="@color/green_900"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/homeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
