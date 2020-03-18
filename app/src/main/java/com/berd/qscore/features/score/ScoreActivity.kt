@@ -1,11 +1,14 @@
 package com.berd.qscore.features.score
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivityScoreBinding
+import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.score.ScoreViewModel.State.Away
 import com.berd.qscore.features.score.ScoreViewModel.State.Home
 import com.berd.qscore.utils.extensions.gone
@@ -27,6 +30,13 @@ class ScoreActivity : AppCompatActivity() {
         setContentView(view)
         observeEvents()
         viewModel.onCreate()
+        startLocationService()
+    }
+
+    private fun startLocationService() {
+        LocationHelper.hasLocationPermissions
+        val serviceIntent = Intent(this, QLocationService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
     }
 
     override fun onResume() {

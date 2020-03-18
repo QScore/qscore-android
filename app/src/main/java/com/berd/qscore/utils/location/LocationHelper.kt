@@ -35,15 +35,16 @@ object LocationHelper {
 
     val hasLocation get() = currentLocation != null
 
-    val hasLocationPermissions: Boolean get() {
-        val permissionState = ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
-        return permissionState == PackageManager.PERMISSION_GRANTED
-    }
+    val hasLocationPermissions: Boolean
+        get() {
+            val permissionState = ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
+            return permissionState == PackageManager.PERMISSION_GRANTED
+        }
 
     var currentLocation: LatLngPair? = null
         private set
 
-    private suspend fun setupLocationPermission(activity: FragmentActivity, fragment: Fragment?): Boolean {
+    suspend fun setupLocationPermission(activity: FragmentActivity, fragment: Fragment?): Boolean {
         return try {
             if (!hasLocationPermissions) {
                 val hasPermission = requestLocationPermission(activity, fragment)
@@ -63,7 +64,10 @@ object LocationHelper {
         }
     }
 
-    suspend fun requestCurrentLocation(activity: FragmentActivity, fragment: Fragment?): LatLngPair? {
+    suspend fun requestCurrentLocation(
+        activity: FragmentActivity,
+        fragment: Fragment?
+    ): LatLngPair? {
         if (!setupLocationPermission(activity, fragment)) {
             return null
         }
