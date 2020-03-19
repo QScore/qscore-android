@@ -1,6 +1,9 @@
 package com.berd.qscore
 
 import android.app.Application
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.Callback
+import com.amazonaws.mobile.client.UserStateDetails
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.api.aws.AWSApiPlugin
 import com.amplifyframework.core.Amplify
@@ -19,13 +22,27 @@ class QscoreApplication : Application() {
         super.onCreate()
         LogHelper.initializeLogging()
         Injector.initialize(AppInjector(this))
+        setupAws()
         setupAmplify()
         setupFacebook()
         setupGeofence()
     }
 
+    private fun setupAws() {
+        AWSMobileClient.getInstance()
+            .initialize(applicationContext, object : Callback<UserStateDetails> {
+                override fun onResult(result: UserStateDetails) {
+                    Timber.d("Finished setting up AWSMobileClient")
+                }
+
+                override fun onError(e: Exception) {
+                    Timber.e("Error setting up AWSMobileClient: $e")
+                }
+            })
+    }
+
     private fun setupFacebook() {
-        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(this)
     }
 
     private fun setupAmplify() {

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.berd.qscore.databinding.ActivitySplashBinding
-import com.berd.qscore.features.login.ui.login.LoginActivity
+import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.features.welcome.WelcomeActivity
@@ -48,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
     private fun launchScoreActivity() = start<ScoreActivity>()
 
     private fun launchWelcomeActivity() = start<WelcomeActivity>()
-    
+
     override fun onDestroy() {
         compositeDisposable.clear()
         super.onDestroy()

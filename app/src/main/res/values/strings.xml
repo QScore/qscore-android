@@ -17,4 +17,5 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="unable_to_login_facebook">Unable to login to Facebook, please try again later.</string>
+    <string name="sign_up">Sign up</string>
 </resources>
