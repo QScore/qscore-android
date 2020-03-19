@@ -10,6 +10,7 @@ import com.berd.qscore.R
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
+import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
@@ -40,7 +41,7 @@ class QLocationService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
-        startService("Starting up...")
+        startService(Unknown)
         observeGeofenceEvents()
         setupLocationUpdates()
         return START_NOT_STICKY
@@ -51,12 +52,11 @@ class QLocationService : Service() {
         val interval = TimeUnit.MINUTES.toMillis(LOCATION_UPDATE_INTERVAL_MINUTES)
         LocationHelper.startLocationUpdates(interval) {
             Timber.d("Updated location: ${it.lastLocation}")
-            //Do nothing, this should trigger geofences
         }
     }
 
-    private fun startService(message: String) =
-        startForeground(NOTIFICATION_ID, buildNotification(message))
+    private fun startService(state: GeofenceState) =
+        startForeground(NOTIFICATION_ID, buildNotification(state))
 
 
     private fun observeGeofenceEvents() {
@@ -68,11 +68,11 @@ class QLocationService : Service() {
     }
 
     private fun handleGeofenceEvent(event: Event) = when (event) {
-        Entered -> updateNotification("You are home!")
-        Exited -> updateNotification("You are not at home!")
+        Entered -> { updateNotification(Home) }
+        Exited -> { updateNotification(Away) }
     }
 
-    private fun buildNotification(message: String): Notification {
+    private fun buildNotification(state: GeofenceState): Notification {
         val pendingIntent = Intent(this, ScoreActivity::class.java).toPendingActivity(
             reqCode = 0,
             flags = PendingIntent.FLAG_UPDATE_CURRENT
@@ -80,7 +80,7 @@ class QLocationService : Service() {
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("QScore")
-            .setContentText(message)
+            .setContentText(state.message)
             .setSmallIcon(R.drawable.ic_baseline_score_24)
             .setContentIntent(pendingIntent)
             .build()
@@ -89,8 +89,8 @@ class QLocationService : Service() {
     /**
      * This is the method that can be called to update the Notification
      */
-    private fun updateNotification(message: String) {
-        val notification = buildNotification(message)
+    private fun updateNotification(state: GeofenceState) {
+        val notification = buildNotification(state)
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
