@@ -29,7 +29,9 @@ class EZLoginActivity() : AppCompatActivity() {
 
             override fun onError(e: Exception) {
                 Timber.d(">>Error signing in: $e")
-                toast("Error signing in")
+                runOnUiThread {
+                    toast("Error signing in")
+                }
             }
         })
     }
