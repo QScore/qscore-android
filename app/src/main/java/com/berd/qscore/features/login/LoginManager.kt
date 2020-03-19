@@ -12,7 +12,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
-class LoginManager {
+object LoginManager {
     val isLoggedIn = AWSMobileClient.getInstance().isSignedIn
 
     fun checkLoggedIn() {

@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.berd.qscore"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "0.1"
@@ -89,7 +89,17 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
     //Facebook
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+
+    //Aws
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.16.9'
+
+    //For the drop-in UI also:
+    implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.16.9'
+    implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.16.9'
+
+    //For hosted UI also:
+    implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.16.9'
 
     //Amplify
     def amplify_version = "0.9.1"

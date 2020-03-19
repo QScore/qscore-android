@@ -31,7 +31,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        haveAccount.setOnClickListener { start<SignupActivity>() }
+        signUp.setOnClickListener {
+            start<SignupActivity> {
+                flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            }
+        }
     }
 
     private fun setupFacebookLogin() = binding.apply {
