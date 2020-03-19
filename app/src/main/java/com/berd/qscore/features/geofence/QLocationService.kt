@@ -11,11 +11,17 @@ import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
 import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import splitties.intents.toPendingActivity
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class QLocationService : Service() {
@@ -23,9 +29,12 @@ class QLocationService : Service() {
         private const val NOTIFICATION_ID = 1337
         private const val CHANNEL_ID = "ForegroundServiceChannel"
         private const val CHANNEL_NAME = "QLocation Channel"
+        private const val LOCATION_UPDATE_INTERVAL_MINUTES = 5L
     }
 
     private val compositeDisposable = CompositeDisposable()
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -33,7 +42,17 @@ class QLocationService : Service() {
         }
         startService("Starting up...")
         observeGeofenceEvents()
+        setupLocationUpdates()
         return START_NOT_STICKY
+    }
+
+    private fun setupLocationUpdates() = scope.launch {
+        LocationHelper.fetchCurrentLocation()
+        val interval = TimeUnit.MINUTES.toMillis(LOCATION_UPDATE_INTERVAL_MINUTES)
+        LocationHelper.startLocationUpdates(interval) {
+            Timber.d("Updated location: ${it.lastLocation}")
+            //Do nothing, this should trigger geofences
+        }
     }
 
     private fun startService(message: String) =
@@ -91,6 +110,7 @@ class QLocationService : Service() {
     override fun onBind(intent: Intent?) = null
 
     override fun onDestroy() {
+        job.cancel()
         compositeDisposable.clear()
         super.onDestroy()
     }
