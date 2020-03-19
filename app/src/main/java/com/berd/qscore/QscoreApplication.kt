@@ -1,7 +1,9 @@
 package com.berd.qscore
 
 import android.app.Application
-import android.util.Log
+import com.amplifyframework.AmplifyException
+import com.amplifyframework.api.aws.AWSApiPlugin
+import com.amplifyframework.core.Amplify
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.injection.AppInjector
@@ -24,9 +26,9 @@ class QscoreApplication : Application() {
         try {
             Amplify.addPlugin(AWSApiPlugin())
             Amplify.configure(applicationContext)
-            Log.i("AmplifyGetStarted", "Amplify is all setup and ready to go!")
-        } catch (exception: AmplifyException) {
-            Timber.d(exception.getMessage())
+            Timber.d("Finished setting up amplify")
+        } catch (e: AmplifyException) {
+            Timber.e("Unable to setup amplify: $e")
         }
     }
 
