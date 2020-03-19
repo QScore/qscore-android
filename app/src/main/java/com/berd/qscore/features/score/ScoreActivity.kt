@@ -46,7 +46,7 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun checkLocation() = lifecycleScope.launch {
-        LocationHelper.requestCurrentLocation(this@ScoreActivity, null)
+        LocationHelper.requestCurrentLocationWithPermission(this@ScoreActivity, null)
     }
 
     private fun observeEvents() {
