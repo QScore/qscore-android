@@ -9,6 +9,7 @@ import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.injection.AppInjector
 import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.logging.LogHelper
+import com.facebook.appevents.AppEventsLogger
 import timber.log.Timber
 
 
@@ -19,7 +20,12 @@ class QscoreApplication : Application() {
         LogHelper.initializeLogging()
         Injector.initialize(AppInjector(this))
         setupAmplify()
+        setupFacebook()
         setupGeofence()
+    }
+
+    private fun setupFacebook() {
+        AppEventsLogger.activateApp(this);
     }
 
     private fun setupAmplify() {

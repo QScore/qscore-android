@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.berd.qscore.databinding.ActivitySplashBinding
+import com.berd.qscore.features.login.ui.login.LoginActivity
 import com.berd.qscore.features.score.ScoreActivity
-import com.berd.qscore.features.splash.Action.LaunchScoreActivity
-import com.berd.qscore.features.splash.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.features.welcome.WelcomeActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -33,23 +33,22 @@ class SplashActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.events.subscribeBy(onNext = { action ->
-            when (action) {
+            val x = when (action) {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 LaunchScoreActivity -> launchScoreActivity()
+                LaunchLoginActivity -> launchLoginActivity()
             }
         }, onError = {
             Timber.e("Unable to subscribe to events: $it")
         }).addTo(compositeDisposable)
     }
 
-    private fun launchScoreActivity() {
-        start<ScoreActivity>()
-    }
+    private fun launchLoginActivity() = start<LoginActivity>()
 
-    private fun launchWelcomeActivity() {
-        start<WelcomeActivity>()
-    }
+    private fun launchScoreActivity() = start<ScoreActivity>()
 
+    private fun launchWelcomeActivity() = start<WelcomeActivity>()
+    
     override fun onDestroy() {
         compositeDisposable.clear()
         super.onDestroy()
