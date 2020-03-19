@@ -1,10 +1,12 @@
 package com.berd.qscore.utils.location
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Looper
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -22,23 +24,32 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+
 object LocationHelper {
     private val context = Injector.appContext
 
     private var hasPromptedForSettings = false
-    private val locationRequest = LocationRequest().apply {
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        interval = 0
-        numUpdates = 1
-    }
     private val locationClient = LocationServices.getFusedLocationProviderClient(context)
 
     val hasLocation get() = currentLocation != null
 
+    val singleLocationRequest = LocationRequest().apply {
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        interval = 0
+        numUpdates = 1
+    }
+
+    private val permissions = arrayListOf<String>(
+        ACCESS_COARSE_LOCATION,
+        ACCESS_BACKGROUND_LOCATION
+    )
+
     val hasLocationPermissions: Boolean
         get() {
-            val permissionState = ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
-            return permissionState == PackageManager.PERMISSION_GRANTED
+            return permissions.all {
+                val permissionState = ContextCompat.checkSelfPermission(context, it)
+                permissionState == PackageManager.PERMISSION_GRANTED
+            }
         }
 
     var currentLocation: LatLngPair? = null
@@ -64,7 +75,7 @@ object LocationHelper {
         }
     }
 
-    suspend fun requestCurrentLocation(
+    suspend fun requestCurrentLocationWithPermission(
         activity: FragmentActivity,
         fragment: Fragment?
     ): LatLngPair? {
@@ -75,12 +86,29 @@ object LocationHelper {
         return currentLocation
     }
 
-    suspend fun requestLastLocation(activity: FragmentActivity, fragment: Fragment?): LatLngPair? {
+    suspend fun requestLastLocationWithPermission(
+        activity: FragmentActivity,
+        fragment: Fragment?
+    ): LatLngPair? {
         if (!setupLocationPermission(activity, fragment)) {
             return null
         }
         currentLocation = fetchLastOrCurrentLocation()
         return currentLocation
+    }
+
+    @SuppressLint("MissingPermission")
+    fun startLocationUpdates(intervalMillis: Long, callback: (LocationResult) -> Unit) {
+        val locationRequest = LocationRequest().apply {
+            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            interval = intervalMillis
+        }
+
+        locationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                callback(locationResult)
+            }
+        }, Looper.getMainLooper())
     }
 
     private suspend fun fetchLastOrCurrentLocation(): LatLngPair? {
@@ -95,8 +123,8 @@ object LocationHelper {
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun fetchCurrentLocation() = suspendCoroutine<Location?> {
-        locationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+    suspend fun fetchCurrentLocation() = suspendCoroutine<Location?> {
+        locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 it.resume(locationResult?.lastLocation)
             }
@@ -107,16 +135,17 @@ object LocationHelper {
         activity: FragmentActivity,
         fragment: Fragment?
     ): Boolean {
-        val result = fragment?.askPermission(ACCESS_FINE_LOCATION)
-            ?: activity.askPermission(ACCESS_FINE_LOCATION)
-        return result.isAccepted
+        return permissions.all {
+            val result = fragment?.askPermission(it) ?: activity.askPermission(it)
+            result.isAccepted
+        }
     }
 
     //Throws exception if settings are not adequate
     private suspend fun checkLocationSettings(activity: FragmentActivity) =
         suspendCoroutine<Boolean> { cont ->
             val locationSettingsRequest = LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
+                .addLocationRequest(singleLocationRequest)
                 .build()
             LocationServices.getSettingsClient(activity)
                 .checkLocationSettings(locationSettingsRequest)
