@@ -8,14 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivityScoreBinding
+import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.geofence.QLocationService
-import com.berd.qscore.features.score.ScoreViewModel.State.Away
-import com.berd.qscore.features.score.ScoreViewModel.State.Home
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
 import kotlinx.android.synthetic.main.activity_score.*
 import kotlinx.coroutines.launch
+import splitties.toast.toast
 
 class ScoreActivity : AppCompatActivity() {
 
@@ -35,9 +35,12 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun startLocationService() {
-        LocationHelper.hasLocationPermissions
-        val serviceIntent = Intent(this, QLocationService::class.java)
-        ContextCompat.startForegroundService(this, serviceIntent)
+        if (LocationHelper.hasLocationPermissions) {
+            val serviceIntent = Intent(this, QLocationService::class.java)
+            ContextCompat.startForegroundService(this, serviceIntent)
+        } else {
+            toast("Location permissions are not available!")
+        }
     }
 
     override fun onResume() {
@@ -52,7 +55,7 @@ class ScoreActivity : AppCompatActivity() {
     private fun observeEvents() {
         viewModel.viewState.observe(this, Observer { state ->
             when (state) {
-                ScoreViewModel.State.StartingUp -> handleStartingUp()
+                Unknown -> handleStartingUp()
                 Home -> handleHome()
                 Away -> handleAway()
             }

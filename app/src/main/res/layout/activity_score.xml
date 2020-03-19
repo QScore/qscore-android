@@ -10,7 +10,7 @@
         android:id="@+id/startupText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Starting up..."
+        android:text="You are home, but I'm guessing"
         android:textColor="@color/green_900"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
