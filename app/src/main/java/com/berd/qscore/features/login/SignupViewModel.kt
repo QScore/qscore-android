@@ -28,8 +28,7 @@ class SignupViewModel : ViewModel() {
 
     private suspend fun handleError(e: Exception, email: String) {
         if (e is UserNotConfirmedException) {
-            LoginManager.sendConfirmationCode(email)
-            _actions.send(LoginViewModel.Action.LaunchConfirmActivity(email))
+            handleConfirmation(email)
         }
         _actions.send(LoginViewModel.Action.ShowError)
     }
@@ -37,6 +36,7 @@ class SignupViewModel : ViewModel() {
     private suspend fun handleConfirmation(email: String) {
         Timber.d(">>Signup needs confirmation")
         LoginManager.sendConfirmationCode(email)
+        _actions.send(LoginViewModel.Action.LaunchConfirmActivity(email))
     }
 
     private fun handleSuccess() {

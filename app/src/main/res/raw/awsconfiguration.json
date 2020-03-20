@@ -1,0 +1,56 @@
+{
+  "UserAgent": "aws-amplify-cli/0.1.0",
+  "Version": "0.1.0",
+  "IdentityManager": {
+    "Default": {}
+  },
+  "CredentialsProvider": {
+    "CognitoIdentity": {
+      "Default": {
+        "PoolId": "us-east-2:7e9e2619-f3df-45a9-99b2-f1977e7b5644",
+        "Region": "us-east-2"
+      }
+    }
+  },
+  "CognitoUserPool": {
+    "Default": {
+      "PoolId": "us-east-1_kvAVy2rvm",
+      "AppClientId": "1d33hqu0s9tsjq397u40rsmqei",
+      "AppClientSecret": "a6p0d8kgn1ufc20paj5adllkq4q10f9hji3o0f2qb2mqbdus90m",
+      "Region": "us-east-1"
+    }
+  },
+  "Auth": {
+    "Default": {
+      "OAuth": {
+        "WebDomain": "qscore-dev.auth.us-east-1.amazoncognito.com",
+        "AppClientId": "1d33hqu0s9tsjq397u40rsmqei",
+        "AppClientSecret": "a6p0d8kgn1ufc20paj5adllkq4q10f9hji3o0f2qb2mqbdus90m",
+        "SignInRedirectURI": "https://qscore.com/login/",
+        "SignOutRedirectURI": "https://qscore.com/logout/",
+        "Scopes": [
+          "phone",
+          "email",
+          "openid",
+          "profile",
+          "aws.cognito.signin.user.admin"
+        ]
+      },
+      "authenticationFlowType": "USER_SRP_AUTH"
+    }
+  },
+  "AppSync": {
+    "Default": {
+      "ApiUrl": "https://cklw4e34erfifgnlmfeqsg3pwu.appsync-api.us-east-1.amazonaws.com/graphql",
+      "Region": "us-east-1",
+      "AuthMode": "AMAZON_COGNITO_USER_POOLS",
+      "ClientDatabasePrefix": "qscore_AMAZON_COGNITO_USER_POOLS"
+    }
+  },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "qscoreevents165024-dev",
+      "Region": "us-east-1"
+    }
+  }
+}

@@ -1,13 +1,13 @@
 {
-    "providers": [
-        "awscloudformation"
-    ],
-    "projectName": "qscore",
+    "projectName": "QScore",
     "version": "3.0",
     "frontend": "android",
     "android": {
         "config": {
             "ResDir": "app/src/main/res"
         }
-    }
+    },
+    "providers": [
+        "awscloudformation"
+    ]
 }
