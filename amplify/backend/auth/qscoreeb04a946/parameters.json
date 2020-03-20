@@ -44,7 +44,7 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
+    "useDefault": "defaultSocial",
     "triggers": "{\"CustomMessage\":[\"verification-link\"]}",
     "userPoolGroupList": [],
     "verificationBucketName": "qscoreeb04a946verificationbucket",
@@ -62,5 +62,10 @@
                 "Name"
             ]
         }
-    ]
+    ],
+    "hostedUI": true,
+    "hostedUIDomainName": "qscore984fbfb1-984fbfb1",
+    "authProvidersUserPool": [],
+    "hostedUIProviderMeta": "[]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://www.qscore.com/\"],\"LogoutURLs\":[\"https://qscore.com/signout/\"]}"
 }

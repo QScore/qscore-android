@@ -7,8 +7,10 @@
     "functionName": "qscoreeb04a946CustomMessage",
     "parentStack": "auth",
     "triggerEnvs": "[{\"key\":\"RESOURCENAME\",\"value\":\"resourceName\"}]",
-    "triggerTemplate": "CustomMessage.json.ejs",
+    "triggerDir": "/usr/local/lib/node_modules/@aws-amplify/cli/node_modules/amplify-category-auth/provider-utils/awscloudformation/utils/../triggers/CustomMessage",
     "roleName": "qscoreeb04a946CustomMessage",
+    "triggerTemplate": "CustomMessage.json.ejs",
+    "triggerEventPath": "CustomMessage.event.json",
     "skipEdit": true,
     "resourceName": "qscoreeb04a946CustomMessage"
 }

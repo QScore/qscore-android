@@ -10,6 +10,20 @@
             "StackName": "amplify-qscore-dev-165024",
             "StackId": "arn:aws:cloudformation:us-east-1:154764128702:stack/amplify-qscore-dev-165024/76d50200-68b2-11ea-98d4-0e194195a24f",
             "AmplifyAppId": "d2qiyrjk4tp1as"
+        },
+        "categories": {
+            "function": {
+                "qscoreeb04a946CustomMessage": {
+                    "REDIRECTURL": "",
+                    "EMAILSUBJECT": "",
+                    "EMAILMESSAGE": ""
+                }
+            },
+            "auth": {
+                "qscoreeb04a946": {
+                    "hostedUIProviderCreds": "[]"
+                }
+            }
         }
     }
 }

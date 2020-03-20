@@ -32,7 +32,7 @@ class EZLoginActivity() : AppCompatActivity() {
                             start<WelcomeActivity>()
                         }
                     }
-                    else -> AWSMobileClient.getInstance().signOut()
+                    else -> toast("Sign in not complete")
                 }
             }
 

@@ -15,7 +15,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".features.login.EZLoginActivity"></activity>
+        <activity android:name=".features.login.confirmation.ConfirmActivity"></activity>
+        <activity android:name=".features.login.EZLoginActivity" />
         <activity android:name=".features.login.SignupActivity" />
         <activity
             android:name=".features.login.LoginActivity"
