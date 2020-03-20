@@ -1,7 +1,10 @@
 package com.berd.qscore.utils.extensions
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.view.View
+import androidx.core.app.ActivityCompat
 import com.berd.qscore.utils.location.LatLngPair
 
 fun Location.toLatLngPair() = LatLngPair(latitude, longitude)
@@ -19,3 +22,8 @@ fun View.invisible() {
 fun View.visible() {
     visibility = View.VISIBLE
 }
+
+fun Context.hasPermissions(vararg permissions: String) =
+    permissions.all {
+        ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }

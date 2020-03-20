@@ -35,7 +35,7 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun startLocationService() {
-        if (LocationHelper.hasLocationPermissions) {
+        if (LocationHelper.hasAllPermissions) {
             val serviceIntent = Intent(this, QLocationService::class.java)
             ContextCompat.startForegroundService(this, serviceIntent)
         } else {
@@ -49,7 +49,9 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun checkLocation() = lifecycleScope.launch {
-        LocationHelper.requestCurrentLocationWithPermission(this@ScoreActivity, null)
+        if (LocationHelper.hasAllPermissions) {
+            LocationHelper.fetchCurrentLocation()
+        }
     }
 
     private fun observeEvents() {

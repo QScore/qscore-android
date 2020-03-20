@@ -29,18 +29,26 @@ class WelcomeActivity : AppCompatActivity() {
         it.userHomeButton.setOnClickListener {
             lifecycleScope.launch {
                 saveCurrentLocation()
-                start<ScoreActivity>()
             }
         }
     }
 
     private suspend fun saveCurrentLocation() {
-        val location = LocationHelper.requestCurrentLocationWithPermission(this@WelcomeActivity, null)
-        if (location != null) {
-            toast("Location found: $location")
-            Prefs.userLocation = location
-            GeofenceHelper.clearGeofences()
-            GeofenceHelper.addGeofence(location)
+        if (LocationHelper.checkPermissions(this)) {
+            val location = LocationHelper.fetchCurrentLocation()
+            if (location != null) {
+                toast("Location found: $location")
+                Prefs.userLocation = location
+                GeofenceHelper.clearGeofences()
+                GeofenceHelper.addGeofence(location)
+                start<ScoreActivity>()
+            } else {
+                if (location == null) {
+                    toast("Unable to retrieve location.  Please try again later")
+                }
+            }
+        } else {
+            toast("You must allow permissions to continue")
         }
     }
 }
