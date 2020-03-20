@@ -47,8 +47,7 @@ object LocationHelper {
     val hasLocationPermissions: Boolean
         get() {
             return permissions.all {
-                val permissionState = ContextCompat.checkSelfPermission(context, it)
-                permissionState == PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
             }
         }
 
@@ -123,7 +122,7 @@ object LocationHelper {
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun fetchCurrentLocation() = suspendCoroutine<Location?> {
+    private suspend fun fetchCurrentLocation() = suspendCoroutine<Location?> {
         locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 it.resume(locationResult?.lastLocation)

@@ -3,8 +3,8 @@ package com.berd.qscore.features.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager
-import com.berd.qscore.features.splash.Action.LaunchLoginActivity
-import com.berd.qscore.features.splash.Action.LaunchScoreActivity
+import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.rx.RxEventSender
 import kotlinx.coroutines.delay
@@ -26,7 +26,11 @@ class SplashViewModel : ViewModel() {
     fun onCreate() = viewModelScope.launch {
         delay(1500)
         if (LoginManager.isLoggedIn) {
-            _events.send(LaunchScoreActivity)
+            if (Prefs.userLocation != null) {
+                _events.send(LaunchScoreActivity)
+            } else {
+                _events.send(LaunchWelcomeActivity)
+            }
         } else {
             _events.send(LaunchLoginActivity)
         }

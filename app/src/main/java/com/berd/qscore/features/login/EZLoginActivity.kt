@@ -7,6 +7,10 @@ import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.UserState
 import com.amazonaws.mobile.client.UserStateDetails
 import com.berd.qscore.R
+import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.welcome.WelcomeActivity
+import splitties.activities.start
 import splitties.toast.toast
 import timber.log.Timber
 
@@ -21,8 +25,13 @@ class EZLoginActivity() : AppCompatActivity() {
         AWSMobileClient.getInstance().showSignIn(this, object : Callback<UserStateDetails> {
             override fun onResult(result: UserStateDetails) {
                 when (result.userState) {
-                    UserState.SIGNED_IN -> Timber.d(">>Signed in")
-                    UserState.SIGNED_OUT -> Timber.d(">>Signed out")
+                    UserState.SIGNED_IN -> {
+                        if (Prefs.userLocation != null) {
+                            start<ScoreActivity>()
+                        } else {
+                            start<WelcomeActivity>()
+                        }
+                    }
                     else -> AWSMobileClient.getInstance().signOut()
                 }
             }
