@@ -1,20 +1,16 @@
 package com.berd.qscore.utils.location
 
-import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.IntentSender
-import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Looper
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.berd.qscore.features.shared.ui.LocationServicesDialogFragment
 import com.berd.qscore.utils.activityresult.intentSenderForResult
+import com.berd.qscore.utils.extensions.hasPermissions
 import com.berd.qscore.utils.extensions.toLatLngPair
 import com.berd.qscore.utils.injection.Injector
-import com.github.florent37.runtimepermission.kotlin.PermissionException
 import com.github.florent37.runtimepermission.kotlin.coroutines.experimental.askPermission
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -27,11 +23,7 @@ import kotlin.coroutines.suspendCoroutine
 
 object LocationHelper {
     private val context = Injector.appContext
-
-    private var hasPromptedForSettings = false
     private val locationClient = LocationServices.getFusedLocationProviderClient(context)
-
-    val hasLocation get() = currentLocation != null
 
     val singleLocationRequest = LocationRequest().apply {
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -39,62 +31,20 @@ object LocationHelper {
         numUpdates = 1
     }
 
-    private val permissions = arrayListOf<String>(
-        ACCESS_COARSE_LOCATION,
-        ACCESS_BACKGROUND_LOCATION
-    )
+    val hasFineLocationPermission get() = context.hasPermissions(ACCESS_FINE_LOCATION)
+    val hasBackgroundLocationPermission get() = context.hasPermissions(ACCESS_BACKGROUND_LOCATION)
+    val hasAllPermissions get() = context.hasPermissions(ACCESS_COARSE_LOCATION)
 
-    val hasLocationPermissions: Boolean
-        get() {
-            return permissions.all {
-                val permissionState = ContextCompat.checkSelfPermission(context, it)
-                permissionState == PackageManager.PERMISSION_GRANTED
+    suspend fun checkPermissions(activity: FragmentActivity): Boolean {
+        return if (activity.hasPermissions(ACCESS_FINE_LOCATION)) {
+            if (activity.hasPermissions(ACCESS_BACKGROUND_LOCATION)) {
+                true
+            } else {
+                activity.askPermission(ACCESS_BACKGROUND_LOCATION).isAccepted
             }
+        } else {
+            activity.askPermission(ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION).isAccepted
         }
-
-    var currentLocation: LatLngPair? = null
-        private set
-
-    suspend fun setupLocationPermission(activity: FragmentActivity, fragment: Fragment?): Boolean {
-        return try {
-            if (!hasLocationPermissions) {
-                val hasPermission = requestLocationPermission(activity, fragment)
-                if (!hasPermission) {
-                    return false
-                }
-            }
-            checkLocationSettings(activity)
-        } catch (e: ApiException) {
-            //Location settings are not adequate
-            handleLocationSettingsError(activity, fragment, e)
-            false
-        } catch (e: IntentSender.SendIntentException) {
-            false
-        } catch (e: PermissionException) {
-            false
-        }
-    }
-
-    suspend fun requestCurrentLocationWithPermission(
-        activity: FragmentActivity,
-        fragment: Fragment?
-    ): LatLngPair? {
-        if (!setupLocationPermission(activity, fragment)) {
-            return null
-        }
-        currentLocation = fetchCurrentLocation()?.toLatLngPair()
-        return currentLocation
-    }
-
-    suspend fun requestLastLocationWithPermission(
-        activity: FragmentActivity,
-        fragment: Fragment?
-    ): LatLngPair? {
-        if (!setupLocationPermission(activity, fragment)) {
-            return null
-        }
-        currentLocation = fetchLastOrCurrentLocation()
-        return currentLocation
     }
 
     @SuppressLint("MissingPermission")
@@ -111,34 +61,20 @@ object LocationHelper {
         }, Looper.getMainLooper())
     }
 
-    private suspend fun fetchLastOrCurrentLocation(): LatLngPair? {
-        return fetchLastLocation()?.toLatLngPair() ?: fetchCurrentLocation()?.toLatLngPair()
-    }
-
     @SuppressLint("MissingPermission")
-    private suspend fun fetchLastLocation() = suspendCoroutine<Location?> {
+    suspend fun fetchLastLocation() = suspendCoroutine<LatLngPair?> {
         locationClient.lastLocation.addOnSuccessListener { location ->
-            it.resume(location)
+            it.resume(location?.toLatLngPair())
         }
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun fetchCurrentLocation() = suspendCoroutine<Location?> {
+    suspend fun fetchCurrentLocation() = suspendCoroutine<LatLngPair?> {
         locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
-                it.resume(locationResult?.lastLocation)
+                it.resume(locationResult?.lastLocation?.toLatLngPair())
             }
         }, null)
-    }
-
-    private suspend fun requestLocationPermission(
-        activity: FragmentActivity,
-        fragment: Fragment?
-    ): Boolean {
-        return permissions.all {
-            val result = fragment?.askPermission(it) ?: activity.askPermission(it)
-            result.isAccepted
-        }
     }
 
     //Throws exception if settings are not adequate
@@ -158,11 +94,6 @@ object LocationHelper {
         fragment: Fragment?,
         e: ApiException
     ) {
-        if (hasPromptedForSettings) {
-            Timber.d("locationSettingsCallback: failure, already prompted")
-            return
-        }
-
         when (e.statusCode) {
             LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> launchSettings(
                 activity,
@@ -173,7 +104,6 @@ object LocationHelper {
                 activity
             )
         }
-        hasPromptedForSettings = true
     }
 
     private suspend fun launchSettings(
