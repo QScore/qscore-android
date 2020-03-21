@@ -1,46 +1,81 @@
 package com.berd.qscore.features.welcome
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivitySetupBinding
 import com.berd.qscore.features.score.ScoreActivity
-import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.utils.geofence.GeofenceHelper
+import com.berd.qscore.features.welcome.WelcomeViewModel.Action.LaunchScoreActivity
+import com.berd.qscore.features.welcome.WelcomeViewModel.Action.ShowError
+import com.berd.qscore.features.welcome.WelcomeViewModel.State.FindingLocation
+import com.berd.qscore.features.welcome.WelcomeViewModel.State.Ready
+import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.location.LocationHelper
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.launch
 import splitties.activities.start
 import splitties.toast.toast
+import timber.log.Timber
 
 class WelcomeActivity : AppCompatActivity() {
 
+    private val compositeDisposable = CompositeDisposable()
     private val binding: ActivitySetupBinding by lazy { ActivitySetupBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()
+    private var progressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val view = binding.root
         setContentView(view)
+        observeActions()
         setupViews()
+    }
+
+    private fun observeActions() {
+        viewModel.actions.subscribeBy(onNext = {
+            handleAction(it)
+        }, onError = {
+            Timber.e("Error subscribing to events: $it")
+        }).addTo(compositeDisposable)
+
+        viewModel.state.observe(this, Observer {
+            when (it) {
+                FindingLocation -> {
+                    progressDialog = showProgressDialog("Setting home location...")
+                }
+                Ready -> progressDialog?.dismiss()
+            }
+        })
+    }
+
+    private fun handleAction(action: WelcomeViewModel.Action) = when (action) {
+        LaunchScoreActivity -> launchScoreActivity()
+        ShowError -> showError()
+    }
+
+    private fun showError() {
+        toast("Unable to find location.  Please try again.")
+    }
+
+    private fun launchScoreActivity() {
+        start<ScoreActivity>()
     }
 
     private fun setupViews() = binding.let {
         it.userHomeButton.setOnClickListener {
             lifecycleScope.launch {
-                saveCurrentLocation()
-                start<ScoreActivity>()
+                if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
+                    viewModel.setupHome()
+                } else {
+                    toast("You must allow permissions to continue")
+                }
             }
-        }
-    }
-
-    private suspend fun saveCurrentLocation() {
-        val location = LocationHelper.requestLastLocationWithPermission(this@WelcomeActivity, null)
-        if (location != null) {
-            toast("Location found: $location")
-            Prefs.userLocation = location
-            GeofenceHelper.clearGeofences()
-            GeofenceHelper.addGeofence(location)
         }
     }
 }

@@ -48,7 +48,6 @@ class QLocationService : Service() {
     }
 
     private fun setupLocationUpdates() = scope.launch {
-        LocationHelper.fetchCurrentLocation()
         val interval = TimeUnit.MINUTES.toMillis(LOCATION_UPDATE_INTERVAL_MINUTES)
         LocationHelper.startLocationUpdates(interval) {
             Timber.d("Updated location: ${it.lastLocation}")
@@ -68,8 +67,12 @@ class QLocationService : Service() {
     }
 
     private fun handleGeofenceEvent(event: Event) = when (event) {
-        Entered -> { updateNotification(Home) }
-        Exited -> { updateNotification(Away) }
+        Entered -> {
+            updateNotification(Home)
+        }
+        Exited -> {
+            updateNotification(Away)
+        }
     }
 
     private fun buildNotification(state: GeofenceState): Notification {
