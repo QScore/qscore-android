@@ -9,8 +9,7 @@ import androidx.lifecycle.Observer
 import com.berd.qscore.databinding.ActivityLoginBinding
 import com.berd.qscore.features.login.LoginViewModel.Action
 import com.berd.qscore.features.login.LoginViewModel.Action.*
-import com.berd.qscore.features.login.LoginViewModel.State.Error
-import com.berd.qscore.features.login.LoginViewModel.State.InProgress
+import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
@@ -56,8 +55,14 @@ class LoginActivity : AppCompatActivity() {
             when (it) {
                 InProgress -> handleInProgress()
                 Error -> handleError()
+                Ready -> handleReady()
             }
         })
+    }
+
+    private fun handleReady() {
+        progressDialog?.dismiss()
+        errorText.gone()
     }
 
     private fun handleError() = binding.let {
