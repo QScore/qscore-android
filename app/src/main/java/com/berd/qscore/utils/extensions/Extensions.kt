@@ -1,5 +1,6 @@
 package com.berd.qscore.utils.extensions
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -27,3 +28,6 @@ fun Context.hasPermissions(vararg permissions: String) =
     permissions.all {
         ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
+
+fun Context.showProgressDialog(message: String) =
+     ProgressDialog.show(this, null, message)

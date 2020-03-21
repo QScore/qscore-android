@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.login.LoginManager.SignupEvent.NeedConfirmation
 import com.berd.qscore.features.login.LoginManager.SignupEvent.Success
-import com.berd.qscore.features.login.confirmation.ConfirmViewModel.Action.LaunchWelcomeActivity
-import com.berd.qscore.features.login.confirmation.ConfirmViewModel.Action.ShowError
+import com.berd.qscore.features.login.confirmation.ConfirmViewModel.Action.*
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.rx.RxEventSender
 import kotlinx.coroutines.launch
@@ -20,6 +19,7 @@ class ConfirmViewModel : ViewModel() {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
         object ShowError : Action()
+        object ShowCodeToast : Action()
     }
 
     fun onConfirm(email: String, code: String) = viewModelScope.launch {
@@ -36,11 +36,14 @@ class ConfirmViewModel : ViewModel() {
 
     private fun handleSuccess() {
         if (Prefs.userLocation != null) {
-            _actions.send(Action.LaunchScoreActivity)
+            _actions.send(LaunchScoreActivity)
         } else {
             _actions.send(LaunchWelcomeActivity)
         }
     }
 
-
+    fun onResend(email: String) = viewModelScope.launch {
+        LoginManager.sendConfirmationCode(email)
+        _actions.send(ShowCodeToast)
+    }
 }

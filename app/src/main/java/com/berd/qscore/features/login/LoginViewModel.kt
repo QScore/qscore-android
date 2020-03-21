@@ -1,14 +1,21 @@
 package com.berd.qscore.features.login
 
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amazonaws.services.cognitoidentityprovider.model.UserNotConfirmedException
+import com.amazonaws.services.cognitoidentityprovider.model.UserNotFoundException
 import com.berd.qscore.features.login.LoginManager.LoginEvent.Success
 import com.berd.qscore.features.login.LoginManager.LoginEvent.Unknown
+import com.berd.qscore.features.login.LoginManager.SignupEvent
 import com.berd.qscore.features.login.LoginViewModel.Action.*
+import com.berd.qscore.features.login.LoginViewModel.State.Error
+import com.berd.qscore.features.login.LoginViewModel.State.InProgress
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.rx.RxEventSender
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -17,22 +24,49 @@ class LoginViewModel : ViewModel() {
         object LaunchScoreActivity : Action()
         class LaunchConfirmActivity(val email: String) : Action()
         object LaunchWelcomeActivity : Action()
-        object ShowError : Action()
+    }
+
+    sealed class State {
+        object InProgress : State()
+        object Error : State()
     }
 
     private val _actions = RxEventSender<Action>()
     val actions = _actions.observable
 
+    private val _state = MutableLiveData<State>()
+    val state = _state as LiveData<State>
+
     fun onLogin(email: String, password: String) = viewModelScope.launch {
+        _state.postValue(InProgress)
         try {
             when (LoginManager.login(email, password)) {
                 Success -> handleSuccess()
                 Unknown -> handleUnknown()
             }
         } catch (e: Exception) {
-            handleError(e, email)
+            when (e) {
+                is UserNotConfirmedException -> _actions.send(LaunchConfirmActivity(email))
+                is UserNotFoundException -> signup(email, password)
+                else -> _state.postValue(Error)
+            }
         }
     }
+
+    private fun signup(email: String, password: String) = viewModelScope.launch {
+        try {
+            when (LoginManager.signUp(email, password)) {
+                SignupEvent.Success -> handleSuccess()
+                is SignupEvent.NeedConfirmation -> handleNeedConfirmation(email)
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is UserNotConfirmedException -> _actions.send(LaunchConfirmActivity(email))
+                else -> _state.postValue(Error)
+            }
+        }
+    }
+
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
         try {
@@ -41,7 +75,9 @@ class LoginViewModel : ViewModel() {
                 Unknown -> handleUnknown()
             }
         } catch (e: Exception) {
-            _actions.send(ShowError)
+            if (e !is CancellationException) {
+                _state.postValue(Error)
+            }
         }
     }
 
@@ -54,14 +90,10 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun handleUnknown() {
-        _actions.send(ShowError)
+        _state.postValue(Error)
     }
 
-    private suspend fun handleError(e: Exception, email: String) {
-        if (e is UserNotConfirmedException) {
-            LoginManager.sendConfirmationCode(email)
-            _actions.send(LaunchConfirmActivity(email))
-        }
-        _actions.send(ShowError)
+    private fun handleNeedConfirmation(email: String) {
+        _actions.send(LaunchConfirmActivity(email))
     }
 }

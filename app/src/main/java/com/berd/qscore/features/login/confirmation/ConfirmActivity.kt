@@ -51,20 +51,29 @@ class ConfirmActivity : AppCompatActivity() {
     private fun handleAction(action: Action) {
         when (action) {
             Action.LaunchScoreActivity -> {
-                start<ScoreActivity>()
+                start<ScoreActivity>() {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
                 finish()
             }
             Action.LaunchWelcomeActivity -> {
-                start<WelcomeActivity>()
+                start<WelcomeActivity>() {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
                 finish()
             }
             Action.ShowError -> toast("Invalid code, please try again")
+            Action.ShowCodeToast -> toast("Code sent to email")
         }
     }
 
     private fun setupListeners() = binding.apply {
         confirmButton.setOnClickListener {
             viewModel.onConfirm(email, verifyNumber.text.toString())
+        }
+
+        resendButton.setOnClickListener {
+            viewModel.onResend(email)
         }
     }
 
