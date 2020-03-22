@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "qscore496453ca_identitypool_496453ca",
+    "identityPoolName": "qscoreeb04a946_identitypool_eb04a946",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "qscore496453ca",
-    "userPoolName": "qscore496453ca_userpool_496453ca",
+    "resourceNameTruncated": "qscoreeb04a946",
+    "userPoolName": "qscoreeb04a946_userpool_eb04a946",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,9 +28,9 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "qscore496453ca_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "qscoreeb04a946_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "resourceName": "qscore496453ca",
+    "resourceName": "qscoreeb04a946",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -44,17 +44,23 @@
             "Arn"
         ]
     },
-    "useDefault": "defaultSocial",
-    "hostedUI": true,
-    "usernameAttributes": [
-        "email"
-    ],
-    "hostedUIDomainName": "qscore",
-    "authProvidersUserPool": [
-        "Facebook"
-    ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}}]",
+    "useDefault": "default",
+    "triggers": "{\"CustomMessage\":[\"verification-link\"]}",
     "userPoolGroupList": [],
-    "dependsOn": [],
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://qscore.com/login/\"],\"LogoutURLs\":[\"https://qscore.com/logout/\"]}"
+    "verificationBucketName": "qscoreeb04a946verificationbucket",
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "qscoreeb04a946CustomMessage",
+            "triggerProvider": "Cognito",
+            "attributes": [
+                "Arn",
+                "Name"
+            ]
+        }
+    ]
 }

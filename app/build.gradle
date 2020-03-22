@@ -3,6 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
+apply plugin: "com.amazonaws.appsync"
 
 android {
     compileSdkVersion 29
@@ -18,8 +19,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures {
-        viewBinding = true
+    viewBinding {
+        enabled = true
     }
 
     buildTypes {
@@ -98,13 +99,16 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.16.9'
     implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.16.9'
 
-    //For hosted UI also:
-    implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.16.9'
-
     //Amplify
     def amplify_version = "0.9.1"
     implementation "com.amplifyframework:core:$amplify_version"
     implementation "com.amplifyframework:aws-api:$amplify_version"
+
+    //Base SDK
+    implementation 'com.amazonaws:aws-android-sdk-appsync:2.8.+'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.15.+'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 
     //Testing
     testImplementation 'junit:junit:4.12'

@@ -33,7 +33,8 @@ object GeofenceHelper {
         )
     }
 
-    fun addGeofence(location: LatLngPair) {
+    fun setGeofence(location: LatLngPair) {
+        clearGeofences()
         val geofence = Geofence.Builder()
             .setRequestId(REQUEST_ID)
             .setCircularRegion(
