@@ -1,22 +1,15 @@
 {
-    "dev": {
+    "develop": {
         "awscloudformation": {
-            "AuthRoleName": "amplify-qscore-dev-170100-authRole",
-            "UnauthRoleArn": "arn:aws:iam::212325633372:role/amplify-qscore-dev-170100-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::212325633372:role/amplify-qscore-dev-170100-authRole",
+            "AuthRoleName": "amplify-qscore-develop-112856-authRole",
+            "UnauthRoleArn": "arn:aws:iam::154764128702:role/amplify-qscore-develop-112856-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::154764128702:role/amplify-qscore-develop-112856-authRole",
             "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-qscore-dev-170100-deployment",
-            "UnauthRoleName": "amplify-qscore-dev-170100-unauthRole",
-            "StackName": "amplify-qscore-dev-170100",
-            "StackId": "arn:aws:cloudformation:us-east-1:212325633372:stack/amplify-qscore-dev-170100/49f2cf10-6af6-11ea-b8fb-1277bf9feb05",
-            "AmplifyAppId": "dj2ccvv8dxvas"
-        },
-        "categories": {
-            "auth": {
-                "qscore496453ca": {
-                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"[FACEBOOK_APP_ID]\",\"client_secret\":\"640131294c380c99a0105d86bc7cb086\"}]"
-                }
-            }
+            "DeploymentBucketName": "amplify-qscore-develop-112856-deployment",
+            "UnauthRoleName": "amplify-qscore-develop-112856-unauthRole",
+            "StackName": "amplify-qscore-develop-112856",
+            "StackId": "arn:aws:cloudformation:us-east-1:154764128702:stack/amplify-qscore-develop-112856/36944340-6baa-11ea-b3b4-0e3b177c99d5",
+            "AmplifyAppId": "d2qiyrjk4tp1as"
         }
     }
 }

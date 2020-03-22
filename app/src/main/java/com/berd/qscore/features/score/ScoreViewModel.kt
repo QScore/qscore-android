@@ -11,6 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 
+
 class ScoreViewModel : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()

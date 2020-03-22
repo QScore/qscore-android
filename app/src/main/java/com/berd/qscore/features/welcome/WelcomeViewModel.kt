@@ -36,8 +36,7 @@ class WelcomeViewModel : ViewModel() {
         val location = LocationHelper.fetchCurrentLocation()
         if (location != null) {
             Prefs.userLocation = location
-            GeofenceHelper.clearGeofences()
-            GeofenceHelper.addGeofence(location)
+            GeofenceHelper.setGeofence(location)
             _state.postValue(State.Ready)
             _actions.send(LaunchScoreActivity)
         } else {
