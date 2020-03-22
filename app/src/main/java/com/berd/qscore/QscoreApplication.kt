@@ -4,8 +4,6 @@ import android.app.Application
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.UserStateDetails
-import com.amazonaws.mobile.config.AWSConfiguration
-import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.api.aws.AWSApiPlugin
 import com.amplifyframework.core.Amplify
@@ -25,22 +23,15 @@ class QscoreApplication : Application() {
         LogHelper.initializeLogging()
         Injector.initialize(
             AppInjector(
-                this,
-                setupAppSync()
+                this
+//                setupAppSync()
             )
         )
         setupAws()
-        setupAppSync()
         setupAmplify()
         setupFacebook()
         setupGeofence()
     }
-
-    private fun setupAppSync() =
-        AWSAppSyncClient.builder()
-            .context(this)
-            .awsConfiguration(AWSConfiguration(this))
-            .build()
 
     private fun setupAws() {
         AWSMobileClient.getInstance()

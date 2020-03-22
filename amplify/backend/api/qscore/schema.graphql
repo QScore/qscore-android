@@ -4,10 +4,10 @@ type Event @model
   id: ID!
   activity: String
   userSub: String!
-  timestamp: AWSDateTime! 
+  timestamp: String!
   atHome: Location
   lat: String
-  long: String
+  lng: String
 }
 type User @model
 #@key(fields: ["sub"])

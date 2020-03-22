@@ -1,10 +1,5 @@
 package com.amplifyframework.datastore.generated.model;
 
-import com.amplifyframework.core.model.annotations.BelongsTo;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.Objects;
 
 import androidx.core.util.ObjectsCompat;
 
@@ -14,34 +9,66 @@ import com.amplifyframework.core.model.annotations.ModelConfig;
 import com.amplifyframework.core.model.annotations.ModelField;
 import com.amplifyframework.core.model.query.predicate.QueryField;
 
+import java.util.Objects;
+import java.util.UUID;
+
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
 /** This is an auto generated class representing the Event type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "Events")
+@Index(name = "UserEvents", fields = {"userSub","timestamp"})
 public final class Event implements Model {
   public static final QueryField ID = field("id");
-  public static final QueryField TYPE = field("type");
-  public static final QueryField USER = field("eventUserId");
+  public static final QueryField ACTIVITY = field("activity");
+  public static final QueryField USER_SUB = field("userSub");
+  public static final QueryField TIMESTAMP = field("timestamp");
+  public static final QueryField AT_HOME = field("atHome");
+  public static final QueryField LAT = field("lat");
+  public static final QueryField LNG = field("lng");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="String", isRequired = true) String type;
-  private final @ModelField(targetType="User") @BelongsTo(targetName = "eventUserId", type = User.class) User user;
+  private final @ModelField(targetType="String") String activity;
+  private final @ModelField(targetType="String", isRequired = true) String userSub;
+  private final @ModelField(targetType="String", isRequired = true) String timestamp;
+  private final @ModelField(targetType="Location") Location atHome;
+  private final @ModelField(targetType="String") String lat;
+  private final @ModelField(targetType="String") String lng;
   public String getId() {
       return id;
   }
   
-  public String getType() {
-      return type;
+  public String getActivity() {
+      return activity;
   }
   
-  public User getUser() {
-      return user;
+  public String getUserSub() {
+      return userSub;
   }
   
-  private Event(String id, String type, User user) {
+  public String getTimestamp() {
+      return timestamp;
+  }
+  
+  public Location getAtHome() {
+      return atHome;
+  }
+  
+  public String getLat() {
+      return lat;
+  }
+  
+  public String getLng() {
+      return lng;
+  }
+  
+  private Event(String id, String activity, String userSub, String timestamp, Location atHome, String lat, String lng) {
     this.id = id;
-    this.type = type;
-    this.user = user;
+    this.activity = activity;
+    this.userSub = userSub;
+    this.timestamp = timestamp;
+    this.atHome = atHome;
+    this.lat = lat;
+    this.lng = lng;
   }
   
   @Override
@@ -53,8 +80,12 @@ public final class Event implements Model {
       } else {
       Event event = (Event) obj;
       return ObjectsCompat.equals(getId(), event.getId()) &&
-              ObjectsCompat.equals(getType(), event.getType()) &&
-              ObjectsCompat.equals(getUser(), event.getUser());
+              ObjectsCompat.equals(getActivity(), event.getActivity()) &&
+              ObjectsCompat.equals(getUserSub(), event.getUserSub()) &&
+              ObjectsCompat.equals(getTimestamp(), event.getTimestamp()) &&
+              ObjectsCompat.equals(getAtHome(), event.getAtHome()) &&
+              ObjectsCompat.equals(getLat(), event.getLat()) &&
+              ObjectsCompat.equals(getLng(), event.getLng());
       }
   }
   
@@ -62,13 +93,17 @@ public final class Event implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
-      .append(getType())
-      .append(getUser())
+      .append(getActivity())
+      .append(getUserSub())
+      .append(getTimestamp())
+      .append(getAtHome())
+      .append(getLat())
+      .append(getLng())
       .toString()
       .hashCode();
   }
   
-  public static TypeStep builder() {
+  public static UserSubStep builder() {
       return new Builder();
   }
   
@@ -94,51 +129,100 @@ public final class Event implements Model {
     return new Event(
       id,
       null,
+      null,
+      null,
+      null,
+      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      type,
-      user);
+      activity,
+      userSub,
+      timestamp,
+      atHome,
+      lat,
+      lng);
   }
-  public interface TypeStep {
-    BuildStep type(String type);
+  public interface UserSubStep {
+    TimestampStep userSub(String userSub);
+  }
+  
+
+  public interface TimestampStep {
+    BuildStep timestamp(String timestamp);
   }
   
 
   public interface BuildStep {
     Event build();
     BuildStep id(String id) throws IllegalArgumentException;
-    BuildStep user(User user);
+    BuildStep activity(String activity);
+    BuildStep atHome(Location atHome);
+    BuildStep lat(String lat);
+    BuildStep lng(String lng);
   }
   
 
-  public static class Builder implements TypeStep, BuildStep {
+  public static class Builder implements UserSubStep, TimestampStep, BuildStep {
     private String id;
-    private String type;
-    private User user;
+    private String userSub;
+    private String timestamp;
+    private String activity;
+    private Location atHome;
+    private String lat;
+    private String lng;
     @Override
      public Event build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new Event(
           id,
-          type,
-          user);
+          activity,
+          userSub,
+          timestamp,
+          atHome,
+          lat,
+          lng);
     }
     
     @Override
-     public BuildStep type(String type) {
-        Objects.requireNonNull(type);
-        this.type = type;
+     public TimestampStep userSub(String userSub) {
+        Objects.requireNonNull(userSub);
+        this.userSub = userSub;
         return this;
     }
     
     @Override
-     public BuildStep user(User user) {
-        this.user = user;
+     public BuildStep timestamp(String timestamp) {
+        Objects.requireNonNull(timestamp);
+        this.timestamp = timestamp;
+        return this;
+    }
+    
+    @Override
+     public BuildStep activity(String activity) {
+        this.activity = activity;
+        return this;
+    }
+    
+    @Override
+     public BuildStep atHome(Location atHome) {
+        this.atHome = atHome;
+        return this;
+    }
+    
+    @Override
+     public BuildStep lat(String lat) {
+        this.lat = lat;
+        return this;
+    }
+    
+    @Override
+     public BuildStep lng(String lng) {
+        this.lng = lng;
         return this;
     }
     
@@ -165,20 +249,44 @@ public final class Event implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String type, User user) {
+    private CopyOfBuilder(String id, String activity, String userSub, String timestamp, Location atHome, String lat, String lng) {
       super.id(id);
-      super.type(type)
-        .user(user);
+      super.userSub(userSub)
+        .timestamp(timestamp)
+        .activity(activity)
+        .atHome(atHome)
+        .lat(lat)
+        .lng(lng);
     }
     
     @Override
-     public CopyOfBuilder type(String type) {
-      return (CopyOfBuilder) super.type(type);
+     public CopyOfBuilder userSub(String userSub) {
+      return (CopyOfBuilder) super.userSub(userSub);
     }
     
     @Override
-     public CopyOfBuilder user(User user) {
-      return (CopyOfBuilder) super.user(user);
+     public CopyOfBuilder timestamp(String timestamp) {
+      return (CopyOfBuilder) super.timestamp(timestamp);
+    }
+    
+    @Override
+     public CopyOfBuilder activity(String activity) {
+      return (CopyOfBuilder) super.activity(activity);
+    }
+    
+    @Override
+     public CopyOfBuilder atHome(Location atHome) {
+      return (CopyOfBuilder) super.atHome(atHome);
+    }
+    
+    @Override
+     public CopyOfBuilder lat(String lat) {
+      return (CopyOfBuilder) super.lat(lat);
+    }
+    
+    @Override
+     public CopyOfBuilder lng(String lng) {
+      return (CopyOfBuilder) super.lng(lng);
     }
   }
   
