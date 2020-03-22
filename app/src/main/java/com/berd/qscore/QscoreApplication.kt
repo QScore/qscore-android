@@ -62,7 +62,7 @@ class QscoreApplication : Application() {
 
     private fun setupGeofence() {
         Prefs.userLocation?.let { location ->
-            GeofenceHelper.addGeofence(location)
+            GeofenceHelper.setGeofence(location)
         }
     }
 }
