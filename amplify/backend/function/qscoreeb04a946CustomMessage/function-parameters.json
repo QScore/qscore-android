@@ -1,0 +1,14 @@
+{
+    "trigger": true,
+    "modules": [
+        "verification-link"
+    ],
+    "parentResource": "qscoreeb04a946",
+    "functionName": "qscoreeb04a946CustomMessage",
+    "parentStack": "auth",
+    "triggerEnvs": "[{\"key\":\"RESOURCENAME\",\"value\":\"resourceName\"}]",
+    "triggerTemplate": "CustomMessage.json.ejs",
+    "roleName": "qscoreeb04a946CustomMessage",
+    "skipEdit": true,
+    "resourceName": "qscoreeb04a946CustomMessage"
+}
