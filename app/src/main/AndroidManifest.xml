@@ -22,7 +22,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".features.login.confirmation.ConfirmActivity"></activity>
         <activity android:name=".features.login.EZLoginActivity" />
-        <activity android:name=".features.login.signup.SignupActivity" />
         <activity
             android:name=".features.login.LoginActivity"
             android:label="@string/title_activity_login" />
