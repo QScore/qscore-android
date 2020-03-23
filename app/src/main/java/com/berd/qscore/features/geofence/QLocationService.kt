@@ -120,7 +120,7 @@ class QLocationService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("QScore")
             .setContentText(state.message)
-            .setSmallIcon(R.drawable.ic_baseline_score_24)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .build()
     }

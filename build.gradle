@@ -18,7 +18,6 @@ buildscript {
 
 apply plugin: 'com.amplifyframework.amplifytools'
 
-
 allprojects {
     repositories {
         google()
