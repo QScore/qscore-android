@@ -9,6 +9,7 @@
     <string name="location_error_not_now">Not now</string>
     <string name="qscore">QScore</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_username">Username</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -17,7 +18,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="unable_to_login_facebook">Unable to login to Facebook, please try again later.</string>
-    <string name="sign_up">Sign up</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
     <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
     <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
 </resources>
