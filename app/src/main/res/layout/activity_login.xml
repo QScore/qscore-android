@@ -100,10 +100,10 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:textColor="@color/red"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/email"
         app:layout_constraintStart_toStartOf="@+id/email"
         app:layout_constraintTop_toBottomOf="@+id/loginMessage"
-        tools:text="Unable to log in.  Please check your credentials and try again." />
+        android:text="@string/login_error" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

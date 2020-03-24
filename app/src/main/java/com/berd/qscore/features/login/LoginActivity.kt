@@ -14,6 +14,7 @@ import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.gone
+import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
@@ -54,10 +55,16 @@ class LoginActivity : AppCompatActivity() {
         viewModel.state.observe(this, Observer {
             when (it) {
                 InProgress -> handleInProgress()
-                Error -> handleError()
+                LoginError -> handleLoginError()
+                SignupError -> handleSignUpError()
                 Ready -> handleReady()
             }
         })
+    }
+
+    private fun handleSignUpError() = binding.apply {
+        progressDialog?.dismiss()
+        errorText.visible()
     }
 
     private fun handleReady() {
@@ -65,15 +72,17 @@ class LoginActivity : AppCompatActivity() {
         errorText.gone()
     }
 
-    private fun handleError() = binding.let {
+    private fun handleLoginError() {
         progressDialog?.dismiss()
         errorText.visible()
     }
 
     private fun handleInProgress() {
         progressDialog = showProgressDialog("Signing in...")
-        errorText.gone()
+        errorText.invisible()
     }
+
+
 
     private fun handleActions(it: Action) {
         when (it) {
