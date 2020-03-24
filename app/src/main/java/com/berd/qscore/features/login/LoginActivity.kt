@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
 import timber.log.Timber
 
+import com.berd.qscore.R
 
 class LoginActivity : AppCompatActivity() {
 
@@ -64,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleSignUpError() = binding.apply {
         progressDialog?.dismiss()
+        errorText.text = getString(R.string.sign_up_error)
         errorText.visible()
     }
 
@@ -74,6 +76,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleLoginError() {
         progressDialog?.dismiss()
+        errorText.text = getString(R.string.login_error)
         errorText.visible()
     }
 
