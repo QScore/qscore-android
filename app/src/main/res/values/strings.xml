@@ -18,4 +18,6 @@
     <string name="login_failed">"Login failed"</string>
     <string name="unable_to_login_facebook">Unable to login to Facebook, please try again later.</string>
     <string name="sign_up">Sign up</string>
+    <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
+    <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
 </resources>

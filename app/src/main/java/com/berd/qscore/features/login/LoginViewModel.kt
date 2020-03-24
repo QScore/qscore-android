@@ -27,7 +27,8 @@ class LoginViewModel : ViewModel() {
 
     sealed class State {
         object InProgress : State()
-        object Error : State()
+        object LoginError : State()
+        object SignupError : State()
         object Ready : State()
     }
 
@@ -48,7 +49,7 @@ class LoginViewModel : ViewModel() {
             when (e) {
                 is UserNotConfirmedException -> _actions.send(LaunchConfirmActivity(email))
                 is UserNotFoundException -> signup(email, password)
-                else -> _state.postValue(Error)
+                else -> _state.postValue(LoginError)
             }
         }
     }
@@ -65,7 +66,7 @@ class LoginViewModel : ViewModel() {
                     _state.postValue(Ready)
                     _actions.send(LaunchConfirmActivity(email))
                 }
-                else -> _state.postValue(Error)
+                else -> _state.postValue(SignupError)
             }
         }
     }
@@ -82,7 +83,7 @@ class LoginViewModel : ViewModel() {
             if (e is CancellationException) {
                 _state.postValue(Ready)
             } else {
-                _state.postValue(Error)
+                _state.postValue(LoginError)
             }
         }
     }
@@ -97,7 +98,7 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun handleUnknown() {
-        _state.postValue(Error)
+        _state.postValue(LoginError)
     }
 
     private fun handleNeedConfirmation(email: String) {
