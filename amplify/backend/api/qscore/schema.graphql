@@ -1,19 +1,24 @@
 type Event @model
 @key(name: "UserEvents", fields: ["userSub", "timestamp"])
 @auth(rules: [{allow: owner, operations: [create, read]}]) {
-  id: ID!
-  activity: String
-  userSub: String!
-  timestamp: String!
-  atHome: Location
-  lat: String
-  lng: String
+    id: ID!
+    activity: String
+    userSub: String!
+    timestamp: String!
+    atHome: Location
+    lat: String
+    lng: String
 }
 type User @model
 #@key(fields: ["sub"])
 @auth(rules: [{allow: owner, operations: [create, read, update]}]) {
-  sub: ID!
-  avatar: String
-  friends: [User]
+    sub: ID!
+    avatar: String
+    friends: [User]
 }
+
+type Query {
+    getEventsForUser(userSub: String!): [Event]
+}
+
 enum Location { home away }

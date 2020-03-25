@@ -32,9 +32,9 @@ class ScoreViewModel : ViewModel() {
         }).addTo(compositeDisposable)
     }
 
-    private fun handleGeofenceEvent(it: GeofenceIntentService.Event) = when (it) {
-        GeofenceIntentService.Event.Entered -> handleGeofenceEnter()
-        GeofenceIntentService.Event.Exited -> handleGeofenceExit()
+    private fun handleGeofenceEvent(it: GeofenceIntentService.GeofenceEvent) = when (it) {
+        GeofenceIntentService.GeofenceEvent.Entered -> handleGeofenceEnter()
+        GeofenceIntentService.GeofenceEvent.Exited -> handleGeofenceExit()
     }
 
     private fun handleGeofenceEnter() {

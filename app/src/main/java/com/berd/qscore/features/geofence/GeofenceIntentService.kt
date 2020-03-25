@@ -11,14 +11,14 @@ import timber.log.Timber
 
 class GeofenceIntentService : IntentService(GeofenceIntentService.javaClass.simpleName) {
 
-    sealed class Event {
-        object Entered : Event()
-        object Exited : Event()
+    sealed class GeofenceEvent {
+        object Entered : GeofenceEvent()
+        object Exited : GeofenceEvent()
     }
 
     companion object {
-        private val eventSubject = ReplaySubject.create<Event>(1)
-        val events = eventSubject as Observable<Event>
+        private val eventSubject = ReplaySubject.create<GeofenceEvent>(1)
+        val events = eventSubject as Observable<GeofenceEvent>
     }
 
     override fun onHandleIntent(intent: Intent?) {
@@ -37,10 +37,10 @@ class GeofenceIntentService : IntentService(GeofenceIntentService.javaClass.simp
         // Get the transition type.
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                eventSubject.onNext(Event.Entered)
+                eventSubject.onNext(GeofenceEvent.Entered)
             }
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                eventSubject.onNext(Event.Exited)
+                eventSubject.onNext(GeofenceEvent.Exited)
             }
         }
     }

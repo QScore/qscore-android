@@ -9,11 +9,9 @@ import androidx.core.app.NotificationCompat
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.datastore.generated.model.Location
 import com.berd.qscore.R
-import com.berd.qscore.features.geofence.GeofenceIntentService.Event
-import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
-import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
-import com.berd.qscore.features.geofence.GeofenceState.Home
-import com.berd.qscore.features.geofence.GeofenceState.Unknown
+import com.berd.qscore.features.geofence.GeofenceIntentService.GeofenceEvent
+import com.berd.qscore.features.geofence.GeofenceIntentService.GeofenceEvent.Entered
+import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.api.ApiHelper
 import com.berd.qscore.features.shared.api.SimpleEvent
@@ -72,43 +70,31 @@ class QLocationService : Service() {
         }).addTo(compositeDisposable)
     }
 
-    private fun handleGeofenceEvent(event: Event) = when (event) {
-        Entered -> handleEntered()
-        Exited -> handleExited()
-    }
+    private fun handleGeofenceEvent(event: GeofenceEvent) = scope.launch {
+        val state = if (event is Entered) Home else Away
+        updateNotification(state)
 
-    private fun handleEntered() = scope.launch {
-        val currentLocation = LocationHelper.fetchCurrentLocation()
-        currentLocation?.let { location ->
-            val userId = awsClient.identityId
-            val event = SimpleEvent(
-                userSub = userId,
-                timestamp = System.currentTimeMillis().toString(),
-                lat = location.lat.toString(),
-                lng = location.lng.toString(),
-                atHome = Location.home,
-                activity = "none"
-            )
-            ApiHelper.createEvent(event)
-        } ?: Timber.w("Unable to send event for geolocation change, location not found")
-        updateNotification(Home)
-    }
+        val userId = awsClient.identityId
+        if (userId == null) {
+            Timber.e("Unable to send event for geolocation change, current user not found")
+            return@launch
+        }
 
-    private fun handleExited() = scope.launch {
-        val currentLocation = LocationHelper.fetchCurrentLocation()
-        currentLocation?.let { location ->
-            val userId = awsClient.identityId
-            val event = SimpleEvent(
-                userSub = userId,
-                timestamp = System.currentTimeMillis().toString(),
-                lat = location.lat.toString(),
-                lng = location.lng.toString(),
-                atHome = Location.home,
-                activity = "none"
-            )
-            ApiHelper.createEvent(event)
-        } ?: Timber.w("Unable to send event for geolocation change, location not found")
-        updateNotification(Home)
+        val currentLocation = LocationHelper.fetchLastLocation()
+        if (currentLocation == null) {
+            Timber.w("Unable to send event for geolocation change, location not found")
+            return@launch
+        }
+
+        val event = SimpleEvent(
+            userSub = userId,
+            timestamp = System.currentTimeMillis().toString(),
+            lat = currentLocation.lat.toString(),
+            lng = currentLocation.lng.toString(),
+            atHome = if (event is Entered) Location.home else Location.away,
+            activity = "none"
+        )
+        ApiHelper.createEvent(event)
     }
 
     private fun buildNotification(state: GeofenceState): Notification {
@@ -130,8 +116,7 @@ class QLocationService : Service() {
      */
     private fun updateNotification(state: GeofenceState) {
         val notification = buildNotification(state)
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
