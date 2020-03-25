@@ -107,11 +107,15 @@
         android:text="@string/login_error" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/gotoSignUpText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="TextView"
+        android:text="@string/goto_sign_up"
+        android:textColor="@color/com_facebook_blue"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="@+id/fbLogin"
         app:layout_constraintStart_toStartOf="@+id/fbLogin"
         app:layout_constraintTop_toBottomOf="@+id/fbLogin" />
 

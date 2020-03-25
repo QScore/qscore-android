@@ -13,6 +13,7 @@ import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
+import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
@@ -113,6 +114,12 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun launchSignUpActivity() {
+        start<SignUpActivity>()
+        progressDialog?.dismiss()
+        finish()
+    }
+
     private fun setupViews() = binding.apply {
         login.setOnClickListener {
             val email = email.text.toString()
@@ -122,6 +129,10 @@ class LoginActivity : AppCompatActivity() {
 
         fbLogin.setOnClickListener {
             viewModel.loginFacebook(supportFragmentManager)
+        }
+
+        gotoSignUpText.setOnClickListener {
+            launchSignUpActivity()
         }
     }
 

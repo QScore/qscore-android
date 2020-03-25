@@ -7,10 +7,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.berd.qscore.R
-import com.berd.qscore.databinding.ActivityLoginBinding
+import com.berd.qscore.databinding.ActivitySignupBinding
 import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
+import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
@@ -30,8 +31,8 @@ class SignUpActivity : AppCompatActivity() {
     private val viewModel by viewModels<SignUpViewModel>()
     private var progressDialog: ProgressDialog? = null
 
-    private val binding: ActivityLoginBinding by lazy {
-        ActivityLoginBinding.inflate(layoutInflater)
+    private val binding: ActivitySignupBinding by lazy {
+        ActivitySignupBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +110,12 @@ class SignUpActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun launchLoginActivity() {
+        start<LoginActivity>()
+        progressDialog?.dismiss()
+        finish()
+    }
+
     private fun setupViews() = binding.apply {
         login.setOnClickListener {
             val email = email.text.toString()
@@ -118,6 +125,10 @@ class SignUpActivity : AppCompatActivity() {
 
         fbLogin.setOnClickListener {
             viewModel.loginFacebook(supportFragmentManager)
+        }
+
+        gotoLoginText.setOnClickListener {
+            launchLoginActivity()
         }
     }
 
