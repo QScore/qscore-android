@@ -58,16 +58,9 @@ class LoginActivity : AppCompatActivity() {
             when (it) {
                 InProgress -> handleInProgress()
                 LoginError -> handleLoginError()
-                SignupError -> handleSignUpError()
                 Ready -> handleReady()
             }
         })
-    }
-
-    private fun handleSignUpError() = binding.apply {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.sign_up_error)
-        errorText.visible()
     }
 
     private fun handleReady() {
@@ -85,8 +78,6 @@ class LoginActivity : AppCompatActivity() {
         progressDialog = showProgressDialog("Signing in...")
         errorText.invisible()
     }
-
-
 
     private fun handleActions(it: Action) {
         when (it) {

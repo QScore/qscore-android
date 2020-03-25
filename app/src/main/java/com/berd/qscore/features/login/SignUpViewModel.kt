@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amazonaws.services.cognitoidentityprovider.model.UserNotConfirmedException
-import com.amazonaws.services.cognitoidentityprovider.model.UserNotFoundException
 import com.berd.qscore.features.login.LoginManager.LoginEvent.Success
 import com.berd.qscore.features.login.LoginManager.LoginEvent.Unknown
 import com.berd.qscore.features.login.LoginManager.SignupEvent
@@ -27,8 +26,7 @@ class SignUpViewModel : ViewModel() {
 
     sealed class State {
         object InProgress : State()
-        object LoginError : State()
-        object SignupError : State()
+        object SignUpError : State()
         object Ready : State()
     }
 
@@ -38,25 +36,10 @@ class SignUpViewModel : ViewModel() {
     private val _state = MutableLiveData<State>()
     val state = _state as LiveData<State>
 
-    fun onLogin(email: String, password: String) = viewModelScope.launch {
+    fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
         try {
-            when (LoginManager.login(email, password)) {
-                Success -> handleSuccess()
-                Unknown -> handleUnknown()
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is UserNotConfirmedException -> _actions.send(LaunchConfirmActivity(email))
-                is UserNotFoundException -> signup(email, password)
-                else -> _state.postValue(LoginError)
-            }
-        }
-    }
-
-    private fun signup(email: String, password: String) = viewModelScope.launch {
-        try {
-            when (LoginManager.signUp(email, password)) {
+            when (LoginManager.signUp(username, email, password)) {
                 SignupEvent.Success -> handleSuccess()
                 is SignupEvent.NeedConfirmation -> handleNeedConfirmation(email)
             }
@@ -66,11 +49,10 @@ class SignUpViewModel : ViewModel() {
                     _state.postValue(Ready)
                     _actions.send(LaunchConfirmActivity(email))
                 }
-                else -> _state.postValue(SignupError)
+                else -> _state.postValue(SignUpError)
             }
         }
     }
-
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
         _state.postValue(InProgress)
@@ -83,7 +65,7 @@ class SignUpViewModel : ViewModel() {
             if (e is CancellationException) {
                 _state.postValue(Ready)
             } else {
-                _state.postValue(LoginError)
+                _state.postValue(SignUpError)
             }
         }
     }
@@ -98,7 +80,7 @@ class SignUpViewModel : ViewModel() {
     }
 
     private fun handleUnknown() {
-        _state.postValue(LoginError)
+        _state.postValue(SignUpError)
     }
 
     private fun handleNeedConfirmation(email: String) {

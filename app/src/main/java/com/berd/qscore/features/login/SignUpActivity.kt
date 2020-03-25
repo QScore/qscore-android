@@ -11,7 +11,6 @@ import com.berd.qscore.databinding.ActivitySignupBinding
 import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
@@ -53,8 +52,7 @@ class SignUpActivity : AppCompatActivity() {
         viewModel.state.observe(this, Observer {
             when (it) {
                 SignUpViewModel.State.InProgress -> handleInProgress()
-                SignUpViewModel.State.LoginError -> handleLoginError()
-                SignUpViewModel.State.SignupError -> handleSignUpError()
+                SignUpViewModel.State.SignUpError -> handleSignUpError()
                 SignUpViewModel.State.Ready -> handleReady()
             }
         })
@@ -71,18 +69,10 @@ class SignUpActivity : AppCompatActivity() {
         errorText.gone()
     }
 
-    private fun handleLoginError() {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.login_error)
-        errorText.visible()
-    }
-
     private fun handleInProgress() {
         progressDialog = showProgressDialog("Signing in...")
         errorText.invisible()
     }
-
-
 
     private fun handleActions(it: SignUpViewModel.Action) {
         when (it) {
@@ -117,10 +107,11 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        login.setOnClickListener {
+        signup.setOnClickListener {
+            val username = username.text.toString()
             val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onLogin(email, password)
+            viewModel.onSignUp(username, email, password)
         }
 
         fbLogin.setOnClickListener {

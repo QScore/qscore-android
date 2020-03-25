@@ -28,7 +28,6 @@ class LoginViewModel : ViewModel() {
     sealed class State {
         object InProgress : State()
         object LoginError : State()
-        object SignupError : State()
         object Ready : State()
     }
 
@@ -46,31 +45,9 @@ class LoginViewModel : ViewModel() {
                 Unknown -> handleUnknown()
             }
         } catch (e: Exception) {
-            when (e) {
-                is UserNotConfirmedException -> _actions.send(LaunchConfirmActivity(email))
-                is UserNotFoundException -> signup(email, password)
-                else -> _state.postValue(LoginError)
-            }
+            _state.postValue(LoginError)
         }
     }
-
-    private fun signup(email: String, password: String) = viewModelScope.launch {
-        try {
-            when (LoginManager.signUp(email, password)) {
-                SignupEvent.Success -> handleSuccess()
-                is SignupEvent.NeedConfirmation -> handleNeedConfirmation(email)
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is UserNotConfirmedException -> {
-                    _state.postValue(Ready)
-                    _actions.send(LaunchConfirmActivity(email))
-                }
-                else -> _state.postValue(SignupError)
-            }
-        }
-    }
-
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
         _state.postValue(InProgress)
@@ -99,10 +76,5 @@ class LoginViewModel : ViewModel() {
 
     private fun handleUnknown() {
         _state.postValue(LoginError)
-    }
-
-    private fun handleNeedConfirmation(email: String) {
-        _state.postValue(Ready)
-        _actions.send(LaunchConfirmActivity(email))
     }
 }
