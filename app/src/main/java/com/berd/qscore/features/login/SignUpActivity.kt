@@ -120,13 +120,24 @@ class SignUpActivity : AppCompatActivity() {
         })
     }
 
-    private fun checkUsernameEmailPassword() = binding.apply {
+    private fun checkUsernameEmailPassword(checkEmail:Boolean) = binding.apply {
+        var usernamePass = false;
+        var emailPass = false;
+        var passwordPass = false;
         if (username.text.toString().isNotEmpty()) {
-            if (checkEmail(email.text.toString())) {
-                if (password.text.toString().length >= 8) {
-                    signup.isEnabled = true
-                }
-            }
+            usernamePass = true;
+        }
+        if (checkEmail(email.text.toString())) {
+            emailPass = true;
+            emailLayout.error = null
+        } else if (checkEmail) {
+            emailLayout.error = getString(R.string.email_requirement)
+        }
+        if (password.text.toString().length >= 8) {
+            passwordPass = true;
+        }
+        if (usernamePass && emailPass && passwordPass) {
+            signup.isEnabled = true
         }
     }
 
@@ -138,9 +149,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        username.onChange { checkUsernameEmailPassword() }
-        email.onChange { checkUsernameEmailPassword() }
-        password.onChange { checkUsernameEmailPassword() }
+        username.onChange { checkUsernameEmailPassword(false) }
+        email.onChange { checkUsernameEmailPassword(true) }
+        password.onChange { checkUsernameEmailPassword(false) }
 
         signup.setOnClickListener {
             val username = username.text.toString()

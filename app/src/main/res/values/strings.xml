@@ -29,4 +29,5 @@
     <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
     <string name="username_not_available">Username Not Available</string>
     <string name="password_requirement">Password is required to have 8 characters</string>
+    <string name="email_requirement">Must be a valid email address</string>
 </resources>
