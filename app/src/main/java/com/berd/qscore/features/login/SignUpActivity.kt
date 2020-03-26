@@ -3,8 +3,12 @@ package com.berd.qscore.features.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
@@ -106,7 +110,29 @@ class SignUpActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun EditText.onChange(cb: (String) -> Unit) {
+        this.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) { cb(s.toString()) }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+    }
+
+    private fun checkUsernameEmailPassword() = binding.apply {
+        if (username.text.toString().isNotEmpty()) {
+            if (email.text.toString().isNotEmpty()) {
+                if (password.text.toString().length >= 8) {
+                    signup.isEnabled = true
+                }
+            }
+        }
+    }
+
     private fun setupViews() = binding.apply {
+        username.onChange { checkUsernameEmailPassword() }
+        email.onChange { checkUsernameEmailPassword() }
+        password.onChange { checkUsernameEmailPassword() }
+
         signup.setOnClickListener {
             val username = username.text.toString()
             val email = email.text.toString()

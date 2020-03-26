@@ -12,6 +12,9 @@
     <string name="prompt_username">Username</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
+    <string name="hint_username">Username *</string>
+    <string name="hint_email">Email *</string>
+    <string name="hint_password">Password *</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="invalid_username">Not a valid username</string>
@@ -24,4 +27,6 @@
     <string name="goto_login">If you already have an account click here to login</string>
     <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
     <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
+    <string name="username_not_available">Username Not Available</string>
+    <string name="password_requirement">Password is required to have 8 characters</string>
 </resources>
