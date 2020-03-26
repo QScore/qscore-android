@@ -26,6 +26,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
 import timber.log.Timber
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -120,12 +122,19 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkUsernameEmailPassword() = binding.apply {
         if (username.text.toString().isNotEmpty()) {
-            if (email.text.toString().isNotEmpty()) {
+            if (checkEmail(email.text.toString())) {
                 if (password.text.toString().length >= 8) {
                     signup.isEnabled = true
                 }
             }
         }
+    }
+
+    private fun checkEmail(email:String): Boolean {
+        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+        val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private fun setupViews() = binding.apply {
