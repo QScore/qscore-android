@@ -39,8 +39,7 @@ object LoginManager {
         object Unknown : LoginEvent()
     }
 
-    suspend fun signUp(email: String, password: String) = suspendCancellableCoroutine<SignupEvent> {
-        val username = email
+    suspend fun signUp(username: String, email: String, password: String) = suspendCancellableCoroutine<SignupEvent> {
         val attributes: MutableMap<String, String> = HashMap()
         attributes["email"] = email
         client.signUp(username, password, attributes, null, object : Callback<SignUpResult> {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.login.LoginActivity">
+    tools:context=".features.login.SignUpActivity">
 
 
     <TextView
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Log In"
+        android:text="@string/sign_up"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,17 +22,30 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
+        android:id="@+id/username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/errorText" />
+
+    <EditText
         android:id="@+id/email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
-        android:hint="Username / Email address"
+        android:hint="Email address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorText" />
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <EditText
         android:id="@+id/password"
@@ -50,10 +63,10 @@
 
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/signup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="@string/sign_up"
         app:layout_constraintEnd_toEndOf="@+id/fbLogin"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/fbLogin"
@@ -71,7 +84,7 @@
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="@+id/password"
         app:layout_constraintStart_toStartOf="@+id/password"
-        app:layout_constraintTop_toBottomOf="@+id/login">
+        app:layout_constraintTop_toBottomOf="@+id/signup">
 
         <ImageView
             android:layout_width="24dp"
@@ -104,17 +117,15 @@
         app:layout_constraintEnd_toEndOf="@+id/email"
         app:layout_constraintStart_toStartOf="@+id/email"
         app:layout_constraintTop_toBottomOf="@+id/loginMessage"
-        android:text="@string/login_error" />
+        tools:text="@string/sign_up_error" />
 
     <TextView
-        android:id="@+id/gotoSignUpText"
+        android:id="@+id/gotoLoginText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/goto_sign_up"
+        android:text="@string/goto_login"
         android:textColor="@color/com_facebook_blue"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_constraintEnd_toEndOf="@+id/fbLogin"
         app:layout_constraintStart_toStartOf="@+id/fbLogin"
         app:layout_constraintTop_toBottomOf="@+id/fbLogin" />
