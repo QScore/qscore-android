@@ -6,14 +6,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.berd.qscore.databinding.ActivityLoginBinding
-import com.berd.qscore.features.login.LoginViewModel.Action
-import com.berd.qscore.features.login.LoginViewModel.Action.*
-import com.berd.qscore.features.login.LoginViewModel.State.*
+import com.berd.qscore.R
+import com.berd.qscore.databinding.ActivitySignupBinding
 import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
@@ -26,17 +23,15 @@ import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
 import timber.log.Timber
 
-import com.berd.qscore.R
-
-class LoginActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
     private val callbackManager by lazy { CallbackManager.Factory.create() }
-    private val viewModel by viewModels<LoginViewModel>()
+    private val viewModel by viewModels<SignUpViewModel>()
     private var progressDialog: ProgressDialog? = null
 
-    private val binding: ActivityLoginBinding by lazy {
-        ActivityLoginBinding.inflate(layoutInflater)
+    private val binding: ActivitySignupBinding by lazy {
+        ActivitySignupBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +51,17 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel.state.observe(this, Observer {
             when (it) {
-                InProgress -> handleInProgress()
-                LoginError -> handleLoginError()
-                Ready -> handleReady()
+                SignUpViewModel.State.InProgress -> handleInProgress()
+                SignUpViewModel.State.SignUpError -> handleSignUpError()
+                SignUpViewModel.State.Ready -> handleReady()
             }
         })
+    }
+
+    private fun handleSignUpError() = binding.apply {
+        progressDialog?.dismiss()
+        errorText.text = getString(R.string.sign_up_error)
+        errorText.visible()
     }
 
     private fun handleReady() {
@@ -68,22 +69,16 @@ class LoginActivity : AppCompatActivity() {
         errorText.gone()
     }
 
-    private fun handleLoginError() {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.login_error)
-        errorText.visible()
-    }
-
     private fun handleInProgress() {
         progressDialog = showProgressDialog("Signing in...")
         errorText.invisible()
     }
 
-    private fun handleActions(it: Action) {
+    private fun handleActions(it: SignUpViewModel.Action) {
         when (it) {
-            LaunchScoreActivity -> launchScoreActivity()
-            is LaunchConfirmActivity -> launchConfirmActivity(it.email)
-            is LaunchWelcomeActivity -> launchWelcomeActivity()
+            SignUpViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
+            is SignUpViewModel.Action.LaunchConfirmActivity -> launchConfirmActivity(it.email)
+            is SignUpViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
         }
     }
 
@@ -105,25 +100,26 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun launchSignUpActivity() {
-        start<SignUpActivity>()
+    private fun launchLoginActivity() {
+        start<LoginActivity>()
         progressDialog?.dismiss()
         finish()
     }
 
     private fun setupViews() = binding.apply {
-        login.setOnClickListener {
+        signup.setOnClickListener {
+            val username = username.text.toString()
             val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onLogin(email, password)
+            viewModel.onSignUp(username, email, password)
         }
 
         fbLogin.setOnClickListener {
             viewModel.loginFacebook(supportFragmentManager)
         }
 
-        gotoSignUpText.setOnClickListener {
-            launchSignUpActivity()
+        gotoLoginText.setOnClickListener {
+            launchLoginActivity()
         }
     }
 
