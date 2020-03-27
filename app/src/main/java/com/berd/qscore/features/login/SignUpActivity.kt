@@ -3,6 +3,7 @@ package com.berd.qscore.features.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
@@ -43,6 +44,13 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val view = binding.root
+
+        if (savedInstanceState != null) {
+            usernameReady = savedInstanceState.getBoolean(getString(R.string.key_username_ready),false)
+            emailReady = savedInstanceState.getBoolean(getString(R.string.key_email_ready),false)
+            passwordReady = savedInstanceState.getBoolean(getString(R.string.key_password_ready),false)
+        }
+
         setContentView(view)
         observeEvents()
         setupViews()
@@ -90,7 +98,10 @@ class SignUpActivity : AppCompatActivity() {
         } else if (!usernameLayout.error.isNullOrEmpty()) {
             usernameLayout.error = null
             usernameReady = true
+        } else {
+            usernameReady = true
         }
+
         signup.isEnabled = signUpIsReady
     }
 
@@ -100,6 +111,8 @@ class SignUpActivity : AppCompatActivity() {
             emailReady = false
         } else if (!emailLayout.error.isNullOrEmpty()){
             emailLayout.error = null
+            emailReady = true
+        } else {
             emailReady = true
         }
         signup.isEnabled = signUpIsReady
@@ -111,6 +124,8 @@ class SignUpActivity : AppCompatActivity() {
             passwordReady = false
         } else if (!passwordLayout.error.isNullOrEmpty()) {
             passwordLayout.error = null
+            passwordReady = true
+        } else {
             passwordReady = true
         }
         signup.isEnabled = signUpIsReady
@@ -190,4 +205,10 @@ class SignUpActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(getString(R.string.key_username_ready),usernameReady)
+        outState.putBoolean(getString(R.string.key_email_ready),usernameReady)
+        outState.putBoolean(getString(R.string.key_password_ready),usernameReady)
+    }
 }

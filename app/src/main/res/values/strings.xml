@@ -35,4 +35,8 @@
     <string name="helper_username">This will be your public name</string>
     <string name="helper_email">Will be used to confirm your account</string>
     <string name="helper_password">Must have 8 or more characters</string>
+
+    <string name="key_username_ready">KEY_USERNAME_READY</string>
+    <string name="key_email_ready">KEY_EMAIL_READY</string>
+    <string name="key_password_ready">KEY_PASSWORD_READY</string>
 </resources>
