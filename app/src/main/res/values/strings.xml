@@ -27,7 +27,12 @@
     <string name="goto_login">If you already have an account click here to login</string>
     <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
     <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
-    <string name="username_not_available">Username Not Available</string>
-    <string name="password_requirement">Password is required to have 8 characters</string>
-    <string name="email_requirement">Must be a valid email address</string>
+
+    <string name="username_error">Username Not Available</string>
+    <string name="password_error">Must have 8 or more characters</string>
+    <string name="email_error">Must be a valid email address</string>
+
+    <string name="helper_username">This will be your public name</string>
+    <string name="helper_email">Will be used to confirm your account</string>
+    <string name="helper_password">Must have 8 or more characters</string>
 </resources>

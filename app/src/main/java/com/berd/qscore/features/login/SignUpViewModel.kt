@@ -15,6 +15,7 @@ import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.rx.RxEventSender
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 class SignUpViewModel : ViewModel() {
 
@@ -28,6 +29,9 @@ class SignUpViewModel : ViewModel() {
         object InProgress : State()
         object SignUpError : State()
         object Ready : State()
+        class UsernameChange(val usernameError: Boolean, val signUpIsReady: Boolean) : State()
+        class EmailChange(val emailError: Boolean, val signUpIsReady: Boolean) : State()
+        class PasswordChange(val passwordError: Boolean, val signUpIsReady: Boolean) : State()
     }
 
     private val _actions = RxEventSender<Action>()
@@ -67,6 +71,39 @@ class SignUpViewModel : ViewModel() {
             } else {
                 _state.postValue(SignUpError)
             }
+        }
+    }
+
+    fun checkUsername(username: String, emailReady: Boolean, passwordReady: Boolean) = viewModelScope.launch {
+        val usernameReady = username.isNotEmpty();     //TODO more checks on username availability
+
+        if (usernameReady && emailReady && passwordReady){
+            _state.postValue(UsernameChange(!usernameReady,true))
+        } else {
+            _state.postValue(UsernameChange(!usernameReady,false))
+        }
+    }
+
+    fun checkEmail(usernameReady: Boolean, email: String, passwordReady: Boolean) = viewModelScope.launch {
+        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+        val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(email);
+        val emailReady = matcher.matches();
+
+        if (usernameReady && emailReady && passwordReady){
+            _state.postValue(EmailChange(!emailReady,true))
+        } else {
+            _state.postValue(EmailChange(!emailReady,false))
+        }
+    }
+
+    fun checkPassword(usernameReady: Boolean, emailReady: Boolean, password: String) = viewModelScope.launch {
+        val passwordReady = (password.length >= 8)
+
+        if (usernameReady && emailReady && passwordReady){
+            _state.postValue(PasswordChange(!passwordReady,true))
+        } else {
+            _state.postValue(PasswordChange(!passwordReady,false))
         }
     }
 

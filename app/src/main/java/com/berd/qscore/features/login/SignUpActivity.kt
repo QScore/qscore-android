@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
@@ -26,8 +25,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
 import timber.log.Timber
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -35,6 +32,9 @@ class SignUpActivity : AppCompatActivity() {
     private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<SignUpViewModel>()
     private var progressDialog: ProgressDialog? = null
+    private var usernameReady: Boolean = false
+    private var emailReady: Boolean = false
+    private var passwordReady: Boolean = false
 
     private val binding: ActivitySignupBinding by lazy {
         ActivitySignupBinding.inflate(layoutInflater)
@@ -60,6 +60,9 @@ class SignUpActivity : AppCompatActivity() {
                 SignUpViewModel.State.InProgress -> handleInProgress()
                 SignUpViewModel.State.SignUpError -> handleSignUpError()
                 SignUpViewModel.State.Ready -> handleReady()
+                is SignUpViewModel.State.UsernameChange -> handleUsernameChange(it.usernameError, it.signUpIsReady)
+                is SignUpViewModel.State.EmailChange -> handleEmailChange(it.emailError, it.signUpIsReady)
+                is SignUpViewModel.State.PasswordChange -> handlePasswordChange(it.passwordError, it.signUpIsReady)
             }
         })
     }
@@ -78,6 +81,39 @@ class SignUpActivity : AppCompatActivity() {
     private fun handleInProgress() {
         progressDialog = showProgressDialog("Signing in...")
         errorText.invisible()
+    }
+
+    private fun handleUsernameChange(usernameError: Boolean, signUpIsReady: Boolean) = binding.apply{
+        if (usernameError) {
+            usernameLayout.error = getString(R.string.username_error)
+            usernameReady = false
+        } else if (!usernameLayout.error.isNullOrEmpty()) {
+            usernameLayout.error = null
+            usernameReady = true
+        }
+        signup.isEnabled = signUpIsReady
+    }
+
+    private fun handleEmailChange(emailError: Boolean, signUpIsReady: Boolean) = binding.apply{
+        if (emailError) {
+            emailLayout.error = getString(R.string.email_error)
+            emailReady = false
+        } else if (!emailLayout.error.isNullOrEmpty()){
+            emailLayout.error = null
+            emailReady = true
+        }
+        signup.isEnabled = signUpIsReady
+    }
+
+    private fun handlePasswordChange(passwordError: Boolean, signUpIsReady: Boolean) = binding.apply{
+        if (passwordError) {
+            passwordLayout.error = getString(R.string.password_error)
+            passwordReady = false
+        } else if (!passwordLayout.error.isNullOrEmpty()) {
+            passwordLayout.error = null
+            passwordReady = true
+        }
+        signup.isEnabled = signUpIsReady
     }
 
     private fun handleActions(it: SignUpViewModel.Action) {
@@ -113,45 +149,20 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun EditText.onChange(cb: (String) -> Unit) {
-        this.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) { cb(s.toString()) }
+        this.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                cb(s.toString())
+            }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
     }
 
-    private fun checkUsernameEmailPassword(checkEmail:Boolean) = binding.apply {
-        var usernamePass = false;
-        var emailPass = false;
-        var passwordPass = false;
-        if (username.text.toString().isNotEmpty()) {
-            usernamePass = true;
-        }
-        if (checkEmail(email.text.toString())) {
-            emailPass = true;
-            emailLayout.error = null
-        } else if (checkEmail) {
-            emailLayout.error = getString(R.string.email_requirement)
-        }
-        if (password.text.toString().length >= 8) {
-            passwordPass = true;
-        }
-        if (usernamePass && emailPass && passwordPass) {
-            signup.isEnabled = true
-        }
-    }
-
-    private fun checkEmail(email:String): Boolean {
-        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
-        val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
-        val matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
     private fun setupViews() = binding.apply {
-        username.onChange { checkUsernameEmailPassword(false) }
-        email.onChange { checkUsernameEmailPassword(true) }
-        password.onChange { checkUsernameEmailPassword(false) }
+        username.onChange { viewModel.checkUsername(username.text.toString(), emailReady, passwordReady)}
+        email.onChange { viewModel.checkEmail(usernameReady ,email.text.toString(), passwordReady) }
+        password.onChange { viewModel.checkPassword(usernameReady, emailReady, password.text.toString()) }
 
         signup.setOnClickListener {
             val username = username.text.toString()
