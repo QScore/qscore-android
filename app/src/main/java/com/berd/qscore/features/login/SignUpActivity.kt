@@ -120,7 +120,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handlePasswordChange(passwordError: Boolean, signUpIsReady: Boolean) = binding.apply{
         if (passwordError) {
-            passwordLayout.error = getString(R.string.password_error)
+            //passwordLayout.error = getString(R.string.password_error)
             passwordReady = false
         } else if (!passwordLayout.error.isNullOrEmpty()) {
             passwordLayout.error = null
