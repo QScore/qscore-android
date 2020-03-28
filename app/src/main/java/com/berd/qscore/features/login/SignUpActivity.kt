@@ -58,9 +58,7 @@ class SignUpActivity : AppCompatActivity() {
                 SignUpViewModel.State.InProgress -> handleInProgress()
                 SignUpViewModel.State.SignUpError -> handleSignUpError()
                 SignUpViewModel.State.Ready -> handleReady()
-                is SignUpViewModel.State.UsernameChange -> handleUsernameChange(it.usernameError, it.signUpIsReady)
-                is SignUpViewModel.State.EmailChange -> handleEmailChange(it.emailError, it.signUpIsReady)
-                is SignUpViewModel.State.PasswordChange -> handlePasswordChange(it.passwordError, it.signUpIsReady)
+                is SignUpViewModel.State.FieldsUpdated -> handleFieldsUpdated(it.usernameError, it.emailError, it.passwordError, it.signUpIsReady)
             }
         })
     }
@@ -81,26 +79,23 @@ class SignUpActivity : AppCompatActivity() {
         errorText.invisible()
     }
 
-    private fun handleUsernameChange(usernameError: Boolean, signUpIsReady: Boolean) = binding.apply{
+    private fun handleFieldsUpdated(usernameError: Boolean, emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) = binding.apply {
         if (usernameError) {
             usernameLayout.error = getString(R.string.username_error)
         } else if (!usernameLayout.error.isNullOrEmpty()) {
             usernameLayout.error = null
         }
 
-        signup.isEnabled = signUpIsReady
-    }
-
-    private fun handleEmailChange(emailError: Boolean, signUpIsReady: Boolean) = binding.apply{
         if (emailError) {
             emailLayout.error = getString(R.string.email_error)
         } else if (!emailLayout.error.isNullOrEmpty()){
             emailLayout.error = null
         }
-        signup.isEnabled = signUpIsReady
-    }
 
-    private fun handlePasswordChange(passwordError: Boolean, signUpIsReady: Boolean) = binding.apply{
+        if (passwordError) {
+            //TODO. I don't like the look of error on passwordLayout but maybe can do something else
+        }
+
         signup.isEnabled = signUpIsReady
     }
 
@@ -141,16 +136,15 @@ class SignUpActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 cb(s.toString())
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
     }
 
     private fun setupViews() = binding.apply {
-        username.onChange { viewModel.checkUsername(username.text.toString())}
-        email.onChange { viewModel.checkEmail(email.text.toString()) }
-        password.onChange { viewModel.checkPassword(password.text.toString()) }
+        username.onChange { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString())}
+        email.onChange { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString()) }
+        password.onChange { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString()) }
 
         signup.setOnClickListener {
             val username = username.text.toString()

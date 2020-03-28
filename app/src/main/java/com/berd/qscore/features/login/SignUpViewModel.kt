@@ -29,9 +29,10 @@ class SignUpViewModel : ViewModel() {
         object InProgress : State()
         object SignUpError : State()
         object Ready : State()
-        class UsernameChange(val usernameError: Boolean, val signUpIsReady: Boolean) : State()
-        class EmailChange(val emailError: Boolean, val signUpIsReady: Boolean) : State()
-        class PasswordChange(val passwordError: Boolean, val signUpIsReady: Boolean) : State()
+        class FieldsUpdated(val usernameError: Boolean,
+                            val emailError: Boolean,
+                            val passwordError: Boolean,
+                            val signUpIsReady: Boolean) : State()
     }
 
     private val _actions = RxEventSender<Action>()
@@ -44,10 +45,6 @@ class SignUpViewModel : ViewModel() {
         val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
         Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
     }
-
-    private var usernameReady: Boolean = false
-    private var emailReady: Boolean = false
-    private var passwordReady: Boolean = false
 
     fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
@@ -83,35 +80,17 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun checkUsername(username: String) = viewModelScope.launch {
-        usernameReady = username.isNotEmpty();     //TODO more checks on username availability
+    fun onFieldsUpdated(username: String, email: String, password: String) = viewModelScope.launch {
+        val usernameError = false                   //TODO more checks on username availability
 
-        if (usernameReady && emailReady && passwordReady){
-            _state.postValue(UsernameChange(!usernameReady,true))
-        } else {
-            _state.postValue(UsernameChange(!usernameReady,false))
-        }
-    }
-
-    fun checkEmail(email: String) = viewModelScope.launch {
         val matcher = emailPattern.matcher(email)
-        emailReady = matcher.matches()
+        val emailError = !matcher.matches() && email.isNotEmpty()
 
-        if (usernameReady && emailReady && passwordReady){
-            _state.postValue(EmailChange(!emailReady,true))
-        } else {
-            _state.postValue(EmailChange(!emailReady,false))
-        }
-    }
+        val passwordError = (password.length < 8)
 
-    fun checkPassword(password: String) = viewModelScope.launch {
-        passwordReady = (password.length >= 8)
+        val signUpIsReady = !usernameError && !emailError && !passwordError && username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
 
-        if (usernameReady && emailReady && passwordReady){
-            _state.postValue(PasswordChange(!passwordReady,true))
-        } else {
-            _state.postValue(PasswordChange(!passwordReady,false))
-        }
+        _state.postValue(FieldsUpdated(usernameError,emailError,passwordError,signUpIsReady))
     }
 
     private fun handleSuccess() {
