@@ -32,7 +32,7 @@
     <string name="password_error">Must have 8 or more characters</string>
     <string name="email_error">Must be a valid email address</string>
 
-    <string name="helper_username">This will be your public name</string>
+    <string name="helper_username">This will be public</string>
     <string name="helper_email">Will be used to confirm your account</string>
     <string name="helper_password">Must have 8 or more characters</string>
 
