@@ -15,6 +15,7 @@ import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.rx.RxEventSender
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 class SignUpViewModel : ViewModel() {
 
@@ -28,6 +29,10 @@ class SignUpViewModel : ViewModel() {
         object InProgress : State()
         object SignUpError : State()
         object Ready : State()
+        class FieldsUpdated(val usernameError: Boolean,
+                            val emailError: Boolean,
+                            val passwordError: Boolean,
+                            val signUpIsReady: Boolean) : State()
     }
 
     private val _actions = RxEventSender<Action>()
@@ -35,6 +40,11 @@ class SignUpViewModel : ViewModel() {
 
     private val _state = MutableLiveData<State>()
     val state = _state as LiveData<State>
+
+    private val emailPattern: Pattern by lazy {
+        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+        Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+    }
 
     fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
@@ -68,6 +78,19 @@ class SignUpViewModel : ViewModel() {
                 _state.postValue(SignUpError)
             }
         }
+    }
+
+    fun onFieldsUpdated(username: String, email: String, password: String) = viewModelScope.launch {
+        val usernameError = false
+
+        val matcher = emailPattern.matcher(email)
+        val emailError = !matcher.matches() && email.isNotEmpty()
+
+        val passwordError = (password.length < 8)
+
+        val signUpIsReady = !usernameError && !emailError && !passwordError && username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
+
+        _state.postValue(FieldsUpdated(usernameError,emailError,passwordError,signUpIsReady))
     }
 
     private fun handleSuccess() {
