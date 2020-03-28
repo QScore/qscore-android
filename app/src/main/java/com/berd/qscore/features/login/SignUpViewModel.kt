@@ -81,7 +81,7 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun onFieldsUpdated(username: String, email: String, password: String) = viewModelScope.launch {
-        val usernameError = false                   //TODO more checks on username availability
+        val usernameError = false
 
         val matcher = emailPattern.matcher(email)
         val emailError = !matcher.matches() && email.isNotEmpty()

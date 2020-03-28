@@ -3,7 +3,6 @@ package com.berd.qscore.features.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
@@ -23,7 +22,8 @@ import com.facebook.CallbackManager
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.errorText
+import kotlinx.coroutines.Job
 import splitties.activities.start
 import timber.log.Timber
 
@@ -92,10 +92,6 @@ class SignUpActivity : AppCompatActivity() {
             emailLayout.error = null
         }
 
-        if (passwordError) {
-            //TODO. I don't like the look of error on passwordLayout but maybe can do something else
-        }
-
         signup.isEnabled = signUpIsReady
     }
 
@@ -131,10 +127,10 @@ class SignUpActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun EditText.onChange(cb: (String) -> Unit) {
+    private fun EditText.onChange(cb: () -> Unit) {
         this.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                cb(s.toString())
+                cb()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -142,9 +138,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        username.onChange { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString())}
-        email.onChange { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString()) }
-        password.onChange { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString()) }
+        val changeListener : () -> Unit = { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString()) }
+        username.onChange(changeListener)
+        email.onChange(changeListener)
+        password.onChange(changeListener)
 
         signup.setOnClickListener {
             val username = username.text.toString()
