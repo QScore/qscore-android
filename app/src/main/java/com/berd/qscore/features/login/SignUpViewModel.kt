@@ -40,6 +40,11 @@ class SignUpViewModel : ViewModel() {
     private val _state = MutableLiveData<State>()
     val state = _state as LiveData<State>
 
+    private val emailPattern: Pattern by lazy {
+        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+        Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+    }
+    
     fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
         try {
@@ -85,10 +90,8 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun checkEmail(usernameReady: Boolean, email: String, passwordReady: Boolean) = viewModelScope.launch {
-        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
-        val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
-        val matcher = pattern.matcher(email);
-        val emailReady = matcher.matches();
+        val matcher = emailPattern.matcher(email)
+        val emailReady = matcher.matches()
 
         if (usernameReady && emailReady && passwordReady){
             _state.postValue(EmailChange(!emailReady,true))
