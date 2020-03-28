@@ -33,9 +33,6 @@ class SignUpActivity : AppCompatActivity() {
     private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<SignUpViewModel>()
     private var progressDialog: ProgressDialog? = null
-    private var usernameReady: Boolean = false
-    private var emailReady: Boolean = false
-    private var passwordReady: Boolean = false
 
     private val binding: ActivitySignupBinding by lazy {
         ActivitySignupBinding.inflate(layoutInflater)
@@ -44,13 +41,6 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val view = binding.root
-
-        if (savedInstanceState != null) {
-            usernameReady = savedInstanceState.getBoolean(getString(R.string.key_username_ready),false)
-            emailReady = savedInstanceState.getBoolean(getString(R.string.key_email_ready),false)
-            passwordReady = savedInstanceState.getBoolean(getString(R.string.key_password_ready),false)
-        }
-
         setContentView(view)
         observeEvents()
         setupViews()
@@ -94,12 +84,8 @@ class SignUpActivity : AppCompatActivity() {
     private fun handleUsernameChange(usernameError: Boolean, signUpIsReady: Boolean) = binding.apply{
         if (usernameError) {
             usernameLayout.error = getString(R.string.username_error)
-            usernameReady = false
         } else if (!usernameLayout.error.isNullOrEmpty()) {
             usernameLayout.error = null
-            usernameReady = true
-        } else {
-            usernameReady = true
         }
 
         signup.isEnabled = signUpIsReady
@@ -108,26 +94,13 @@ class SignUpActivity : AppCompatActivity() {
     private fun handleEmailChange(emailError: Boolean, signUpIsReady: Boolean) = binding.apply{
         if (emailError) {
             emailLayout.error = getString(R.string.email_error)
-            emailReady = false
         } else if (!emailLayout.error.isNullOrEmpty()){
             emailLayout.error = null
-            emailReady = true
-        } else {
-            emailReady = true
         }
         signup.isEnabled = signUpIsReady
     }
 
     private fun handlePasswordChange(passwordError: Boolean, signUpIsReady: Boolean) = binding.apply{
-        if (passwordError) {
-            //passwordLayout.error = getString(R.string.password_error)
-            passwordReady = false
-        } else if (!passwordLayout.error.isNullOrEmpty()) {
-            passwordLayout.error = null
-            passwordReady = true
-        } else {
-            passwordReady = true
-        }
         signup.isEnabled = signUpIsReady
     }
 
@@ -175,9 +148,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        username.onChange { viewModel.checkUsername(username.text.toString(), emailReady, passwordReady)}
-        email.onChange { viewModel.checkEmail(usernameReady ,email.text.toString(), passwordReady) }
-        password.onChange { viewModel.checkPassword(usernameReady, emailReady, password.text.toString()) }
+        username.onChange { viewModel.checkUsername(username.text.toString())}
+        email.onChange { viewModel.checkEmail(email.text.toString()) }
+        password.onChange { viewModel.checkPassword(password.text.toString()) }
 
         signup.setOnClickListener {
             val username = username.text.toString()
@@ -203,12 +176,5 @@ class SignUpActivity : AppCompatActivity() {
     override fun onDestroy() {
         compositeDisposable.clear()
         super.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(getString(R.string.key_username_ready),usernameReady)
-        outState.putBoolean(getString(R.string.key_email_ready),usernameReady)
-        outState.putBoolean(getString(R.string.key_password_ready),usernameReady)
     }
 }

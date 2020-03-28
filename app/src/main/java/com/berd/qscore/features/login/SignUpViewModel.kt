@@ -44,7 +44,11 @@ class SignUpViewModel : ViewModel() {
         val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
         Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
     }
-    
+
+    private var usernameReady: Boolean = false
+    private var emailReady: Boolean = false
+    private var passwordReady: Boolean = false
+
     fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
         try {
@@ -79,8 +83,8 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun checkUsername(username: String, emailReady: Boolean, passwordReady: Boolean) = viewModelScope.launch {
-        val usernameReady = username.isNotEmpty();     //TODO more checks on username availability
+    fun checkUsername(username: String) = viewModelScope.launch {
+        usernameReady = username.isNotEmpty();     //TODO more checks on username availability
 
         if (usernameReady && emailReady && passwordReady){
             _state.postValue(UsernameChange(!usernameReady,true))
@@ -89,9 +93,9 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun checkEmail(usernameReady: Boolean, email: String, passwordReady: Boolean) = viewModelScope.launch {
+    fun checkEmail(email: String) = viewModelScope.launch {
         val matcher = emailPattern.matcher(email)
-        val emailReady = matcher.matches()
+        emailReady = matcher.matches()
 
         if (usernameReady && emailReady && passwordReady){
             _state.postValue(EmailChange(!emailReady,true))
@@ -100,8 +104,8 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun checkPassword(usernameReady: Boolean, emailReady: Boolean, password: String) = viewModelScope.launch {
-        val passwordReady = (password.length >= 8)
+    fun checkPassword(password: String) = viewModelScope.launch {
+        passwordReady = (password.length >= 8)
 
         if (usernameReady && emailReady && passwordReady){
             _state.postValue(PasswordChange(!passwordReady,true))
