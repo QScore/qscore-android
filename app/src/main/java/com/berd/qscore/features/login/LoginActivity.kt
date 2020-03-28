@@ -13,7 +13,6 @@ import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
@@ -113,9 +112,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupViews() = binding.apply {
         login.setOnClickListener {
-            val email = email.text.toString()
+            val username = username.text.toString()
             val password = password.text.toString()
-            viewModel.onLogin(email, password)
+            viewModel.onLogin(username, password)
         }
 
         fbLogin.setOnClickListener {

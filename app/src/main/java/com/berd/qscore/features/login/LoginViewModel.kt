@@ -5,11 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amazonaws.services.cognitoidentityprovider.model.UserNotConfirmedException
-import com.amazonaws.services.cognitoidentityprovider.model.UserNotFoundException
 import com.berd.qscore.features.login.LoginManager.LoginEvent.Success
 import com.berd.qscore.features.login.LoginManager.LoginEvent.Unknown
-import com.berd.qscore.features.login.LoginManager.SignupEvent
 import com.berd.qscore.features.login.LoginViewModel.Action.*
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
@@ -37,10 +34,10 @@ class LoginViewModel : ViewModel() {
     private val _state = MutableLiveData<State>()
     val state = _state as LiveData<State>
 
-    fun onLogin(email: String, password: String) = viewModelScope.launch {
+    fun onLogin(username: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
         try {
-            when (LoginManager.login(email, password)) {
+            when (LoginManager.login(username, password)) {
                 Success -> handleSuccess()
                 Unknown -> handleUnknown()
             }
