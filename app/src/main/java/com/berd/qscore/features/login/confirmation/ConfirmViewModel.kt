@@ -22,15 +22,15 @@ class ConfirmViewModel : ViewModel() {
         object ShowCodeToast : Action()
     }
 
-    fun onConfirm(email: String, code: String) = viewModelScope.launch {
-        when (LoginManager.completeSignUp(email, code)) {
+    fun onConfirm(username: String, code: String) = viewModelScope.launch {
+        when (LoginManager.completeSignUp(username, code)) {
             Success -> handleSuccess()
-            is NeedConfirmation -> handleNeedConfirmation(email)
+            is NeedConfirmation -> handleNeedConfirmation(username)
         }
     }
 
-    private suspend fun handleNeedConfirmation(email: String) {
-        LoginManager.sendConfirmationCode(email)
+    private suspend fun handleNeedConfirmation(username: String) {
+        LoginManager.sendConfirmationCode(username)
         _actions.send(ShowError)
     }
 
@@ -42,8 +42,8 @@ class ConfirmViewModel : ViewModel() {
         }
     }
 
-    fun onResend(email: String) = viewModelScope.launch {
-        LoginManager.sendConfirmationCode(email)
+    fun onResend(username: String) = viewModelScope.launch {
+        LoginManager.sendConfirmationCode(username)
         _actions.send(ShowCodeToast)
     }
 }

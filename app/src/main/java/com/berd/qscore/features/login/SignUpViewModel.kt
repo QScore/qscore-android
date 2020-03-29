@@ -21,7 +21,7 @@ class SignUpViewModel : ViewModel() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()
-        class LaunchConfirmActivity(val email: String) : Action()
+        class LaunchConfirmActivity(val username: String) : Action()
         object LaunchWelcomeActivity : Action()
     }
 
@@ -51,13 +51,13 @@ class SignUpViewModel : ViewModel() {
         try {
             when (LoginManager.signUp(username, email, password)) {
                 SignupEvent.Success -> handleSuccess()
-                is SignupEvent.NeedConfirmation -> handleNeedConfirmation(email)
+                is SignupEvent.NeedConfirmation -> handleNeedConfirmation(username)
             }
         } catch (e: Exception) {
             when (e) {
                 is UserNotConfirmedException -> {
                     _state.postValue(Ready)
-                    _actions.send(LaunchConfirmActivity(email))
+                    _actions.send(LaunchConfirmActivity(username))
                 }
                 else -> _state.postValue(SignUpError)
             }
@@ -106,8 +106,8 @@ class SignUpViewModel : ViewModel() {
         _state.postValue(SignUpError)
     }
 
-    private fun handleNeedConfirmation(email: String) {
+    private fun handleNeedConfirmation(username: String) {
         _state.postValue(Ready)
-        _actions.send(LaunchConfirmActivity(email))
+        _actions.send(LaunchConfirmActivity(username))
     }
 }

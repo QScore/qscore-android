@@ -58,8 +58,8 @@ object LoginManager {
         })
     }
 
-    suspend fun completeSignUp(email: String, code: String) = suspendCancellableCoroutine<SignupEvent> {
-        client.confirmSignUp(email, code, object : Callback<SignUpResult> {
+    suspend fun completeSignUp(username: String, code: String) = suspendCancellableCoroutine<SignupEvent> {
+        client.confirmSignUp(username, code, object : Callback<SignUpResult> {
             override fun onResult(result: SignUpResult) = runOnUiThread {
                 if (!result.confirmationState) {
                     it.resume(NeedConfirmation(result.userCodeDeliveryDetails))
@@ -75,8 +75,8 @@ object LoginManager {
         })
     }
 
-    suspend fun login(email: String, password: String) = suspendCancellableCoroutine<LoginEvent> {
-        client.signIn(email, password, null, object : Callback<SignInResult> {
+    suspend fun login(username: String, password: String) = suspendCancellableCoroutine<LoginEvent> {
+        client.signIn(username, password, null, object : Callback<SignInResult> {
             override fun onResult(signInResult: SignInResult) = runOnUiThread {
                 Timber.d("Sign-in callback state: ${signInResult.signInState}")
                 val result = when (signInResult.signInState) {
