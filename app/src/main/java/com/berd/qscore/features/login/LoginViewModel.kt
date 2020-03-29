@@ -18,7 +18,6 @@ class LoginViewModel : ViewModel() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()
-        class LaunchConfirmActivity(val email: String) : Action()
         object LaunchWelcomeActivity : Action()
     }
 

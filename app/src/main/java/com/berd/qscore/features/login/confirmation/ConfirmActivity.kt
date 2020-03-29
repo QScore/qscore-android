@@ -24,9 +24,9 @@ class ConfirmActivity : AppCompatActivity() {
         ActivityConfirmBinding.inflate(layoutInflater)
     }
 
-    private val email by lazy {
-        checkNotNull(intent.extras?.getString(EXTRA_EMAIL)) {
-            "ConfirmActivity must have an email address!"
+    private val username by lazy {
+        checkNotNull(intent.extras?.getString(EXTRA_USERNAME)) {
+            "ConfirmActivity must have a username!"
         }
     }
 
@@ -34,7 +34,7 @@ class ConfirmActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("ConfirmActivity has email: $email")
+        Timber.d("ConfirmActivity has username: $username")
         setContentView(binding.root)
         setupListeners()
         observeActions()
@@ -69,11 +69,11 @@ class ConfirmActivity : AppCompatActivity() {
 
     private fun setupListeners() = binding.apply {
         confirmButton.setOnClickListener {
-            viewModel.onConfirm(email, verifyNumber.text.toString())
+            viewModel.onConfirm(username, verifyNumber.text.toString())
         }
 
         resendButton.setOnClickListener {
-            viewModel.onResend(email)
+            viewModel.onResend(username)
         }
     }
 
@@ -83,10 +83,10 @@ class ConfirmActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val EXTRA_EMAIL = "EXTRA_EMAIL"
+        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
         fun newIntent(context: Context, email: String) =
             Intent(context, ConfirmActivity::class.java).apply {
-                putExtra(EXTRA_EMAIL, email)
+                putExtra(EXTRA_USERNAME, email)
             }
     }
 

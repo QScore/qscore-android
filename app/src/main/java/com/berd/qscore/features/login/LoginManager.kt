@@ -58,8 +58,8 @@ object LoginManager {
         })
     }
 
-    suspend fun completeSignUp(email: String, code: String) = suspendCancellableCoroutine<SignupEvent> {
-        client.confirmSignUp(email, code, object : Callback<SignUpResult> {
+    suspend fun completeSignUp(username: String, code: String) = suspendCancellableCoroutine<SignupEvent> {
+        client.confirmSignUp(username, code, object : Callback<SignUpResult> {
             override fun onResult(result: SignUpResult) = runOnUiThread {
                 if (!result.confirmationState) {
                     it.resume(NeedConfirmation(result.userCodeDeliveryDetails))

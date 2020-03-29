@@ -81,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
     private fun handleActions(it: Action) {
         when (it) {
             LaunchScoreActivity -> launchScoreActivity()
-            is LaunchConfirmActivity -> launchConfirmActivity(it.email)
             is LaunchWelcomeActivity -> launchWelcomeActivity()
         }
     }
@@ -90,12 +89,6 @@ class LoginActivity : AppCompatActivity() {
         start<WelcomeActivity>()
         progressDialog?.dismiss()
         finish()
-    }
-
-    private fun launchConfirmActivity(email: String) {
-        val intent = ConfirmActivity.newIntent(this, email)
-        progressDialog?.dismiss()
-        startActivity(intent)
     }
 
     private fun launchScoreActivity() {
