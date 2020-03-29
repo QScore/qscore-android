@@ -16,16 +16,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/verifyNumber"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/verifyNumber_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:ems="10"
-        android:inputType="number"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/hint_verify"
+        app:helperTextEnabled="true"
+        app:helperText="@string/helper_verify"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/verifyMessage" />
+        app:layout_constraintTop_toBottomOf="@+id/verifyMessage"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/verifyNumber"
+            android:ems="10"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/confirmButton"
@@ -33,9 +47,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Confirm"
-        app:layout_constraintEnd_toEndOf="@+id/verifyNumber"
-        app:layout_constraintStart_toStartOf="@+id/verifyNumber"
-        app:layout_constraintTop_toBottomOf="@+id/verifyNumber" />
+        app:layout_constraintEnd_toEndOf="@+id/verifyNumber_layout"
+        app:layout_constraintStart_toStartOf="@+id/verifyNumber_layout"
+        app:layout_constraintTop_toBottomOf="@+id/verifyNumber_layout" />
 
     <Button
         android:id="@+id/resendButton"

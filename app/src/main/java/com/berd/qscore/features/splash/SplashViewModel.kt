@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 
 sealed class Action {
+    object LaunchSignUpActivity : Action()
     object LaunchLoginActivity : Action()
     object LaunchWelcomeActivity : Action()
     object LaunchScoreActivity : Action()
@@ -32,7 +33,7 @@ class SplashViewModel : ViewModel() {
                 _events.send(LaunchWelcomeActivity)
             }
         } else {
-            _events.send(LaunchLoginActivity)
+            _events.send(LaunchSignUpActivity)
         }
     }
 

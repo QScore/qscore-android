@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.login.LoginActivity
+import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.features.welcome.WelcomeActivity
@@ -37,10 +38,16 @@ class SplashActivity : AppCompatActivity() {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchLoginActivity -> launchLoginActivity()
+                LaunchSignUpActivity -> launchSignUpActivity()
             }
         }, onError = {
             Timber.e("Unable to subscribe to events: $it")
         }).addTo(compositeDisposable)
+    }
+
+    private fun launchSignUpActivity() {
+        start<SignUpActivity>()
+        finish()
     }
 
     private fun launchLoginActivity() {

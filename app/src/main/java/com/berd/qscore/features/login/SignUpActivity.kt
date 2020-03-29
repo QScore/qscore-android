@@ -23,7 +23,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_login.errorText
-import kotlinx.coroutines.Job
 import splitties.activities.start
 import timber.log.Timber
 
@@ -98,7 +97,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun handleActions(it: SignUpViewModel.Action) {
         when (it) {
             SignUpViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
-            is SignUpViewModel.Action.LaunchConfirmActivity -> launchConfirmActivity(it.email)
+            is SignUpViewModel.Action.LaunchConfirmActivity -> launchConfirmActivity(it.username)
             is SignUpViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
         }
     }
@@ -109,8 +108,8 @@ class SignUpActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun launchConfirmActivity(email: String) {
-        val intent = ConfirmActivity.newIntent(this, email)
+    private fun launchConfirmActivity(username: String) {
+        val intent = ConfirmActivity.newIntent(this, username)
         progressDialog?.dismiss()
         startActivity(intent)
     }

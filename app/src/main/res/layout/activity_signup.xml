@@ -88,7 +88,6 @@
                 app:endIconMode="password_toggle"
                 app:helperTextEnabled="true"
                 app:helperText="@string/helper_password"
-                app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -157,8 +156,8 @@
                 android:gravity="center"
                 android:textColor="@color/red"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="@+id/email_layout"
-                app:layout_constraintStart_toStartOf="@+id/email_layout"
+                app:layout_constraintEnd_toEndOf="@+id/username_layout"
+                app:layout_constraintStart_toStartOf="@+id/username_layout"
                 app:layout_constraintTop_toBottomOf="@+id/loginMessage"
                 tools:text="@string/sign_up_error" />
 
