@@ -39,11 +39,6 @@ object LoginManager {
         object Unknown : LoginEvent()
     }
 
-    sealed class LogoutEvent {
-        object Success : LogoutEvent()
-        object Unknown : LogoutEvent()
-    }
-
     suspend fun signUp(username: String, email: String, password: String) = suspendCancellableCoroutine<SignupEvent> {
         val attributes: MutableMap<String, String> = HashMap()
         attributes["email"] = email
@@ -150,7 +145,6 @@ object LoginManager {
 
     fun logout() {
         client.signOut()
-        //fbLoginManager.logOut()
     }
 
     @Suppress("UNCHECKED_CAST")
