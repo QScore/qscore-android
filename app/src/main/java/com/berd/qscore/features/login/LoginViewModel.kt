@@ -19,6 +19,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
     sealed class Action {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
+        object LaunchForgotActivity : Action()
     }
 
     sealed class State {
@@ -41,6 +42,24 @@ class LoginViewModel : RxViewModel<Action, State>() {
             is Success -> handleSuccess()
             is Error -> handleError(result.error)
         }
+    }
+
+    fun onForgotPassword(username: String) = viewModelScope.launch {
+        _state.postValue(InProgress)
+        try {
+            when (LoginManager.forgotPassword(username)) {
+                LoginManager.ForgotPasswordEvent.Done -> handleReset()
+                LoginManager.ForgotPasswordEvent.ConfirmationCode -> handleReset()
+                LoginManager.ForgotPasswordEvent.Unknown -> handleUnknown()
+            }
+        } catch (e: Exception) {
+            _state.postValue(LoginError)
+        }
+    }
+
+    private fun handleReset(){
+        _state.postValue(Ready)
+        _actions.send(LaunchForgotActivity)
     }
 
     private fun handleSuccess() {

@@ -2,9 +2,13 @@ package com.berd.qscore.features.login
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.widget.EditText
 import androidx.activity.viewModels
 import com.berd.qscore.R
@@ -144,6 +148,9 @@ class SignUpActivity : BaseActivity() {
         gotoLoginText.setOnClickListener {
             launchLoginActivity()
         }
+        val spannable = SpannableString(getString(R.string.goto_login))
+        spannable.setSpan(ForegroundColorSpan(Color.LTGRAY), 0, 24, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        gotoLoginText.text = spannable
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

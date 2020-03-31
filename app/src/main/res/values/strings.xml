@@ -24,8 +24,11 @@
     <string name="unable_to_login_facebook">Unable to login to Facebook, please try again later.</string>
     <string name="sign_up">Sign Up</string>
     <string name="login">Login</string>
-    <string name="goto_sign_up">If you don\'t have an account click here to Sign Up.</string>
-    <string name="goto_login">If you already have an account click here to login</string>
+    <string name="goto_sign_up">New to Qscore? Sign Up.</string>
+    <string name="goto_sign_up_first">New to Qscore?</string>
+    <string name="goto_sign_up_second">Sign Up.</string>
+    <string name="goto_login">Already have an account? Log In</string>
+    <string name="goto_forgot">Forgot password?</string>
     <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
     <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
 

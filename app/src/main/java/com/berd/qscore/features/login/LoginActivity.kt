@@ -2,7 +2,11 @@ package com.berd.qscore.features.login
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -14,11 +18,11 @@ import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
 
 class LoginActivity : BaseActivity() {
@@ -61,13 +65,14 @@ class LoginActivity : BaseActivity() {
 
     private fun handleReady() = binding.apply {
         progressDialog?.dismiss()
-        errorText.gone()
+        errorText.invisible()
     }
 
     private fun handleLoginError() = binding.apply {
         progressDialog?.dismiss()
         errorText.text = getString(R.string.login_error)
         errorText.visible()
+        gotoForgotText.visible()
     }
 
     private fun handleInProgress() = binding.apply {
@@ -93,6 +98,10 @@ class LoginActivity : BaseActivity() {
         finish()
     }
 
+    private fun launchForgotActivity() {
+
+    }
+
     private fun setupViews() = binding.apply {
         login.setOnClickListener {
             val username = username.text.toString()
@@ -106,6 +115,17 @@ class LoginActivity : BaseActivity() {
 
         gotoSignUpText.setOnClickListener {
             launchSignUpActivity()
+        }
+        val spannable = SpannableString(getString(R.string.goto_sign_up))
+        spannable.setSpan(ForegroundColorSpan(Color.LTGRAY), 0, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        gotoSignUpText.text = spannable
+
+        gotoForgotText.setOnClickListener {
+            MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered)
+                .setTitle("Title")
+                .setMessage("Message")
+                .setPositiveButton("Accept", /* listener = */ null)
+                .show()
         }
     }
 
