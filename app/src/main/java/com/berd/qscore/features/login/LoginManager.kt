@@ -143,6 +143,9 @@ object LoginManager {
         fbLoginManager.logInWithReadPermissions(callbackFragment, mutableListOf("email"))
     }
 
+    fun logout() {
+        client.signOut()
+    }
 
     @Suppress("UNCHECKED_CAST")
     class CallbackFragment : Fragment() {
