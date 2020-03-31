@@ -5,23 +5,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amazonaws.services.cognitoidentityprovider.model.UserNotConfirmedException
-import com.berd.qscore.features.login.LoginManager.LoginEvent.Success
-import com.berd.qscore.features.login.LoginManager.LoginEvent.Unknown
-import com.berd.qscore.features.login.LoginManager.SignupEvent
-import com.berd.qscore.features.login.SignUpViewModel.Action.*
+import com.berd.qscore.features.login.LoginManager.AuthEvent
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchScoreActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivity
 import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.rx.RxEventSender
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.regex.Pattern
 
 class SignUpViewModel : ViewModel() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()
-        class LaunchConfirmActivity(val username: String) : Action()
         object LaunchWelcomeActivity : Action()
     }
 
@@ -29,10 +27,12 @@ class SignUpViewModel : ViewModel() {
         object InProgress : State()
         object SignUpError : State()
         object Ready : State()
-        class FieldsUpdated(val usernameError: Boolean,
-                            val emailError: Boolean,
-                            val passwordError: Boolean,
-                            val signUpIsReady: Boolean) : State()
+        class FieldsUpdated(
+            val usernameError: Boolean,
+            val emailError: Boolean,
+            val passwordError: Boolean,
+            val signUpIsReady: Boolean
+        ) : State()
     }
 
     private val _actions = RxEventSender<Action>()
@@ -48,36 +48,27 @@ class SignUpViewModel : ViewModel() {
 
     fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
         _state.postValue(InProgress)
-        try {
-            when (LoginManager.signUp(username, email, password)) {
-                SignupEvent.Success -> handleSuccess()
-                is SignupEvent.NeedConfirmation -> handleNeedConfirmation(username)
-            }
-        } catch (e: Exception) {
-            when (e) {
-                is UserNotConfirmedException -> {
-                    _state.postValue(Ready)
-                    _actions.send(LaunchConfirmActivity(username))
-                }
-                else -> _state.postValue(SignUpError)
-            }
+        when (val result = LoginManager.signUp(email, password)) {
+            is AuthEvent.Success -> handleSuccess()
+            is AuthEvent.Error -> handleError(result.error)
         }
     }
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
         _state.postValue(InProgress)
         try {
-            when (LoginManager.loginFacebook(supportFragmentManager)) {
-                Success -> handleSuccess()
-                Unknown -> handleUnknown()
+            when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
+                is LoginManager.AuthEvent.Success -> handleSuccess()
+                is LoginManager.AuthEvent.Error -> handleError(result.error)
             }
-        } catch (e: Exception) {
-            if (e is CancellationException) {
-                _state.postValue(Ready)
-            } else {
-                _state.postValue(SignUpError)
-            }
+        } catch (e: CancellationException) {
+            _state.postValue(Ready)
         }
+    }
+
+    private fun handleError(error: Exception?) {
+        Timber.d("Unable to log in : $error")
+        _state.postValue(SignUpError)
     }
 
     fun onFieldsUpdated(username: String, email: String, password: String) = viewModelScope.launch {
@@ -88,9 +79,10 @@ class SignUpViewModel : ViewModel() {
 
         val passwordError = (password.length < 8)
 
-        val signUpIsReady = !usernameError && !emailError && !passwordError && username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
+        val signUpIsReady =
+            !usernameError && !emailError && !passwordError && username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
 
-        _state.postValue(FieldsUpdated(usernameError,emailError,passwordError,signUpIsReady))
+        _state.postValue(FieldsUpdated(usernameError, emailError, passwordError, signUpIsReady))
     }
 
     private fun handleSuccess() {
@@ -100,14 +92,5 @@ class SignUpViewModel : ViewModel() {
         } else {
             _actions.send(LaunchWelcomeActivity)
         }
-    }
-
-    private fun handleUnknown() {
-        _state.postValue(SignUpError)
-    }
-
-    private fun handleNeedConfirmation(username: String) {
-        _state.postValue(Ready)
-        _actions.send(LaunchConfirmActivity(username))
     }
 }

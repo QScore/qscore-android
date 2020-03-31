@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.splash.Action.*
-import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.rx.RxEventSender
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,8 +18,6 @@ sealed class Action {
 }
 
 class SplashViewModel : ViewModel() {
-    val appContext = Injector.appContext
-
     private val _events = RxEventSender<Action>()
     val events = _events.observable
 
@@ -35,9 +32,5 @@ class SplashViewModel : ViewModel() {
         } else {
             _events.send(LaunchSignUpActivity)
         }
-    }
-
-    fun checkLoggedIn() {
-
     }
 }

@@ -65,6 +65,7 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.3'
     implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.0'
 
     //Splitties
     def splittiesVersion = "3.0.0-alpha06"
@@ -90,21 +91,6 @@ dependencies {
 
     //Facebook
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
-
-    //Aws
-    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.16.9'
-
-    //For the drop-in UI also:
-    implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.16.9'
-    implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.16.9'
-
-    //Amplify
-    def amplify_version = "0.9.1"
-    implementation "com.amplifyframework:core:$amplify_version"
-    implementation "com.amplifyframework:aws-api:$amplify_version"
-
-    //Base SDK
-    implementation 'com.amazonaws:aws-android-sdk-core:2.15.+'
 
     //Testing
     testImplementation 'junit:junit:4.12'

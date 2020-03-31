@@ -11,7 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
-import com.berd.qscore.features.login.confirmation.ConfirmActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchScoreActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.gone
@@ -22,7 +23,7 @@ import com.facebook.CallbackManager
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_login.errorText
+import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
 import timber.log.Timber
 
@@ -96,9 +97,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handleActions(it: SignUpViewModel.Action) {
         when (it) {
-            SignUpViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
-            is SignUpViewModel.Action.LaunchConfirmActivity -> launchConfirmActivity(it.username)
-            is SignUpViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
+            LaunchScoreActivity -> launchScoreActivity()
+            is LaunchWelcomeActivity -> launchWelcomeActivity()
         }
     }
 
@@ -106,12 +106,6 @@ class SignUpActivity : AppCompatActivity() {
         start<WelcomeActivity>()
         progressDialog?.dismiss()
         finish()
-    }
-
-    private fun launchConfirmActivity(username: String) {
-        val intent = ConfirmActivity.newIntent(this, username)
-        progressDialog?.dismiss()
-        startActivity(intent)
     }
 
     private fun launchScoreActivity() {

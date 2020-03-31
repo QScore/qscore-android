@@ -6,11 +6,12 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
 import com.berd.qscore.features.login.LoginViewModel.Action
-import com.berd.qscore.features.login.LoginViewModel.Action.*
+import com.berd.qscore.features.login.LoginViewModel.Action.LaunchScoreActivity
+import com.berd.qscore.features.login.LoginViewModel.Action.LaunchWelcomeActivity
 import com.berd.qscore.features.login.LoginViewModel.State.*
-import com.berd.qscore.features.login.confirmation.ConfirmActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.gone
@@ -24,8 +25,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
 import timber.log.Timber
-
-import com.berd.qscore.R
 
 class LoginActivity : AppCompatActivity() {
 
