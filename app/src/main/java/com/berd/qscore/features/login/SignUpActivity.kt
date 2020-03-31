@@ -90,9 +90,9 @@ class SignUpActivity : BaseActivity() {
             }
 
             if (emailError) {
-                emailLayout.error = getString(R.string.email_error)
-            } else if (!emailLayout.error.isNullOrEmpty()) {
-                emailLayout.error = null
+                emailsLayout.error = getString(R.string.email_error)
+            } else if (!emailsLayout.error.isNullOrEmpty()) {
+                emailsLayout.error = null
             }
 
             signup.isEnabled = signUpIsReady
@@ -129,14 +129,14 @@ class SignUpActivity : BaseActivity() {
 
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(username.text.toString(), email.text.toString(), password.text.toString()) }
+            { viewModel.onFieldsUpdated(username.text.toString(), emails.text.toString(), password.text.toString()) }
         username.onChange(changeListener)
-        email.onChange(changeListener)
+        emails.onChange(changeListener)
         password.onChange(changeListener)
 
         signup.setOnClickListener {
             val username = username.text.toString()
-            val email = email.text.toString()
+            val email = emails.text.toString()
             val password = password.text.toString()
             viewModel.onSignUp(username, email, password)
         }

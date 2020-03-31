@@ -58,8 +58,10 @@ class LoginActivity : BaseActivity() {
     private fun handleState(state: State) {
         when (state) {
             InProgress -> handleInProgress()
+            ResetInProgress -> handleResetInProgress()
             LoginError -> handleLoginError()
             Ready -> handleReady()
+            PasswordReset -> handlePasswordReset()
         }
     }
 
@@ -80,6 +82,17 @@ class LoginActivity : BaseActivity() {
         errorText.invisible()
     }
 
+    private fun handleResetInProgress() = binding.apply {
+        progressDialog = showProgressDialog("Resetting Password...")
+        errorText.invisible()
+    }
+
+    private fun handlePasswordReset() = binding.apply {
+        progressDialog?.dismiss()
+        errorText.text = getString(R.string.reset_password_errortext)
+        errorText.visible()
+    }
+
     private fun launchWelcomeActivity() {
         start<WelcomeActivity>()
         progressDialog?.dismiss()
@@ -98,15 +111,11 @@ class LoginActivity : BaseActivity() {
         finish()
     }
 
-    private fun launchForgotActivity() {
-        //was going to put something here for cognito but switching to firebase auth will probably be completely different
-    }
-
     private fun setupViews() = binding.apply {
         login.setOnClickListener {
-            val username = username.text.toString()
+            val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onLogin(username, password)
+            viewModel.onLogin(email, password)
         }
 
         fbLogin.setOnClickListener {
@@ -117,17 +126,17 @@ class LoginActivity : BaseActivity() {
             launchSignUpActivity()
         }
         val spannable = SpannableString(getString(R.string.goto_sign_up))
-        spannable.setSpan(ForegroundColorSpan(Color.LTGRAY), 0, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.setSpan(ForegroundColorSpan(getColor(R.color.grey_400)), 0, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         gotoSignUpText.text = spannable
 
         gotoForgotText.setOnClickListener {
             MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
                 .setTitle(getString(R.string.reset_password_title))
-                .setMessage(getString(R.string.reset_password_message)+" "+username.text.toString())
+                .setMessage(getString(R.string.reset_password_message)+" "+email.text.toString())
                 .setPositiveButton(getString(R.string.reset)){ dialog, which ->
                     // Do something for button click
                     // reset the password
-                    viewModel.onForgotPassword(username.text.toString())
+                    viewModel.resetPassword(email.text.toString())
                 }
                 .setNegativeButton(getString(R.string.cancel),null)
                 .show()
