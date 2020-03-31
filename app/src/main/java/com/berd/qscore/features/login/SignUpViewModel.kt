@@ -1,22 +1,21 @@
 package com.berd.qscore.features.login
 
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager.AuthEvent
+import com.berd.qscore.features.login.SignUpViewModel.Action
 import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.SignUpViewModel.State
 import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.utils.rx.RxEventSender
+import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.regex.Pattern
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel : RxViewModel<Action, State>() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()
@@ -35,19 +34,13 @@ class SignUpViewModel : ViewModel() {
         ) : State()
     }
 
-    private val _actions = RxEventSender<Action>()
-    val actions = _actions.observable
-
-    private val _state = MutableLiveData<State>()
-    val state = _state as LiveData<State>
-
     private val emailPattern: Pattern by lazy {
         val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
         Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
     }
 
     fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
-        _state.postValue(InProgress)
+        state = InProgress
         when (val result = LoginManager.signUp(email, password)) {
             is AuthEvent.Success -> handleSuccess()
             is AuthEvent.Error -> handleError(result.error)
@@ -55,20 +48,20 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
-        _state.postValue(InProgress)
+        state = InProgress
         try {
             when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
-                is LoginManager.AuthEvent.Success -> handleSuccess()
-                is LoginManager.AuthEvent.Error -> handleError(result.error)
+                is AuthEvent.Success -> handleSuccess()
+                is AuthEvent.Error -> handleError(result.error)
             }
         } catch (e: CancellationException) {
-            _state.postValue(Ready)
+            state = Ready
         }
     }
 
     private fun handleError(error: Exception?) {
         Timber.d("Unable to log in : $error")
-        _state.postValue(SignUpError)
+        state = SignUpError
     }
 
     fun onFieldsUpdated(username: String, email: String, password: String) = viewModelScope.launch {
@@ -82,15 +75,15 @@ class SignUpViewModel : ViewModel() {
         val signUpIsReady =
             !usernameError && !emailError && !passwordError && username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
 
-        _state.postValue(FieldsUpdated(usernameError, emailError, passwordError, signUpIsReady))
+        state = FieldsUpdated(usernameError, emailError, passwordError, signUpIsReady)
     }
 
     private fun handleSuccess() {
-        _state.postValue(Ready)
+        state = Ready
         if (Prefs.userLocation != null) {
-            _actions.send(LaunchScoreActivity)
+            action(LaunchScoreActivity)
         } else {
-            _actions.send(LaunchWelcomeActivity)
+            action(LaunchWelcomeActivity)
         }
     }
 }

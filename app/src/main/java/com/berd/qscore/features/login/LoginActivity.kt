@@ -4,33 +4,27 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
 import com.berd.qscore.features.login.LoginViewModel.Action
 import com.berd.qscore.features.login.LoginViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.login.LoginViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_login.*
 import splitties.activities.start
-import timber.log.Timber
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
-    private val compositeDisposable = CompositeDisposable()
-    private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<LoginViewModel>()
+    private val callbackManager by lazy { CallbackManager.Factory.create() }
     private var progressDialog: ProgressDialog? = null
 
     private val binding: ActivityLoginBinding by lazy {
@@ -46,35 +40,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun observeEvents() {
-        viewModel.actions.subscribeBy(onNext = {
-            handleActions(it)
-        }, onError = {
-            Timber.e("Error subscribing to events: $it")
-        }).addTo(compositeDisposable)
-
-        viewModel.state.observe(this, Observer {
-            when (it) {
-                InProgress -> handleInProgress()
-                LoginError -> handleLoginError()
-                Ready -> handleReady()
-            }
-        })
-    }
-
-    private fun handleReady() {
-        progressDialog?.dismiss()
-        errorText.gone()
-    }
-
-    private fun handleLoginError() {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.login_error)
-        errorText.visible()
-    }
-
-    private fun handleInProgress() {
-        progressDialog = showProgressDialog("Signing in...")
-        errorText.invisible()
+        viewModel.observeActions { handleActions(it) }
+        viewModel.observeState { handleState(it) }
     }
 
     private fun handleActions(it: Action) {
@@ -82,6 +49,30 @@ class LoginActivity : AppCompatActivity() {
             LaunchScoreActivity -> launchScoreActivity()
             is LaunchWelcomeActivity -> launchWelcomeActivity()
         }
+    }
+
+    private fun handleState(state: State) {
+        when (state) {
+            InProgress -> handleInProgress()
+            LoginError -> handleLoginError()
+            Ready -> handleReady()
+        }
+    }
+
+    private fun handleReady() = binding.apply {
+        progressDialog?.dismiss()
+        errorText.gone()
+    }
+
+    private fun handleLoginError() = binding.apply {
+        progressDialog?.dismiss()
+        errorText.text = getString(R.string.login_error)
+        errorText.visible()
+    }
+
+    private fun handleInProgress() = binding.apply {
+        progressDialog = showProgressDialog("Signing in...")
+        errorText.invisible()
     }
 
     private fun launchWelcomeActivity() {

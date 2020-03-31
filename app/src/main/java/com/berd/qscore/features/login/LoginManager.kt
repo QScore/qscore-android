@@ -69,11 +69,11 @@ object LoginManager {
     }
 
     fun logout() {
-        client.signOut()
+        firebaseAuth.signOut()
     }
 
     @Suppress("UNCHECKED_CAST")
-    private class CallbackFragment : Fragment() {
+    class CallbackFragment : Fragment() {
         init {
             retainInstance = true
         }

@@ -1,19 +1,20 @@
 package com.berd.qscore.features.login
 
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
+import com.berd.qscore.features.login.LoginViewModel.Action
 import com.berd.qscore.features.login.LoginViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.login.LoginViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.LoginViewModel.State
+import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.utils.rx.RxEventSender
+import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel : RxViewModel<Action, State>() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()
@@ -26,14 +27,8 @@ class LoginViewModel : ViewModel() {
         object Ready : State()
     }
 
-    private val _actions = RxEventSender<Action>()
-    val actions = _actions.observable
-
-    private val _state = MutableLiveData<State>()
-    val state = _state as LiveData<State>
-
     fun onLogin(username: String, password: String) = viewModelScope.launch {
-        _state.postValue(State.InProgress)
+        state = InProgress
         when (val result = LoginManager.login(username, password)) {
             is Success -> handleSuccess()
             is Error -> handleError(result.error)
@@ -41,7 +36,7 @@ class LoginViewModel : ViewModel() {
     }
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
-        _state.postValue(State.InProgress)
+        state = InProgress
         when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
             is Success -> handleSuccess()
             is Error -> handleError(result.error)
@@ -49,15 +44,16 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun handleSuccess() {
-        _state.postValue(State.Ready)
+        state = Ready
         if (Prefs.userLocation != null) {
-            _actions.send(LaunchScoreActivity)
+            action(LaunchScoreActivity)
         } else {
-            _actions.send(LaunchWelcomeActivity)
+            action(LaunchWelcomeActivity)
         }
     }
 
     private fun handleError(error: Exception?) {
-        _state.postValue(State.LoginError)
+        Timber.d("Unable to log in: $error")
+        state = LoginError
     }
 }
