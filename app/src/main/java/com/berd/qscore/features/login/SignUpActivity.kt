@@ -56,7 +56,6 @@ class SignUpActivity : BaseActivity() {
                 SignUpViewModel.State.SignUpError -> handleSignUpError()
                 SignUpViewModel.State.Ready -> handleReady()
                 is SignUpViewModel.State.FieldsUpdated -> handleFieldsUpdated(
-                    it.usernameError,
                     it.emailError,
                     it.passwordError,
                     it.signUpIsReady
@@ -81,18 +80,12 @@ class SignUpActivity : BaseActivity() {
         errorText.invisible()
     }
 
-    private fun handleFieldsUpdated(usernameError: Boolean, emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
+    private fun handleFieldsUpdated(emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
         binding.apply {
-            if (usernameError) {
-                usernameLayout.error = getString(R.string.username_error)
-            } else if (!usernameLayout.error.isNullOrEmpty()) {
-                usernameLayout.error = null
-            }
-
             if (emailError) {
-                emailsLayout.error = getString(R.string.email_error)
-            } else if (!emailsLayout.error.isNullOrEmpty()) {
-                emailsLayout.error = null
+                emailLayout.error = getString(R.string.email_error)
+            } else if (!emailLayout.error.isNullOrEmpty()) {
+                emailLayout.error = null
             }
 
             signup.isEnabled = signUpIsReady
@@ -129,16 +122,14 @@ class SignUpActivity : BaseActivity() {
 
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(username.text.toString(), emails.text.toString(), password.text.toString()) }
-        username.onChange(changeListener)
-        emails.onChange(changeListener)
+            { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
+        email.onChange(changeListener)
         password.onChange(changeListener)
 
         signup.setOnClickListener {
-            val username = username.text.toString()
-            val email = emails.text.toString()
+            val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onSignUp(username, email, password)
+            viewModel.onSignUp(email, password)
         }
 
         fbLogin.setOnClickListener {
