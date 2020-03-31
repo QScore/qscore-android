@@ -43,6 +43,12 @@ object LoginManager {
         }
     }
 
+    suspend fun sendPasswordResetEmail(email: String) = suspendCancellableCoroutine<AuthEvent> {
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            it.resume(task.resultEvent)
+        }
+    }
+
     suspend fun loginFacebook(supportFragmentManager: FragmentManager) = suspendCancellableCoroutine<AuthEvent> { cont ->
         val fbTokenCallback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
@@ -67,6 +73,7 @@ object LoginManager {
         fbLoginManager.registerCallback(fbCallbackManager, fbTokenCallback)
         fbLoginManager.logInWithReadPermissions(callbackFragment, mutableListOf("email"))
     }
+
 
     fun logout() {
         firebaseAuth.signOut()
