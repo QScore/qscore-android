@@ -38,13 +38,13 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun observeActions() {
-        viewModel.actions.subscribeBy(onNext = {
+        viewModel.actionsObservable.subscribeBy(onNext = {
             handleAction(it)
         }, onError = {
             Timber.e("Error subscribing to events: $it")
         }).addTo(compositeDisposable)
 
-        viewModel.state.observe(this, Observer {
+        viewModel.stateLiveData.observe(this, Observer {
             when (it) {
                 FindingLocation -> {
                     progressDialog = showProgressDialog("Setting home location...")

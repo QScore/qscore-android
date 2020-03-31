@@ -2,23 +2,18 @@ package com.berd.qscore.features.splash
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.features.welcome.WelcomeActivity
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import splitties.activities.start
-import timber.log.Timber
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     private val viewModel by viewModels<SplashViewModel>()
-    private val compositeDisposable = CompositeDisposable()
 
     private val binding: ActivitySplashBinding by lazy {
         ActivitySplashBinding.inflate(layoutInflater)
@@ -33,16 +28,14 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.events.subscribeBy(onNext = { action ->
-            val x = when (action) {
+        viewModel.observeActions { action ->
+            when (action) {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchLoginActivity -> launchLoginActivity()
                 LaunchSignUpActivity -> launchSignUpActivity()
             }
-        }, onError = {
-            Timber.e("Unable to subscribe to events: $it")
-        }).addTo(compositeDisposable)
+        }
     }
 
     private fun launchSignUpActivity() {
