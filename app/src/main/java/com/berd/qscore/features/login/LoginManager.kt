@@ -30,7 +30,7 @@ object LoginManager {
     }
 
     private val Task<*>.resultEvent get() = if (isSuccessful) Success else Error(exception)
-    
+
     suspend fun signUp(email: String, password: String) = suspendCancellableCoroutine<AuthEvent> {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             it.resume(task.resultEvent)

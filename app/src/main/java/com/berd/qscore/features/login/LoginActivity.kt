@@ -99,7 +99,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun launchForgotActivity() {
-
+        //was going to put something here for cognito but switching to firebase auth will probably be completely different
     }
 
     private fun setupViews() = binding.apply {
@@ -121,10 +121,15 @@ class LoginActivity : BaseActivity() {
         gotoSignUpText.text = spannable
 
         gotoForgotText.setOnClickListener {
-            MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered)
-                .setTitle("Title")
-                .setMessage("Message")
-                .setPositiveButton("Accept", /* listener = */ null)
+            MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                .setTitle(getString(R.string.reset_password_title))
+                .setMessage(getString(R.string.reset_password_message)+" "+username.text.toString())
+                .setPositiveButton(getString(R.string.reset)){ dialog, which ->
+                    // Do something for button click
+                    // reset the password
+                    viewModel.onForgotPassword(username.text.toString())
+                }
+                .setNegativeButton(getString(R.string.cancel),null)
                 .show()
         }
     }
