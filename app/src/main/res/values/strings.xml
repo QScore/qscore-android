@@ -37,4 +37,7 @@
     <string name="helper_email">Will be used to confirm your account</string>
     <string name="helper_password">Must have 8 or more characters</string>
     <string name="helper_verify">6 digit verification code</string>
+
+    <string name="action_logout">Log out</string>
+    <string name="action_settings">Settings</string>
 </resources>
