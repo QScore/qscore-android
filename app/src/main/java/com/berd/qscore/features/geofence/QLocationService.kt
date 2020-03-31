@@ -6,8 +6,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amplifyframework.datastore.generated.model.Location
 import com.berd.qscore.R
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
@@ -15,8 +13,6 @@ import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
 import com.berd.qscore.features.geofence.GeofenceState.Home
 import com.berd.qscore.features.geofence.GeofenceState.Unknown
 import com.berd.qscore.features.score.ScoreActivity
-import com.berd.qscore.features.shared.api.ApiHelper
-import com.berd.qscore.features.shared.api.SimpleEvent
 import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -41,7 +37,6 @@ class QLocationService : Service() {
     private val compositeDisposable = CompositeDisposable()
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
-    private val awsClient by lazy { AWSMobileClient.getInstance() }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -78,36 +73,10 @@ class QLocationService : Service() {
     }
 
     private fun handleEntered() = scope.launch {
-        val currentLocation = LocationHelper.fetchCurrentLocation()
-        currentLocation?.let { location ->
-            val userId = awsClient.identityId
-            val event = SimpleEvent(
-                userSub = userId,
-                timestamp = System.currentTimeMillis().toString(),
-                lat = location.lat.toString(),
-                lng = location.lng.toString(),
-                atHome = Location.home,
-                activity = "none"
-            )
-            ApiHelper.createEvent(event)
-        } ?: Timber.w("Unable to send event for geolocation change, location not found")
         updateNotification(Home)
     }
 
     private fun handleExited() = scope.launch {
-        val currentLocation = LocationHelper.fetchCurrentLocation()
-        currentLocation?.let { location ->
-            val userId = awsClient.identityId
-            val event = SimpleEvent(
-                userSub = userId,
-                timestamp = System.currentTimeMillis().toString(),
-                lat = location.lat.toString(),
-                lng = location.lng.toString(),
-                atHome = Location.home,
-                activity = "none"
-            )
-            ApiHelper.createEvent(event)
-        } ?: Timber.w("Unable to send event for geolocation change, location not found")
         updateNotification(Home)
     }
 

@@ -14,14 +14,12 @@ import com.berd.qscore.databinding.ActivityScoreBinding
 import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
-import com.berd.qscore.features.login.SignUpViewModel
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_score.*
 import kotlinx.coroutines.launch
 import splitties.activities.start
 import splitties.toast.toast
@@ -82,19 +80,19 @@ class ScoreActivity : AppCompatActivity() {
         })
     }
 
-    private fun handleStartingUp() {
+    private fun handleStartingUp() = with(binding) {
         startupText.visible()
         awayText.gone()
         homeText.gone()
     }
 
-    private fun handleHome() = binding.apply {
+    private fun handleHome() = with(binding) {
         startupText.gone()
         awayText.gone()
         homeText.visible()
     }
 
-    private fun handleAway() = binding.apply {
+    private fun handleAway() = with(binding) {
         startupText.gone()
         awayText.visible()
         homeText.gone()
@@ -119,14 +117,19 @@ class ScoreActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.appbar_menu, menu)
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_settings -> { true }
+        R.id.action_settings -> {
+            true
+        }
 
         R.id.action_logout -> {
             viewModel.onLogout()
             true
         }
 
-        else -> { super.onOptionsItemSelected(item) }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 }

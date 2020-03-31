@@ -3,138 +3,69 @@ package com.berd.qscore.features.login
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.amazonaws.mobile.client.*
-import com.amazonaws.mobile.client.results.SignInResult
-import com.amazonaws.mobile.client.results.SignInState
-import com.amazonaws.mobile.client.results.SignUpResult
-import com.amazonaws.mobile.client.results.UserCodeDeliveryDetails
-import com.berd.qscore.features.login.LoginManager.SignupEvent.NeedConfirmation
-import com.berd.qscore.features.login.LoginManager.SignupEvent.Success
+import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
+import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
+import com.berd.qscore.utils.injection.Injector
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FacebookAuthProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 
 object LoginManager {
-    private val client by lazy { AWSMobileClient.getInstance() }
     private val fbCallbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
-    private val fbLoginManager by lazy { LoginManager.getInstance() }
+    private val fbLoginManager = Injector.fbLoginmanager
+    private val firebaseAuth = Injector.firebaseAuth
 
-    val isLoggedIn get() = client.isSignedIn
+    val isLoggedIn get() = firebaseAuth.currentUser != null
 
-    sealed class SignupEvent {
-        object Success : SignupEvent()
-        class NeedConfirmation(val details: UserCodeDeliveryDetails) : SignupEvent()
+    sealed class AuthEvent {
+        object Success : AuthEvent()
+        class Error(val error: Exception?) : AuthEvent()
     }
 
-    sealed class LoginEvent {
-        object Success : LoginEvent()
-        object Unknown : LoginEvent()
+    private val Task<*>.resultEvent get() = if (isSuccessful) Success else Error(exception)
+
+    suspend fun signUp(email: String, password: String) = suspendCancellableCoroutine<AuthEvent> {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            it.resume(task.resultEvent)
+        }
     }
 
-    suspend fun signUp(username: String, email: String, password: String) = suspendCancellableCoroutine<SignupEvent> {
-        val attributes: MutableMap<String, String> = HashMap()
-        attributes["email"] = email
-        client.signUp(username, password, attributes, null, object : Callback<SignUpResult> {
-            override fun onResult(result: SignUpResult) = runOnUiThread {
-                if (!result.confirmationState) {
-                    it.resume(NeedConfirmation(result.userCodeDeliveryDetails))
-                } else {
-                    it.resume(Success)
-                }
-            }
-
-            override fun onError(e: Exception) = runOnUiThread {
-                Timber.d("Unable to sign up: $e")
-                it.resumeWithException(e)
-            }
-        })
+    suspend fun login(email: String, password: String) = suspendCancellableCoroutine<AuthEvent> {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            it.resume(task.resultEvent)
+        }
     }
 
-    suspend fun completeSignUp(username: String, code: String) = suspendCancellableCoroutine<SignupEvent> {
-        client.confirmSignUp(username, code, object : Callback<SignUpResult> {
-            override fun onResult(result: SignUpResult) = runOnUiThread {
-                if (!result.confirmationState) {
-                    it.resume(NeedConfirmation(result.userCodeDeliveryDetails))
-                } else {
-                    it.resume(Success)
-                }
-            }
-
-            override fun onError(e: Exception) = runOnUiThread {
-                Timber.d("Unable to sign up: $e")
-                it.resumeWithException(e)
-            }
-        })
+    suspend fun sendPasswordResetEmail(email: String) = suspendCancellableCoroutine<AuthEvent> {
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            it.resume(task.resultEvent)
+        }
     }
 
-    suspend fun login(username: String, password: String) = suspendCancellableCoroutine<LoginEvent> {
-        client.signIn(username, password, null, object : Callback<SignInResult> {
-            override fun onResult(signInResult: SignInResult) = runOnUiThread {
-                Timber.d("Sign-in callback state: ${signInResult.signInState}")
-                val result = when (signInResult.signInState) {
-                    SignInState.DONE -> LoginEvent.Success
-                    else -> LoginEvent.Unknown
-                }
-                it.resume(result)
-            }
-
-            override fun onError(e: Exception) {
-                Timber.d("Error logging in: $e")
-                it.resumeWithException(e)
-            }
-        })
-    }
-
-    suspend fun sendConfirmationCode(username: String) = suspendCancellableCoroutine<Unit> {
-        AWSMobileClient.getInstance().resendSignUp(username, object : Callback<SignUpResult> {
-            override fun onResult(signUpResult: SignUpResult) {
-                Timber.d("Send confirmation $signUpResult")
-                it.resume(Unit)
-            }
-
-            override fun onError(e: Exception) {
-                Timber.e("Unable to resend confirmation code")
-                it.resumeWithException(e)
-            }
-        })
-    }
-
-    suspend fun loginFacebook(supportFragmentManager: FragmentManager) = suspendCancellableCoroutine<LoginEvent> { cont ->
+    suspend fun loginFacebook(supportFragmentManager: FragmentManager) = suspendCancellableCoroutine<AuthEvent> { cont ->
         val fbTokenCallback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
                 val token = loginResult.accessToken.token
                 Timber.d("Successful login with facebook, continuing to aws")
-                client.federatedSignIn(IdentityProvider.FACEBOOK.toString(), token, object : Callback<UserStateDetails> {
-                    override fun onResult(userStateDetails: UserStateDetails) {
-                        val result = when (userStateDetails.userState) {
-                            UserState.SIGNED_IN -> LoginEvent.Success
-                            else -> LoginEvent.Unknown
-                        }
-                        cont.resume(result)
-                    }
-
-                    override fun onError(e: Exception) {
-                        cont.resumeWithException(e)
-                        Timber.d("Unable to sign into aws via Facebook: $e")
-                    }
-                })
+                val credential = FacebookAuthProvider.getCredential(token)
+                firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+                    cont.resume(task.resultEvent)
+                }
             }
 
             override fun onCancel() {
-                Timber.d("Facebook login cancelled")
                 cont.cancel()
             }
 
             override fun onError(error: FacebookException) {
-                cont.resumeWithException(error)
+                cont.resume(Error(error))
             }
         }
 
@@ -143,8 +74,9 @@ object LoginManager {
         fbLoginManager.logInWithReadPermissions(callbackFragment, mutableListOf("email"))
     }
 
+
     fun logout() {
-        client.signOut()
+        firebaseAuth.signOut()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -175,23 +107,5 @@ object LoginManager {
                     }
             }
         }
-    }
-
-    suspend fun confirmCode(code: String) = suspendCancellableCoroutine<LoginEvent> {
-        client.confirmSignIn(code, object : Callback<SignInResult> {
-            override fun onResult(signInResult: SignInResult) {
-                Timber.d("Sign-in callback state: ${signInResult.signInState}")
-                val result = when (signInResult.signInState) {
-                    SignInState.DONE -> LoginEvent.Success
-                    else -> LoginEvent.Unknown
-                }
-                it.resume(result)
-            }
-
-            override fun onError(e: java.lang.Exception) {
-                Timber.d("Error confirming: $e")
-                it.resumeWithException(e)
-            }
-        })
     }
 }

@@ -7,28 +7,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
-import com.berd.qscore.features.login.confirmation.ConfirmActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchScoreActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivity
 import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.android.synthetic.main.activity_login.errorText
 import splitties.activities.start
-import timber.log.Timber
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : BaseActivity() {
 
-    private val compositeDisposable = CompositeDisposable()
     private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<SignUpViewModel>()
     private var progressDialog: ProgressDialog? = null
@@ -46,20 +40,25 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun observeEvents() {
-        viewModel.actions.subscribeBy(onNext = {
-            handleActions(it)
-        }, onError = {
-            Timber.e("Error subscribing to events: $it")
-        }).addTo(compositeDisposable)
-
-        viewModel.state.observe(this, Observer {
+        viewModel.observeActions {
+            when (it) {
+                LaunchScoreActivity -> launchScoreActivity()
+                is LaunchWelcomeActivity -> launchWelcomeActivity()
+            }
+        }
+        viewModel.observeState {
             when (it) {
                 SignUpViewModel.State.InProgress -> handleInProgress()
                 SignUpViewModel.State.SignUpError -> handleSignUpError()
                 SignUpViewModel.State.Ready -> handleReady()
-                is SignUpViewModel.State.FieldsUpdated -> handleFieldsUpdated(it.usernameError, it.emailError, it.passwordError, it.signUpIsReady)
+                is SignUpViewModel.State.FieldsUpdated -> handleFieldsUpdated(
+                    it.usernameError,
+                    it.emailError,
+                    it.passwordError,
+                    it.signUpIsReady
+                )
             }
-        })
+        }
     }
 
     private fun handleSignUpError() = binding.apply {
@@ -68,50 +67,37 @@ class SignUpActivity : AppCompatActivity() {
         errorText.visible()
     }
 
-    private fun handleReady() {
+    private fun handleReady() = binding.apply {
         progressDialog?.dismiss()
         errorText.gone()
     }
 
-    private fun handleInProgress() {
+    private fun handleInProgress() = binding.apply {
         progressDialog = showProgressDialog("Signing in...")
         errorText.invisible()
     }
 
-    private fun handleFieldsUpdated(usernameError: Boolean, emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) = binding.apply {
-        if (usernameError) {
-            usernameLayout.error = getString(R.string.username_error)
-        } else if (!usernameLayout.error.isNullOrEmpty()) {
-            usernameLayout.error = null
-        }
+    private fun handleFieldsUpdated(usernameError: Boolean, emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
+        binding.apply {
+            if (usernameError) {
+                usernameLayout.error = getString(R.string.username_error)
+            } else if (!usernameLayout.error.isNullOrEmpty()) {
+                usernameLayout.error = null
+            }
 
-        if (emailError) {
-            emailLayout.error = getString(R.string.email_error)
-        } else if (!emailLayout.error.isNullOrEmpty()){
-            emailLayout.error = null
-        }
+            if (emailError) {
+                emailLayout.error = getString(R.string.email_error)
+            } else if (!emailLayout.error.isNullOrEmpty()) {
+                emailLayout.error = null
+            }
 
-        signup.isEnabled = signUpIsReady
-    }
-
-    private fun handleActions(it: SignUpViewModel.Action) {
-        when (it) {
-            SignUpViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
-            is SignUpViewModel.Action.LaunchConfirmActivity -> launchConfirmActivity(it.username)
-            is SignUpViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
+            signup.isEnabled = signUpIsReady
         }
-    }
 
     private fun launchWelcomeActivity() {
         start<WelcomeActivity>()
         progressDialog?.dismiss()
         finish()
-    }
-
-    private fun launchConfirmActivity(username: String) {
-        val intent = ConfirmActivity.newIntent(this, username)
-        progressDialog?.dismiss()
-        startActivity(intent)
     }
 
     private fun launchScoreActivity() {
@@ -131,13 +117,15 @@ class SignUpActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 cb()
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
     }
 
     private fun setupViews() = binding.apply {
-        val changeListener : () -> Unit = { viewModel.onFieldsUpdated(username.text.toString(),email.text.toString(),password.text.toString()) }
+        val changeListener: () -> Unit =
+            { viewModel.onFieldsUpdated(username.text.toString(), email.text.toString(), password.text.toString()) }
         username.onChange(changeListener)
         email.onChange(changeListener)
         password.onChange(changeListener)
