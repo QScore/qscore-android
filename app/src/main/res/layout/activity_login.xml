@@ -140,7 +140,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="56dp"
                     android:gravity="center|start"
-                    android:text="Continue with Facebook"
+                    android:text="@string/login_fb"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -174,7 +174,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="56dp"
                     android:gravity="center|start"
-                    android:text="@string/sign_up_google"
+                    android:text="@string/login_google"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
