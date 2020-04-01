@@ -25,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import splitties.intents.toPendingActivity
 import timber.log.Timber
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -75,29 +76,29 @@ class QLocationService : Service() {
     }
 
     private fun handleEntered() = scope.launch {
-        val location = LocationHelper.fetchLastLocation()
-        location?.let {
-            val input = CreateGeofenceEventInput(
-                eventType = GeofenceEventType.HOME,
-                userLocationLat = it.lat.toString(),
-                userLocationLng = it.lng.toString()
-            )
-            Api.createGeofenceEvent(input)
-        }
+        submitEvent(GeofenceEventType.HOME)
         updateNotification(Home)
     }
 
     private fun handleExited() = scope.launch {
-        val location = LocationHelper.fetchLastLocation()
-        location?.let {
-            val input = CreateGeofenceEventInput(
-                eventType = GeofenceEventType.HOME,
-                userLocationLat = it.lat.toString(),
-                userLocationLng = it.lng.toString()
-            )
-            Api.createGeofenceEvent(input)
-        }
+        submitEvent(GeofenceEventType.AWAY)
         updateNotification(Away)
+    }
+
+    private suspend fun submitEvent(eventType: GeofenceEventType) {
+        try {
+            val location = LocationHelper.fetchLastLocation()
+            location?.let {
+                val input = CreateGeofenceEventInput(
+                    eventType = eventType,
+                    userLocationLat = it.lat.toString(),
+                    userLocationLng = it.lng.toString()
+                )
+                Api.createGeofenceEvent(input)
+            }
+        } catch (e: IOException) {
+            Timber.d("Unable to submit event: $e")
+        }
     }
 
     private fun buildNotification(state: GeofenceState): Notification {
