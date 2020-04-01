@@ -27,19 +27,13 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         object SignUpError : State()
         object Ready : State()
         class FieldsUpdated(
-            val usernameError: Boolean,
             val emailError: Boolean,
             val passwordError: Boolean,
             val signUpIsReady: Boolean
         ) : State()
     }
 
-    private val emailPattern: Pattern by lazy {
-        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
-        Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
-    }
-
-    fun onSignUp(username: String, email: String, password: String) = viewModelScope.launch {
+    fun onSignUp(email: String, password: String) = viewModelScope.launch {
         state = InProgress
         when (val result = LoginManager.signUp(email, password)) {
             is AuthEvent.Success -> handleSuccess()
@@ -64,18 +58,16 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         state = SignUpError
     }
 
-    fun onFieldsUpdated(username: String, email: String, password: String) = viewModelScope.launch {
-        val usernameError = false
+    fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
+        val matcher = LoginManager.emailPattern.matcher(email)
+        val emailError = !matcher.matches() || email.isEmpty()
 
-        val matcher = emailPattern.matcher(email)
-        val emailError = !matcher.matches() && email.isNotEmpty()
-
-        val passwordError = (password.length < 8)
+        val passwordError = (password.length < 6)
 
         val signUpIsReady =
-            !usernameError && !emailError && !passwordError && username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
+            !emailError && !passwordError && email.isNotEmpty() && password.isNotEmpty()
 
-        state = FieldsUpdated(usernameError, emailError, passwordError, signUpIsReady)
+        state = FieldsUpdated(emailError, passwordError, signUpIsReady)
     }
 
     private fun handleSuccess() {

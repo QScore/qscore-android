@@ -2,9 +2,13 @@ package com.berd.qscore.features.login
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.widget.EditText
 import androidx.activity.viewModels
 import com.berd.qscore.R
@@ -14,10 +18,7 @@ import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivi
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.gone
-import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.showProgressDialog
-import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
 
@@ -52,7 +53,6 @@ class SignUpActivity : BaseActivity() {
                 SignUpViewModel.State.SignUpError -> handleSignUpError()
                 SignUpViewModel.State.Ready -> handleReady()
                 is SignUpViewModel.State.FieldsUpdated -> handleFieldsUpdated(
-                    it.usernameError,
                     it.emailError,
                     it.passwordError,
                     it.signUpIsReady
@@ -73,18 +73,12 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun handleInProgress() = binding.apply {
-        progressDialog = showProgressDialog("Signing in...")
+        progressDialog = showProgressDialog(getString(R.string.progress_message_signup_password))
         errorText.invisible()
     }
 
-    private fun handleFieldsUpdated(usernameError: Boolean, emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
+    private fun handleFieldsUpdated(emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
         binding.apply {
-            if (usernameError) {
-                usernameLayout.error = getString(R.string.username_error)
-            } else if (!usernameLayout.error.isNullOrEmpty()) {
-                usernameLayout.error = null
-            }
-
             if (emailError) {
                 emailLayout.error = getString(R.string.email_error)
             } else if (!emailLayout.error.isNullOrEmpty()) {
@@ -112,29 +106,16 @@ class SignUpActivity : BaseActivity() {
         finish()
     }
 
-    private fun EditText.onChange(cb: () -> Unit) {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                cb()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-    }
-
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(username.text.toString(), email.text.toString(), password.text.toString()) }
-        username.onChange(changeListener)
+            { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
         email.onChange(changeListener)
         password.onChange(changeListener)
 
         signup.setOnClickListener {
-            val username = username.text.toString()
             val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onSignUp(username, email, password)
+            viewModel.onSignUp(email, password)
         }
 
         fbLogin.setOnClickListener {
@@ -144,6 +125,9 @@ class SignUpActivity : BaseActivity() {
         gotoLoginText.setOnClickListener {
             launchLoginActivity()
         }
+        val spannable = SpannableString(getString(R.string.goto_login))
+        spannable.setSpan(ForegroundColorSpan(Color.LTGRAY), 0, 24, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        gotoLoginText.text = spannable
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

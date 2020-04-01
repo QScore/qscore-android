@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Log In"
+                android:text="@string/login"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -28,14 +28,28 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:textColor="@color/red"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/email_layout"
+                app:layout_constraintStart_toStartOf="@+id/email_layout"
+                app:layout_constraintTop_toBottomOf="@+id/loginMessage"
+                android:text="@string/login_error" />
+
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_layout"
+                android:id="@+id/email_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:hint="@string/hint_username"
+                android:hint="@string/hint_email"
+                app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +57,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/username"
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -64,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/username_layout"
+                app:layout_constraintTop_toBottomOf="@+id/email_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -81,10 +95,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="@string/login"
+                android:enabled="false"
                 app:layout_constraintEnd_toEndOf="@+id/fbLogin"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/fbLogin"
                 app:layout_constraintTop_toBottomOf="@+id/password_layout" />
+
+            <Button
+                android:id="@+id/gotoForgotText"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/goto_forgot"
+                android:enabled="false"
+                app:layout_constraintEnd_toEndOf="@+id/login"
+                app:layout_constraintStart_toStartOf="@+id/login"
+                app:layout_constraintTop_toBottomOf="@+id/login" />
 
             <FrameLayout
                 android:id="@+id/fbLogin"
@@ -98,7 +124,7 @@
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="@+id/password_layout"
                 app:layout_constraintStart_toStartOf="@+id/password_layout"
-                app:layout_constraintTop_toBottomOf="@+id/login">
+                app:layout_constraintTop_toBottomOf="@+id/gotoForgotText">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -120,28 +146,13 @@
 
             </FrameLayout>
 
-            <TextView
-                android:id="@+id/errorText"
+            <Button
+                android:id="@+id/gotoSignUpText"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:textColor="@color/red"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="@+id/username_layout"
-                app:layout_constraintStart_toStartOf="@+id/username_layout"
-                app:layout_constraintTop_toBottomOf="@+id/loginMessage"
-                android:text="@string/login_error" />
-
-            <TextView
-                android:id="@+id/gotoSignUpText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/goto_sign_up"
-                android:textColor="@color/com_facebook_blue"
-                android:clickable="true"
-                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="@+id/fbLogin"
                 app:layout_constraintStart_toStartOf="@+id/fbLogin"
                 app:layout_constraintTop_toBottomOf="@+id/fbLogin" />
