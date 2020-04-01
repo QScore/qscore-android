@@ -33,11 +33,6 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         ) : State()
     }
 
-    private val emailPattern: Pattern by lazy {
-        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
-        Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
-    }
-
     fun onSignUp(email: String, password: String) = viewModelScope.launch {
         state = InProgress
         when (val result = LoginManager.signUp(email, password)) {
@@ -64,8 +59,8 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     }
 
     fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
-        val matcher = emailPattern.matcher(email)
-        val emailError = !matcher.matches() && email.isNotEmpty()
+        val matcher = LoginManager.emailPattern.matcher(email)
+        val emailError = !matcher.matches() || email.isEmpty()
 
         val passwordError = (password.length < 6)
 

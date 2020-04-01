@@ -4,7 +4,10 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.EditText
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -26,6 +29,17 @@ fun View.invisible() {
 
 fun View.visible() {
     visibility = View.VISIBLE
+}
+
+fun EditText.onChange(cb: () -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            cb()
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    })
 }
 
 fun Context.hasPermissions(vararg permissions: String) =

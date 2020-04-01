@@ -26,6 +26,11 @@ class LoginViewModel : RxViewModel<Action, State>() {
         object LoginError : State()
         object Ready : State()
         object PasswordReset : State()
+        class FieldsUpdated(
+            val emailError: Boolean,
+            val passwordError: Boolean,
+            val signUpIsReady: Boolean
+        ) : State()
     }
 
     fun onLogin(email: String, password: String) = viewModelScope.launch {
@@ -50,6 +55,18 @@ class LoginViewModel : RxViewModel<Action, State>() {
             is Success -> handleReset()
             is Error -> handleError(result.error)
         }
+    }
+
+    fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
+        val matcher = LoginManager.emailPattern.matcher(email)
+        val emailError = !matcher.matches() || email.isEmpty()
+
+        val passwordError = (password.length < 6)
+
+        val signUpIsReady =
+            !emailError && !passwordError && email.isNotEmpty() && password.isNotEmpty()
+
+        state = FieldsUpdated(emailError, passwordError, signUpIsReady)
     }
 
     private fun handleReset(){

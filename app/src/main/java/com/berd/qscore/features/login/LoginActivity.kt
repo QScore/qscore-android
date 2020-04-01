@@ -4,9 +4,12 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.widget.EditText
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -18,9 +21,7 @@ import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.showProgressDialog
-import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
@@ -62,6 +63,11 @@ class LoginActivity : BaseActivity() {
             LoginError -> handleLoginError()
             Ready -> handleReady()
             PasswordReset -> handlePasswordReset()
+            is FieldsUpdated -> handleFieldsUpdated(
+                state.emailError,
+                state.passwordError,
+                state.signUpIsReady
+            )
         }
     }
 
@@ -93,6 +99,18 @@ class LoginActivity : BaseActivity() {
         errorText.visible()
     }
 
+    private fun handleFieldsUpdated(emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
+        binding.apply {
+            if (emailError) {
+                emailLayout.error = getString(R.string.email_error)
+            } else if (!emailLayout.error.isNullOrEmpty()) {
+                emailLayout.error = null
+            }
+
+            login.isEnabled = signUpIsReady
+            gotoForgotText.isEnabled = !emailError
+        }
+
     private fun launchWelcomeActivity() {
         start<WelcomeActivity>()
         progressDialog?.dismiss()
@@ -112,6 +130,11 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
+        val changeListener: () -> Unit =
+            { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
+        email.onChange(changeListener)
+        password.onChange(changeListener)
+
         login.setOnClickListener {
             val email = email.text.toString()
             val password = password.text.toString()

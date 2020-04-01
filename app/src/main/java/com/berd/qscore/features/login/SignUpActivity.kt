@@ -18,10 +18,7 @@ import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivi
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.gone
-import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.showProgressDialog
-import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
 
@@ -107,17 +104,6 @@ class SignUpActivity : BaseActivity() {
         start<LoginActivity>()
         progressDialog?.dismiss()
         finish()
-    }
-
-    private fun EditText.onChange(cb: () -> Unit) {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                cb()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
     }
 
     private fun setupViews() = binding.apply {
