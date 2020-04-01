@@ -73,7 +73,7 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun handleInProgress() = binding.apply {
-        progressDialog = showProgressDialog("Signing in...")
+        progressDialog = showProgressDialog(getString(R.string.progress_message_signup_password))
         errorText.invisible()
     }
 

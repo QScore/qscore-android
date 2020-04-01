@@ -2,14 +2,10 @@ package com.berd.qscore.features.login
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.widget.EditText
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -85,23 +81,23 @@ class LoginActivity : BaseActivity() {
 
     private fun handleResetError() = binding.apply {
         progressDialog?.dismiss()
-        errorText.text = getString(R.string.reset_error)
+        errorText.text = getString(R.string.reset_password_error)
         errorText.visible()
     }
 
     private fun handleInProgress() = binding.apply {
-        progressDialog = showProgressDialog("Signing in...")
+        progressDialog = showProgressDialog(getString(R.string.progress_message_login_password))
         errorText.invisible()
     }
 
     private fun handleResetInProgress() = binding.apply {
-        progressDialog = showProgressDialog("Resetting Password...")
+        progressDialog = showProgressDialog(getString(R.string.progress_message_reset_password))
         errorText.invisible()
     }
 
     private fun handlePasswordReset() = binding.apply {
         progressDialog?.dismiss()
-        errorText.text = getString(R.string.reset_password_errortext)
+        errorText.text = getString(R.string.reset_password_success)
         errorText.visible()
     }
 
