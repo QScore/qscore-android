@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
+apply plugin: 'com.apollographql.apollo'
 
 android {
     compileSdkVersion 29
@@ -37,6 +38,10 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+}
+
+apollo {
+    generateKotlinModels.set(true)
 }
 
 dependencies {
@@ -91,6 +96,15 @@ dependencies {
 
     //Facebook
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+
+    //Apollo
+    implementation 'com.apollographql.apollo:apollo-http-cache:1.4.3'
+    implementation 'com.apollographql.apollo:apollo-android-support:1.4.3'
+    implementation "com.apollographql.apollo:apollo-runtime:1.4.3"
+    implementation 'com.apollographql.apollo:apollo-coroutines-support:1.4.3'
+
+    //OkHttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
 
     //Testing
     testImplementation 'junit:junit:4.12'

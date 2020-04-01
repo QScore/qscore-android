@@ -10,9 +10,11 @@ import com.berd.qscore.R
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
-import com.berd.qscore.features.geofence.GeofenceState.Home
-import com.berd.qscore.features.geofence.GeofenceState.Unknown
+import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.shared.api.Api
+import com.berd.qscore.type.CreateGeofenceEventInput
+import com.berd.qscore.type.GeofenceEventType
 import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -73,11 +75,29 @@ class QLocationService : Service() {
     }
 
     private fun handleEntered() = scope.launch {
+        val location = LocationHelper.fetchLastLocation()
+        location?.let {
+            val input = CreateGeofenceEventInput(
+                eventType = GeofenceEventType.HOME,
+                userLocationLat = it.lat.toString(),
+                userLocationLng = it.lng.toString()
+            )
+            Api.createGeofenceEvent(input)
+        }
         updateNotification(Home)
     }
 
     private fun handleExited() = scope.launch {
-        updateNotification(Home)
+        val location = LocationHelper.fetchLastLocation()
+        location?.let {
+            val input = CreateGeofenceEventInput(
+                eventType = GeofenceEventType.HOME,
+                userLocationLat = it.lat.toString(),
+                userLocationLng = it.lng.toString()
+            )
+            Api.createGeofenceEvent(input)
+        }
+        updateNotification(Away)
     }
 
     private fun buildNotification(state: GeofenceState): Notification {

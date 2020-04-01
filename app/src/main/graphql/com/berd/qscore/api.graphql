@@ -1,0 +1,14 @@
+mutation CreateGeofenceEvent($input: CreateGeofenceEventInput!) {
+    createGeofenceEvent(input: $input) {
+        geofenceEvent {
+            id
+            timestamp
+            eventType
+            userLocation {
+                latitude
+                longitude
+            }
+            userId
+        }
+    }
+}
