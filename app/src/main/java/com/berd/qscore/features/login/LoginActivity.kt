@@ -61,6 +61,7 @@ class LoginActivity : BaseActivity() {
             InProgress -> handleInProgress()
             ResetInProgress -> handleResetInProgress()
             LoginError -> handleLoginError()
+            ResetError -> handleResetError()
             Ready -> handleReady()
             PasswordReset -> handlePasswordReset()
             is FieldsUpdated -> handleFieldsUpdated(
@@ -80,7 +81,12 @@ class LoginActivity : BaseActivity() {
         progressDialog?.dismiss()
         errorText.text = getString(R.string.login_error)
         errorText.visible()
-        gotoForgotText.visible()
+    }
+
+    private fun handleResetError() = binding.apply {
+        progressDialog?.dismiss()
+        errorText.text = getString(R.string.reset_error)
+        errorText.visible()
     }
 
     private fun handleInProgress() = binding.apply {

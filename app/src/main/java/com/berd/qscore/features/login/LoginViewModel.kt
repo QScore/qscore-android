@@ -24,6 +24,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
         object InProgress : State()
         object ResetInProgress : State()
         object LoginError : State()
+        object ResetError : State()
         object Ready : State()
         object PasswordReset : State()
         class FieldsUpdated(
@@ -53,7 +54,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
         state = ResetInProgress
         when (val result = LoginManager.sendPasswordResetEmail(email)) {
             is Success -> handleReset()
-            is Error -> handleError(result.error)
+            is Error -> handleResetError(result.error)
         }
     }
 
@@ -85,5 +86,10 @@ class LoginViewModel : RxViewModel<Action, State>() {
     private fun handleError(error: Exception?) {
         Timber.d("Unable to log in: $error")
         state = LoginError
+    }
+
+    private fun handleResetError(error: Exception?) {
+        Timber.d("Unable to reset password: $error")
+        state = ResetError
     }
 }
