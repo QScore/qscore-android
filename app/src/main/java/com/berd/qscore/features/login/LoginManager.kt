@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
+import java.util.regex.Pattern
 import kotlin.coroutines.resume
 
 
@@ -23,6 +24,10 @@ object LoginManager {
     private val firebaseAuth = Injector.firebaseAuth
 
     val isLoggedIn get() = firebaseAuth.currentUser != null
+    val emailPattern: Pattern by lazy {
+        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+        Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+    }
 
     sealed class AuthEvent {
         object Success : AuthEvent()

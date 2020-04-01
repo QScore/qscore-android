@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
 import com.berd.qscore.features.login.LoginViewModel.Action
-import com.berd.qscore.features.login.LoginViewModel.Action.LaunchScoreActivity
-import com.berd.qscore.features.login.LoginViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.LoginViewModel.Action.*
 import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
@@ -23,13 +22,21 @@ class LoginViewModel : RxViewModel<Action, State>() {
 
     sealed class State {
         object InProgress : State()
+        object ResetInProgress : State()
         object LoginError : State()
+        object ResetError : State()
         object Ready : State()
+        object PasswordReset : State()
+        class FieldsUpdated(
+            val emailError: Boolean,
+            val passwordError: Boolean,
+            val signUpIsReady: Boolean
+        ) : State()
     }
 
-    fun onLogin(username: String, password: String) = viewModelScope.launch {
+    fun onLogin(email: String, password: String) = viewModelScope.launch {
         state = InProgress
-        when (val result = LoginManager.login(username, password)) {
+        when (val result = LoginManager.login(email, password)) {
             is Success -> handleSuccess()
             is Error -> handleError(result.error)
         }
@@ -41,6 +48,30 @@ class LoginViewModel : RxViewModel<Action, State>() {
             is Success -> handleSuccess()
             is Error -> handleError(result.error)
         }
+    }
+
+    fun resetPassword(email: String) = viewModelScope.launch {
+        state = ResetInProgress
+        when (val result = LoginManager.sendPasswordResetEmail(email)) {
+            is Success -> handleReset()
+            is Error -> handleResetError(result.error)
+        }
+    }
+
+    fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
+        val matcher = LoginManager.emailPattern.matcher(email)
+        val emailError = !matcher.matches() || email.isEmpty()
+
+        val passwordError = (password.length < 6)
+
+        val signUpIsReady =
+            !emailError && !passwordError && email.isNotEmpty() && password.isNotEmpty()
+
+        state = FieldsUpdated(emailError, passwordError, signUpIsReady)
+    }
+
+    private fun handleReset(){
+        state = PasswordReset
     }
 
     private fun handleSuccess() {
@@ -55,5 +86,10 @@ class LoginViewModel : RxViewModel<Action, State>() {
     private fun handleError(error: Exception?) {
         Timber.d("Unable to log in: $error")
         state = LoginError
+    }
+
+    private fun handleResetError(error: Exception?) {
+        Timber.d("Unable to reset password: $error")
+        state = ResetError
     }
 }
