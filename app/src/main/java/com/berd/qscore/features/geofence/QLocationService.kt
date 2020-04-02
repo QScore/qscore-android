@@ -10,9 +10,11 @@ import com.berd.qscore.R
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
-import com.berd.qscore.features.geofence.GeofenceState.Home
-import com.berd.qscore.features.geofence.GeofenceState.Unknown
+import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.shared.api.Api
+import com.berd.qscore.type.CreateGeofenceEventInput
+import com.berd.qscore.type.GeofenceEventType
 import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -23,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import splitties.intents.toPendingActivity
 import timber.log.Timber
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -73,11 +76,29 @@ class QLocationService : Service() {
     }
 
     private fun handleEntered() = scope.launch {
+        submitEvent(GeofenceEventType.HOME)
         updateNotification(Home)
     }
 
     private fun handleExited() = scope.launch {
-        updateNotification(Home)
+        submitEvent(GeofenceEventType.AWAY)
+        updateNotification(Away)
+    }
+
+    private suspend fun submitEvent(eventType: GeofenceEventType) {
+        try {
+            val location = LocationHelper.fetchLastLocation()
+            location?.let {
+                val input = CreateGeofenceEventInput(
+                    eventType = eventType,
+                    userLocationLat = it.lat.toString(),
+                    userLocationLng = it.lng.toString()
+                )
+                Api.createGeofenceEvent(input)
+            }
+        } catch (e: IOException) {
+            Timber.d("Unable to submit event: $e")
+        }
     }
 
     private fun buildNotification(state: GeofenceState): Notification {
