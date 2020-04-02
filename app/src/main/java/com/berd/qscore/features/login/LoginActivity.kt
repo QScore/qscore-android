@@ -86,7 +86,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun handleInProgress() = binding.apply {
-        progressDialog = showProgressDialog(getString(R.string.progress_message_login_password))
+        progressDialog = showProgressDialog(getString(R.string.progress_message_login))
         errorText.invisible()
     }
 

@@ -12,7 +12,8 @@
     <string name="prompt_username">Username</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="hint_username">Username*</string>
+    <string name="hint_username_required">Username*</string>
+    <string name="hint_username">Username</string>
     <string name="hint_email">Email*</string>
     <string name="hint_password">Password*</string>
     <string name="hint_verify">CODE</string>
@@ -31,17 +32,17 @@
     <string name="goto_forgot">Forgot password?</string>
     <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
     <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
-    <string name="progress_message_signup_password">Signing Up…</string>
-    <string name="progress_message_login_password">Logging In…</string>
+    <string name="progress_message_sign_up">Signing Up…</string>
+    <string name="progress_message_login">Logging In…</string>
+    <string name="progress_message_username">Setting Username…</string>
 
     <string name="username_error">Username Not Available</string>
     <string name="password_error">Must have 6 or more characters</string>
     <string name="email_error">Must be a valid email address</string>
 
-    <string name="helper_username">This will be public</string>
+    <string name="helper_username">How friends add you on Qscore</string>
     <string name="helper_email">*Required</string>
     <string name="helper_password">Must have 6 or more characters</string>
-    <string name="helper_verify">6 digit verification code</string>
 
     <string name="action_logout">Log out</string>
     <string name="action_settings">Settings</string>
@@ -53,4 +54,9 @@
     <string name="cancel">Cancel</string>
     <string name="progress_message_reset_password">Resetting Password…</string>
     <string name="reset_password_error">Unable to reset password for email provided</string>
+
+    <string name="select_username">Select Username</string>
+    <string name="continue_button">Continue</string>
+    <string name="continue_error">Unable to select username.  Please try again.</string>
+    <string name="checking_usernames">Checking available usernames…</string>
 </resources>
