@@ -140,7 +140,41 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="56dp"
                     android:gravity="center|start"
-                    android:text="Continue with Facebook"
+                    android:text="@string/login_fb"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/googleLogin"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/google_blue"
+                android:clickable="true"
+                android:elevation="2dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/fbLogin"
+                app:layout_constraintStart_toStartOf="@+id/fbLogin"
+                app:layout_constraintTop_toBottomOf="@+id/fbLogin">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="0dp"
+                    android:src="@drawable/ic_btn_google_light_normal"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="56dp"
+                    android:gravity="center|start"
+                    android:text="@string/login_google"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -153,9 +187,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="@string/goto_sign_up"
-                app:layout_constraintEnd_toEndOf="@+id/fbLogin"
-                app:layout_constraintStart_toStartOf="@+id/fbLogin"
-                app:layout_constraintTop_toBottomOf="@+id/fbLogin" />
+                app:layout_constraintEnd_toEndOf="@+id/googleLogin"
+                app:layout_constraintStart_toStartOf="@+id/googleLogin"
+                app:layout_constraintTop_toBottomOf="@+id/googleLogin" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
