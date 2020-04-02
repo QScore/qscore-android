@@ -1,6 +1,7 @@
 package com.berd.qscore.features.score
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 import splitties.activities.start
 import splitties.toast.toast
 import timber.log.Timber
+
 
 class ScoreActivity : AppCompatActivity() {
 
@@ -120,6 +122,12 @@ class ScoreActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
+            true
+        }
+
+        R.id.action_donate -> {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YYE6BBQZU4BQ&source=url"))
+            startActivity(browserIntent)
             true
         }
 
