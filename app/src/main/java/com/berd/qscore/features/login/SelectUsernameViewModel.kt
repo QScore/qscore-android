@@ -1,13 +1,15 @@
 package com.berd.qscore.features.login
 
 import androidx.lifecycle.viewModelScope
-import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.LaunchWelcomeActivity
 import com.berd.qscore.features.login.SelectUsernameViewModel.State
 import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
+import com.berd.qscore.features.shared.api.Api
+import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.type.UpdateUserInfoInput
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -31,7 +33,14 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
 
     fun onContinue(username: String) = viewModelScope.launch {
         state = InProgress
-        handleSuccess()
+        val input = UpdateUserInfoInput(username = username)
+        try {
+            Api.updateUserInfo(input)
+            handleSuccess()
+        } catch (e: Error) {
+            Timber.d("Unable to update username: $e")
+            //TODO: show error
+        }
     }
 
     private fun handleError(error: Exception?) {

@@ -58,7 +58,7 @@ object Api {
         apolloClient.mutate(mutation).call()
     }
 
-    private suspend fun <T> ApolloQueryCall<T>.call(): T {
+    private suspend fun <T: Any> ApolloQueryCall<T>.call(): T {
         val result = toDeferred().await()
         if (result.hasErrors()) {
             throw IOException(result.errors().toString())
@@ -66,7 +66,7 @@ object Api {
         return checkNotNull(result.data())
     }
 
-    private suspend fun <T> ApolloMutationCall<T>.call(): T? {
+    private suspend fun <T: Any> ApolloMutationCall<T>.call(): T? {
         val result = toDeferred().await()
         if (result.hasErrors()) {
             throw IOException(result.errors().toString())

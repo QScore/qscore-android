@@ -10,10 +10,10 @@ import android.text.style.ForegroundColorSpan
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
-import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
 import com.berd.qscore.features.login.SignUpViewModel.State.*
+import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
-import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
@@ -39,7 +39,9 @@ class SignUpActivity : BaseActivity() {
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
-                LaunchSelectUsernameActivity -> launchSelectUsernameActivity()
+                SignUpViewModel.Action.LaunchUsernameActivity -> launchUsernameActivity()
+                SignUpViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
+                SignUpViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
             }
         }
         viewModel.observeState {
@@ -83,8 +85,20 @@ class SignUpActivity : BaseActivity() {
             signup.isEnabled = signUpIsReady
         }
 
-    private fun launchSelectUsernameActivity() {
+    private fun launchUsernameActivity() {
         start<SelectUsernameActivity>()
+        progressDialog?.dismiss()
+        finish()
+    }
+
+    private fun launchWelcomeActivity() {
+        start<WelcomeActivity>()
+        progressDialog?.dismiss()
+        finish()
+    }
+
+    private fun launchScoreActivity() {
+        start<ScoreActivity>()
         progressDialog?.dismiss()
         finish()
     }

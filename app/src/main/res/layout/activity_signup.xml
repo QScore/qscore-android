@@ -8,11 +8,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/loginMessage"
@@ -43,20 +43,20 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/hint_email"
-                app:helperTextEnabled="true"
-                app:helperText="@string/helper_email"
                 app:errorEnabled="true"
+                app:helperText="@string/helper_email"
+                app:helperTextEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/errorText"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/errorText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
@@ -67,6 +67,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/password_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -75,13 +76,12 @@
                 android:hint="@string/hint_password"
                 app:counterEnabled="true"
                 app:endIconMode="password_toggle"
-                app:helperTextEnabled="true"
                 app:helperText="@string/helper_password"
+                app:helperTextEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/email_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
@@ -159,9 +159,11 @@
                 android:elevation="2dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/fbLogin"
                 app:layout_constraintStart_toStartOf="@+id/fbLogin"
-                app:layout_constraintTop_toBottomOf="@+id/fbLogin">
+                app:layout_constraintTop_toBottomOf="@+id/fbLogin"
+                tools:visibility="visible">
 
                 <ImageView
                     android:layout_width="40dp"

@@ -12,7 +12,10 @@ import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.*
+import com.berd.qscore.utils.extensions.invisible
+import com.berd.qscore.utils.extensions.onChange
+import com.berd.qscore.utils.extensions.showProgressDialog
+import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
 import splitties.activities.start
 

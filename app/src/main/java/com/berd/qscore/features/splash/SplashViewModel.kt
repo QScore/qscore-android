@@ -14,16 +14,21 @@ sealed class Action {
     object LaunchLoginActivity : Action()
     object LaunchWelcomeActivity : Action()
     object LaunchScoreActivity : Action()
+    object LaunchUsernameActivity : Action()
 }
 
 class SplashViewModel : RxViewModel<Action, Unit>() {
     fun onCreate() = viewModelScope.launch {
         delay(1500)
         if (LoginManager.isLoggedIn) {
-            if (Prefs.userLocation != null) {
-                action(LaunchScoreActivity)
+            if (LoginManager.checkUserHasUsername()) {
+                if (Prefs.userLocation != null) {
+                    action(LaunchScoreActivity)
+                } else {
+                    action(LaunchWelcomeActivity)
+                }
             } else {
-                action(LaunchWelcomeActivity)
+                action(LaunchUsernameActivity)
             }
         } else if (Prefs.userEmail.isNotEmpty()) {
             action(LaunchLoginActivity)
