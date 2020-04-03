@@ -4,22 +4,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager.AuthEvent
 import com.berd.qscore.features.login.SignUpViewModel.Action
-import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchScoreActivity
-import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
 import com.berd.qscore.features.login.SignUpViewModel.State
 import com.berd.qscore.features.login.SignUpViewModel.State.*
-import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.regex.Pattern
 
 class SignUpViewModel : RxViewModel<Action, State>() {
 
     sealed class Action {
-        object LaunchScoreActivity : Action()
-        object LaunchWelcomeActivity : Action()
+        object LaunchSelectUsernameActivity : Action()
     }
 
     sealed class State {
@@ -72,10 +68,6 @@ class SignUpViewModel : RxViewModel<Action, State>() {
 
     private fun handleSuccess() {
         state = Ready
-        if (Prefs.userLocation != null) {
-            action(LaunchScoreActivity)
-        } else {
-            action(LaunchWelcomeActivity)
-        }
+        action(LaunchSelectUsernameActivity)
     }
 }
