@@ -24,6 +24,9 @@
             android:name=".features.login.SignUpActivity"
             android:label="SignUpActivity"/>
         <activity
+            android:name=".features.login.SelectUsernameActivity"
+            android:label="SelectUsernameActivity"/>
+        <activity
             android:name=".features.login.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".features.splash.SplashActivity">

@@ -4,20 +4,15 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.widget.EditText
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
-import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchScoreActivity
-import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchWelcomeActivity
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
+import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.shared.activity.BaseActivity
-import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
@@ -43,16 +38,15 @@ class SignUpActivity : BaseActivity() {
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
-                LaunchScoreActivity -> launchScoreActivity()
-                is LaunchWelcomeActivity -> launchWelcomeActivity()
+                LaunchSelectUsernameActivity -> launchSelectUsernameActivity()
             }
         }
         viewModel.observeState {
             when (it) {
-                SignUpViewModel.State.InProgress -> handleInProgress()
-                SignUpViewModel.State.SignUpError -> handleSignUpError()
-                SignUpViewModel.State.Ready -> handleReady()
-                is SignUpViewModel.State.FieldsUpdated -> handleFieldsUpdated(
+                InProgress -> handleInProgress()
+                SignUpError -> handleSignUpError()
+                Ready -> handleReady()
+                is FieldsUpdated -> handleFieldsUpdated(
                     it.emailError,
                     it.passwordError,
                     it.signUpIsReady
@@ -73,7 +67,7 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun handleInProgress() = binding.apply {
-        progressDialog = showProgressDialog(getString(R.string.progress_message_signup_password))
+        progressDialog = showProgressDialog(getString(R.string.progress_message_sign_up))
         errorText.invisible()
     }
 
@@ -88,14 +82,8 @@ class SignUpActivity : BaseActivity() {
             signup.isEnabled = signUpIsReady
         }
 
-    private fun launchWelcomeActivity() {
-        start<WelcomeActivity>()
-        progressDialog?.dismiss()
-        finish()
-    }
-
-    private fun launchScoreActivity() {
-        start<ScoreActivity>()
+    private fun launchSelectUsernameActivity() {
+        start<SelectUsernameActivity>()
         progressDialog?.dismiss()
         finish()
     }
