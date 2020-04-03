@@ -64,4 +64,5 @@
     <string name="continue_button">Continue</string>
     <string name="continue_error">Unable to select username.  Please try again.</string>
     <string name="checking_usernames">Checking available usernames…</string>
+    <string name="action_donate">Donate</string>
 </resources>
