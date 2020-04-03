@@ -61,6 +61,9 @@ object LoginManager {
                 Timber.d("Successful login with facebook, continuing to aws")
                 val credential = FacebookAuthProvider.getCredential(token)
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+                    firebaseAuth.currentUser?.getIdToken(true)?.addOnCompleteListener {
+                        Timber.d(">>TOKEN: ${it.result?.token}")
+                    }
                     cont.resume(task.resultEvent)
                 }
             }
