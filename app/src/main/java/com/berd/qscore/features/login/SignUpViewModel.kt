@@ -21,7 +21,9 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     sealed class State {
         object InProgress : State()
         object SignUpError : State()
-        object Ready : State()
+        class Ready(
+            val email: String
+        ) : State()
         class FieldsUpdated(
             val emailError: Boolean,
             val passwordError: Boolean,
@@ -32,7 +34,7 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     fun onSignUp(email: String, password: String) = viewModelScope.launch {
         state = InProgress
         when (val result = LoginManager.signUp(email, password)) {
-            is AuthEvent.Success -> handleSuccess()
+            is AuthEvent.Success -> handleSuccess(email)
             is AuthEvent.Error -> handleError(result.error)
         }
     }
@@ -41,11 +43,11 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         state = InProgress
         try {
             when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
-                is AuthEvent.Success -> handleSuccess()
+                is AuthEvent.Success -> handleSuccess("")
                 is AuthEvent.Error -> handleError(result.error)
             }
         } catch (e: CancellationException) {
-            state = Ready
+            state = Ready("")
         }
     }
 
@@ -66,8 +68,8 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         state = FieldsUpdated(emailError, passwordError, signUpIsReady)
     }
 
-    private fun handleSuccess() {
-        state = Ready
+    private fun handleSuccess(email: String) {
+        state = Ready(email)
         action(LaunchSelectUsernameActivity)
     }
 }

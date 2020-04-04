@@ -13,6 +13,7 @@ import com.berd.qscore.databinding.ActivitySignupBinding
 import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
 import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
@@ -45,7 +46,7 @@ class SignUpActivity : BaseActivity() {
             when (it) {
                 InProgress -> handleInProgress()
                 SignUpError -> handleSignUpError()
-                Ready -> handleReady()
+                is Ready -> handleReady(it.email)
                 is FieldsUpdated -> handleFieldsUpdated(
                     it.emailError,
                     it.passwordError,
@@ -61,9 +62,10 @@ class SignUpActivity : BaseActivity() {
         errorText.visible()
     }
 
-    private fun handleReady() = binding.apply {
+    private fun handleReady(signupEmail: String) = binding.apply {
         progressDialog?.dismiss()
         errorText.gone()
+        Prefs.userEmail = signupEmail
     }
 
     private fun handleInProgress() = binding.apply {

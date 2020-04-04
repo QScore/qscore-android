@@ -136,7 +136,10 @@ class LoginActivity : BaseActivity() {
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
             { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
-        email.setText(Prefs.userEmail)
+        if (Prefs.userEmail.isNotEmpty()) {
+            email.setText(Prefs.userEmail)
+            viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
+        }
         email.onChange(changeListener)
         password.onChange(changeListener)
 
