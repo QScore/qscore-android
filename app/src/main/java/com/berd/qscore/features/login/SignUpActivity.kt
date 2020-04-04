@@ -13,6 +13,7 @@ import com.berd.qscore.databinding.ActivitySignupBinding
 import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
 import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
