@@ -16,6 +16,7 @@ import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
@@ -58,7 +59,7 @@ class LoginActivity : BaseActivity() {
             ResetInProgress -> handleResetInProgress()
             LoginError -> handleLoginError()
             ResetError -> handleResetError()
-            Ready -> handleReady()
+            is Ready -> handleReady(state.email)
             PasswordReset -> handlePasswordReset()
             is FieldsUpdated -> handleFieldsUpdated(
                 state.emailError,
@@ -68,9 +69,10 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun handleReady() = binding.apply {
+    private fun handleReady(signupEmail: String) = binding.apply {
         progressDialog?.dismiss()
         errorText.invisible()
+        Prefs.userEmail = signupEmail
     }
 
     private fun handleLoginError() = binding.apply {
@@ -134,6 +136,7 @@ class LoginActivity : BaseActivity() {
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
             { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
+        email.setText(Prefs.userEmail)
         email.onChange(changeListener)
         password.onChange(changeListener)
 

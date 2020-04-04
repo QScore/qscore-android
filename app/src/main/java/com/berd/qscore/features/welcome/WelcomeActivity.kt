@@ -65,6 +65,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun launchScoreActivity() {
         start<ScoreActivity>()
+        finish()
     }
 
     private fun setupViews() = binding.let {
