@@ -46,7 +46,7 @@ class SignUpActivity : BaseActivity() {
             when (it) {
                 InProgress -> handleInProgress()
                 SignUpError -> handleSignUpError()
-                is Ready -> handleReady(it.email)
+                Ready -> handleReady()
                 is FieldsUpdated -> handleFieldsUpdated(
                     it.emailError,
                     it.passwordError,
@@ -62,10 +62,9 @@ class SignUpActivity : BaseActivity() {
         errorText.visible()
     }
 
-    private fun handleReady(signupEmail: String) = binding.apply {
+    private fun handleReady() = binding.apply {
         progressDialog?.dismiss()
         errorText.gone()
-        Prefs.userEmail = signupEmail
     }
 
     private fun handleInProgress() = binding.apply {

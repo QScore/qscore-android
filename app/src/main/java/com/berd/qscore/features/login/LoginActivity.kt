@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -59,7 +60,7 @@ class LoginActivity : BaseActivity() {
             ResetInProgress -> handleResetInProgress()
             LoginError -> handleLoginError()
             ResetError -> handleResetError()
-            is Ready -> handleReady(state.email)
+            Ready -> handleReady()
             PasswordReset -> handlePasswordReset()
             is FieldsUpdated -> handleFieldsUpdated(
                 state.emailError,
@@ -69,10 +70,9 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun handleReady(signupEmail: String) = binding.apply {
+    private fun handleReady() = binding.apply {
         progressDialog?.dismiss()
         errorText.invisible()
-        Prefs.userEmail = signupEmail
     }
 
     private fun handleLoginError() = binding.apply {

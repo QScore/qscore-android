@@ -25,9 +25,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
         object ResetInProgress : State()
         object LoginError : State()
         object ResetError : State()
-        class Ready(
-            val email: String
-        ) : State()
+        object Ready : State()
         object PasswordReset : State()
         class FieldsUpdated(
             val emailError: Boolean,
@@ -77,7 +75,8 @@ class LoginViewModel : RxViewModel<Action, State>() {
     }
 
     private fun handleSuccess(email: String) {
-        state = Ready(email)
+        state = Ready
+        Prefs.userEmail = email
         if (Prefs.userLocation != null) {
             action(LaunchScoreActivity)
         } else {

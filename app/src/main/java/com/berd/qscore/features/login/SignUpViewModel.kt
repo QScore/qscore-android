@@ -7,6 +7,7 @@ import com.berd.qscore.features.login.SignUpViewModel.Action
 import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
 import com.berd.qscore.features.login.SignUpViewModel.State
 import com.berd.qscore.features.login.SignUpViewModel.State.*
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -21,9 +22,7 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     sealed class State {
         object InProgress : State()
         object SignUpError : State()
-        class Ready(
-            val email: String
-        ) : State()
+        object Ready : State()
         class FieldsUpdated(
             val emailError: Boolean,
             val passwordError: Boolean,
@@ -47,7 +46,7 @@ class SignUpViewModel : RxViewModel<Action, State>() {
                 is AuthEvent.Error -> handleError(result.error)
             }
         } catch (e: CancellationException) {
-            state = Ready("")
+            state = Ready
         }
     }
 
@@ -69,7 +68,8 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     }
 
     private fun handleSuccess(email: String) {
-        state = Ready(email)
+        state = Ready
+        Prefs.userEmail = email
         action(LaunchSelectUsernameActivity)
     }
 }
