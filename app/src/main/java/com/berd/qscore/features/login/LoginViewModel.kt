@@ -37,7 +37,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
     fun onLogin(email: String, password: String) = viewModelScope.launch {
         state = InProgress
         when (val result = LoginManager.login(email, password)) {
-            is Success -> handleSuccess()
+            is Success -> handleSuccess(email)
             is Error -> handleError(result.error)
         }
     }
@@ -45,7 +45,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
         state = InProgress
         when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
-            is Success -> handleSuccess()
+            is Success -> handleSuccess("")
             is Error -> handleError(result.error)
         }
     }
@@ -74,8 +74,9 @@ class LoginViewModel : RxViewModel<Action, State>() {
         state = PasswordReset
     }
 
-    private fun handleSuccess() {
+    private fun handleSuccess(email: String) {
         state = Ready
+        Prefs.userEmail = email
         if (Prefs.userLocation != null) {
             action(LaunchScoreActivity)
         } else {

@@ -7,6 +7,7 @@ import com.berd.qscore.features.login.SignUpViewModel.Action
 import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
 import com.berd.qscore.features.login.SignUpViewModel.State
 import com.berd.qscore.features.login.SignUpViewModel.State.*
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     fun onSignUp(email: String, password: String) = viewModelScope.launch {
         state = InProgress
         when (val result = LoginManager.signUp(email, password)) {
-            is AuthEvent.Success -> handleSuccess()
+            is AuthEvent.Success -> handleSuccess(email)
             is AuthEvent.Error -> handleError(result.error)
         }
     }
@@ -41,7 +42,7 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         state = InProgress
         try {
             when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
-                is AuthEvent.Success -> handleSuccess()
+                is AuthEvent.Success -> handleSuccess("")
                 is AuthEvent.Error -> handleError(result.error)
             }
         } catch (e: CancellationException) {
@@ -66,8 +67,9 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         state = FieldsUpdated(emailError, passwordError, signUpIsReady)
     }
 
-    private fun handleSuccess() {
+    private fun handleSuccess(email: String) {
         state = Ready
+        Prefs.userEmail = email
         action(LaunchSelectUsernameActivity)
     }
 }

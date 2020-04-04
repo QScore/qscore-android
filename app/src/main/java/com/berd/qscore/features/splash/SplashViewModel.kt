@@ -25,6 +25,8 @@ class SplashViewModel : RxViewModel<Action, Unit>() {
             } else {
                 action(LaunchWelcomeActivity)
             }
+        } else if (Prefs.userEmail.isNotEmpty()) {
+            action(LaunchLoginActivity)
         } else {
             action(LaunchSignUpActivity)
         }

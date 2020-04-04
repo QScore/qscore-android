@@ -9,6 +9,8 @@ import splitties.preferences.Preferences
 object Prefs : Preferences("qscorePrefs") {
     private var locationPref by StringPref("location", "")
 
+    var userEmail by StringPref("email","")
+
     var userLocation: LatLngPair?
         get() {
             if (locationPref.isEmpty()) {

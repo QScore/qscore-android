@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -16,6 +17,7 @@ import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
@@ -134,6 +136,10 @@ class LoginActivity : BaseActivity() {
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
             { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
+        if (Prefs.userEmail.isNotEmpty()) {
+            email.setText(Prefs.userEmail)
+            viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
+        }
         email.onChange(changeListener)
         password.onChange(changeListener)
 
