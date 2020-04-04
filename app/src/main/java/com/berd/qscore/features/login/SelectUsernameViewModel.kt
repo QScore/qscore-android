@@ -18,6 +18,7 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
     sealed class Action {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
+        object ReturnToSignup : Action()
     }
 
     sealed class State {
@@ -64,5 +65,10 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
         } else {
             action(LaunchWelcomeActivity)
         }
+    }
+
+    fun onBackPressed() {
+        LoginManager.logout()
+        action(Action.ReturnToSignup)
     }
 }

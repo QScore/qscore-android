@@ -10,6 +10,7 @@ import android.text.style.ForegroundColorSpan
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
+import com.berd.qscore.features.login.SignUpViewModel.Action.*
 import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
@@ -39,9 +40,9 @@ class SignUpActivity : BaseActivity() {
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
-                SignUpViewModel.Action.LaunchUsernameActivity -> launchUsernameActivity()
-                SignUpViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
-                SignUpViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
+                LaunchUsernameActivity -> launchUsernameActivity()
+                LaunchScoreActivity -> launchScoreActivity()
+                LaunchWelcomeActivity -> launchWelcomeActivity()
             }
         }
         viewModel.observeState {
