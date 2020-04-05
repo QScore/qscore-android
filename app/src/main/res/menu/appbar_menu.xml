@@ -7,9 +7,9 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_settings"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_donate"
-        android:title="@string/action_donate"
-        android:icon="@drawable/ic_money"
+    <item android:id="@+id/action_add_friends"
+        android:title="@string/action_add_friends"
+        android:icon="@drawable/ic_add_friend"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_logout"

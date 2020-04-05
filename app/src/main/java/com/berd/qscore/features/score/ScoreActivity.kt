@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityScoreBinding
+import com.berd.qscore.features.friends.AddFriendsActivity
 import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
@@ -111,6 +112,10 @@ class ScoreActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun launchAddFriendsActivity() {
+        start<AddFriendsActivity>()
+    }
+
     private fun setupViews() = binding.apply {
         setSupportActionBar(toolbar)
     }
@@ -125,9 +130,8 @@ class ScoreActivity : AppCompatActivity() {
             true
         }
 
-        R.id.action_donate -> {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YYE6BBQZU4BQ&source=url"))
-            startActivity(browserIntent)
+        R.id.action_add_friends -> {
+            launchAddFriendsActivity()
             true
         }
 
