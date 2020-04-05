@@ -1,21 +1,20 @@
-package com.berd.qscore.features.login
+package com.berd.qscore.features.friends
 
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
-import com.berd.qscore.features.login.SelectUsernameViewModel.State
-import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
+import com.berd.qscore.features.friends.AddFriendsViewModel.Action
+import com.berd.qscore.features.friends.AddFriendsViewModel.Action.*
+import com.berd.qscore.features.friends.AddFriendsViewModel.State
+import com.berd.qscore.features.friends.AddFriendsViewModel.State.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class SelectUsernameViewModel : RxViewModel<Action, State>() {
+class AddFriendsViewModel : RxViewModel<Action, State>() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
-        object LaunchLoginActivity : Action()
     }
 
     sealed class State {
@@ -46,11 +45,6 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
         val signUpIsReady = !usernameError
 
         state = FieldsUpdated(usernameError, signUpIsReady)
-    }
-
-    fun onLogout() = viewModelScope.launch {
-        LoginManager.logout()
-        action(LaunchLoginActivity)
     }
 
     private fun handleSuccess() {

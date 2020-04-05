@@ -1,14 +1,12 @@
-package com.berd.qscore.features.login
+package com.berd.qscore.features.friends
 
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
-import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
+import com.berd.qscore.features.login.SelectUsernameViewModel
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
@@ -19,7 +17,7 @@ import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
 import splitties.activities.start
 
-class SelectUsernameActivity : BaseActivity() {
+class AddFriendsActivity : BaseActivity() {
     private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<SelectUsernameViewModel>()
     private var progressDialog: ProgressDialog? = null
@@ -39,18 +37,17 @@ class SelectUsernameActivity : BaseActivity() {
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
-                LaunchScoreActivity -> launchScoreActivity()
-                LaunchWelcomeActivity -> launchWelcomeActivity()
-                LaunchLoginActivity -> launchLoginActivity()
+                SelectUsernameViewModel.Action.LaunchWelcomeActivity -> launchWelcomeActivity()
+                is SelectUsernameViewModel.Action.LaunchScoreActivity -> launchScoreActivity()
             }
         }
         viewModel.observeState {
             when (it) {
-                InProgress -> handleInProgress()
-                CheckingUsername -> handleCheckingUsername()
-                ContinueError -> handleContinueError()
-                Ready -> handleReady()
-                is FieldsUpdated -> handleFieldsUpdated(
+                SelectUsernameViewModel.State.InProgress -> handleInProgress()
+                SelectUsernameViewModel.State.CheckingUsername -> handleCheckingUsername()
+                SelectUsernameViewModel.State.ContinueError -> handleContinueError()
+                SelectUsernameViewModel.State.Ready -> handleReady()
+                is SelectUsernameViewModel.State.FieldsUpdated -> handleFieldsUpdated(
                     it.usernameError,
                     it.signUpIsReady
                 )
@@ -104,12 +101,6 @@ class SelectUsernameActivity : BaseActivity() {
         finish()
     }
 
-    private fun launchLoginActivity() {
-        start<LoginActivity>()
-        progressDialog?.dismiss()
-        finish()
-    }
-
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
             { viewModel.onFieldsUpdated(username.text.toString()) }
@@ -117,19 +108,6 @@ class SelectUsernameActivity : BaseActivity() {
 
         continueButton.setOnClickListener {
             viewModel.onContinue(username.text.toString())
-        }
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            viewModel.onLogout()
-            true
-        }
-
-        else -> {
-            super.onOptionsItemSelected(item)
         }
     }
 
