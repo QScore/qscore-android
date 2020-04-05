@@ -36,6 +36,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".features.friends.AddFriendsActivity"
+            android:label="AddFriendsActivity"/>
         <activity android:name=".features.welcome.WelcomeActivity" />
         <activity
             android:name=".features.score.ScoreActivity"

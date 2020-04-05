@@ -65,4 +65,7 @@
     <string name="continue_error">Unable to select username.  Please try again.</string>
     <string name="checking_usernames">Checking available usernames…</string>
     <string name="action_donate">Donate</string>
+    <string name="add_friends_title">Search and Add Qbuddies!</string>
+    <string name="helper_search_username">Search Qbuddies by username</string>
+    <string name="connection_error">Failed to connect to servers, please try again later</string>
 </resources>

@@ -13,7 +13,7 @@ import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.onChange
+import com.berd.qscore.utils.extensions.onChangeDebounce
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
@@ -113,7 +113,7 @@ class SelectUsernameActivity : BaseActivity() {
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
             { viewModel.onFieldsUpdated(username.text.toString()) }
-        username.onChange(changeListener)
+        username.onChangeDebounce(500, changeListener)
 
         continueButton.setOnClickListener {
             viewModel.onContinue(username.text.toString())

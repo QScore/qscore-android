@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -140,7 +139,7 @@ class LoginActivity : BaseActivity() {
             email.setText(Prefs.userEmail)
             viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
         }
-        email.onChange(changeListener)
+        email.onChangeDebounce(500, changeListener)
         password.onChange(changeListener)
 
         login.setOnClickListener {

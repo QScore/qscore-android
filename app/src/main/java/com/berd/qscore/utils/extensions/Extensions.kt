@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.berd.qscore.utils.location.LatLngPair
+import java.util.*
 
 fun Location.toLatLngPair() = LatLngPair(latitude, longitude)
 
@@ -29,6 +30,28 @@ fun View.invisible() {
 
 fun View.visible() {
     visibility = View.VISIBLE
+}
+
+fun EditText.onChangeDebounce(Delay : Long, cb: () -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        private var timer = Timer()
+
+        override fun afterTextChanged(s: Editable?) {
+            timer.cancel()
+            timer = Timer()
+            timer.schedule(
+                object : TimerTask() {
+                    override fun run() {
+                        cb()
+                    }
+                },
+                Delay   //milliseconds
+            )
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    })
 }
 
 fun EditText.onChange(cb: () -> Unit) {
