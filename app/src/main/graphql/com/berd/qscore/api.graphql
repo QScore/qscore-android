@@ -12,3 +12,20 @@ mutation CreateGeofenceEvent($input: CreateGeofenceEventInput!) {
         }
     }
 }
+
+mutation UpdateUserInfo($input: UpdateUserInfoInput!){
+    updateUserInfo(input: $input) {
+        id,
+        username
+    }
+}
+
+query CurrentUser {
+    currentUser {
+        user {
+            id
+            username
+            score
+        }
+    }
+}

@@ -10,6 +10,7 @@ import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -18,6 +19,7 @@ class LoginViewModel : RxViewModel<Action, State>() {
     sealed class Action {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
+        object LaunchUsernameActivity : Action()
     }
 
     sealed class State {
@@ -44,9 +46,13 @@ class LoginViewModel : RxViewModel<Action, State>() {
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
         state = InProgress
-        when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
-            is Success -> handleSuccess("")
-            is Error -> handleError(result.error)
+        try {
+            when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
+                is Success -> handleSuccess("")
+                is Error -> handleError(result.error)
+            }
+        } catch (e: CancellationException) {
+            state = Ready
         }
     }
 
@@ -70,14 +76,16 @@ class LoginViewModel : RxViewModel<Action, State>() {
         state = FieldsUpdated(emailError, passwordError, signUpIsReady)
     }
 
-    private fun handleReset(){
+    private fun handleReset() {
         state = PasswordReset
     }
 
-    private fun handleSuccess(email: String) {
+    private suspend fun handleSuccess(email: String) {
         state = Ready
         Prefs.userEmail = email
-        if (Prefs.userLocation != null) {
+        if (!LoginManager.checkUserHasUsername()) {
+            action(LaunchUsernameActivity)
+        } else if (Prefs.userLocation != null) {
             action(LaunchScoreActivity)
         } else {
             action(LaunchWelcomeActivity)

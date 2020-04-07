@@ -97,7 +97,7 @@ class QLocationService : Service() {
                 Api.createGeofenceEvent(input)
             }
         } catch (e: IOException) {
-            Timber.d("Unable to submit event: $e")
+            Timber.w("Unable to submit event: $e")
         }
     }
 
