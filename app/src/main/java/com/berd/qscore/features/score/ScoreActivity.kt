@@ -6,30 +6,22 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityScoreBinding
-import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
-import com.berd.qscore.utils.extensions.gone
+import com.berd.qscore.features.score.ScoreViewModel.ScoreState
+import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.launch
 import splitties.activities.start
 import splitties.toast.toast
-import timber.log.Timber
 
 
-class ScoreActivity : AppCompatActivity() {
+class ScoreActivity : BaseActivity() {
 
-    private val compositeDisposable = CompositeDisposable()
     private val viewModel by viewModels<ScoreViewModel>()
 
     private val binding: ActivityScoreBinding by lazy {
@@ -57,52 +49,40 @@ class ScoreActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkLocation()
-    }
-
-    private fun checkLocation() = lifecycleScope.launch {
-        if (LocationHelper.hasAllPermissions) {
-            LocationHelper.fetchCurrentLocation()
-        }
+        viewModel.onResume()
     }
 
     private fun observeEvents() {
-        viewModel.actions.subscribeBy(onNext = {
+        viewModel.observeActions {
             handleActions(it)
-        }, onError = {
-            Timber.e("Error subscribing to events: $it")
-        }).addTo(compositeDisposable)
+        }
 
-        viewModel.viewState.observe(this, Observer { state ->
-            when (state) {
-                Unknown -> handleStartingUp()
-                Home -> handleHome()
-                Away -> handleAway()
-            }
-        })
+        viewModel.observeState {
+            handleState(it)
+        }
     }
 
-    private fun handleStartingUp() = with(binding) {
-        startupText.visible()
-        awayText.gone()
-        homeText.gone()
+    private fun handleState(state: ScoreState) = with(binding) {
+        when (state) {
+            is ScoreState.Loading -> handleLoading()
+            is ScoreState.Ready -> handleReady(state.score)
+        }
     }
 
-    private fun handleHome() = with(binding) {
-        startupText.gone()
-        awayText.gone()
-        homeText.visible()
+    private fun handleLoading() = with(binding) {
+        progress.visible()
+        qscoreValue.invisible()
     }
 
-    private fun handleAway() = with(binding) {
-        startupText.gone()
-        awayText.visible()
-        homeText.gone()
+    private fun handleReady(score: String) = with(binding) {
+        progress.invisible()
+        qscoreValue.visible()
+        qscoreValue.text = score
     }
 
-    private fun handleActions(it: ScoreViewModel.Action) {
+    private fun handleActions(it: ScoreViewModel.ScoreAction) {
         when (it) {
-            ScoreViewModel.Action.LaunchLoginActivity -> launchLoginActivity()
+            ScoreViewModel.ScoreAction.LaunchLoginActivity -> launchLoginActivity()
         }
     }
 
@@ -126,7 +106,10 @@ class ScoreActivity : AppCompatActivity() {
         }
 
         R.id.action_donate -> {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YYE6BBQZU4BQ&source=url"))
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7YYE6BBQZU4BQ&source=url")
+            )
             startActivity(browserIntent)
             true
         }

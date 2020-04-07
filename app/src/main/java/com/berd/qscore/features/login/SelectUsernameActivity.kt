@@ -6,18 +6,18 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.LaunchScoreActivity
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
 import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.*
-import com.facebook.CallbackManager
+import com.berd.qscore.utils.extensions.invisible
+import com.berd.qscore.utils.extensions.onChange
+import com.berd.qscore.utils.extensions.showProgressDialog
+import com.berd.qscore.utils.extensions.visible
 import splitties.activities.start
 
 class SelectUsernameActivity : BaseActivity() {
-    private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<SelectUsernameViewModel>()
     private var progressDialog: ProgressDialog? = null
 
@@ -38,6 +38,7 @@ class SelectUsernameActivity : BaseActivity() {
             when (it) {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 is LaunchScoreActivity -> launchScoreActivity()
+                ReturnToSignup -> returnToSignup()
             }
         }
         viewModel.observeState {
@@ -52,6 +53,13 @@ class SelectUsernameActivity : BaseActivity() {
                 )
             }
         }
+    }
+
+    private fun returnToSignup() {
+        start<SignUpActivity> {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        finish()
     }
 
     private fun handleContinueError() = binding.apply {
@@ -101,18 +109,18 @@ class SelectUsernameActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(username.text.toString()) }
-        username.onChange(changeListener)
+        username.onChange {
+            viewModel.onFieldsUpdated(username.text.toString())
+        }
 
         continueButton.setOnClickListener {
             viewModel.onContinue(username.text.toString())
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onBackPressed() {
+        super.onBackPressed()
+        viewModel.onBackPressed()
     }
 
     override fun onDestroy() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.login.LoginActivity
+import com.berd.qscore.features.login.SelectUsernameActivity
 import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
@@ -34,8 +35,14 @@ class SplashActivity : BaseActivity() {
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchLoginActivity -> launchLoginActivity()
                 LaunchSignUpActivity -> launchSignUpActivity()
+                LaunchUsernameActivity -> launchUsernameActivity()
             }
         }
+    }
+
+    private fun launchUsernameActivity() {
+        start<SelectUsernameActivity>()
+        finish()
     }
 
     private fun launchSignUpActivity() {

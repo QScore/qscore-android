@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager.AuthEvent
 import com.berd.qscore.features.login.SignUpViewModel.Action
-import com.berd.qscore.features.login.SignUpViewModel.Action.LaunchSelectUsernameActivity
+import com.berd.qscore.features.login.SignUpViewModel.Action.*
 import com.berd.qscore.features.login.SignUpViewModel.State
 import com.berd.qscore.features.login.SignUpViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
@@ -16,7 +16,9 @@ import timber.log.Timber
 class SignUpViewModel : RxViewModel<Action, State>() {
 
     sealed class Action {
-        object LaunchSelectUsernameActivity : Action()
+        object LaunchUsernameActivity : Action()
+        object LaunchScoreActivity : Action()
+        object LaunchWelcomeActivity : Action()
     }
 
     sealed class State {
@@ -67,9 +69,15 @@ class SignUpViewModel : RxViewModel<Action, State>() {
         state = FieldsUpdated(emailError, passwordError, signUpIsReady)
     }
 
-    private fun handleSuccess(email: String) {
+    private suspend fun handleSuccess(email: String) {
         state = Ready
         Prefs.userEmail = email
-        action(LaunchSelectUsernameActivity)
+        if (!LoginManager.checkUserHasUsername()) {
+            action(LaunchUsernameActivity)
+        } else if (Prefs.userLocation != null) {
+            action(LaunchScoreActivity)
+        } else {
+            action(LaunchWelcomeActivity)
+        }
     }
 }

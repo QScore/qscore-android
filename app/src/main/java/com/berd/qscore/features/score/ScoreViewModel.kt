@@ -1,66 +1,51 @@
 package com.berd.qscore.features.score
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berd.qscore.features.geofence.GeofenceIntentService
-import com.berd.qscore.features.geofence.GeofenceState
-import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.login.LoginManager
-import com.berd.qscore.features.score.ScoreViewModel.Action.*
-import com.berd.qscore.utils.rx.RxEventSender
+import com.berd.qscore.features.score.ScoreViewModel.ScoreAction
+import com.berd.qscore.features.score.ScoreViewModel.ScoreAction.LaunchLoginActivity
+import com.berd.qscore.features.score.ScoreViewModel.ScoreState
+import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
+import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
+import com.berd.qscore.features.shared.api.Api
+import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 
-class ScoreViewModel : ViewModel() {
+class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    sealed class Action {
-        object LaunchLoginActivity : Action()
+    sealed class ScoreAction {
+        object LaunchLoginActivity : ScoreAction()
     }
 
-    private val _actions = RxEventSender<Action>()
-    val actions = _actions.observable
-
-    private val _viewState = MutableLiveData<GeofenceState>()
-    val viewState = _viewState as LiveData<GeofenceState>
+    sealed class ScoreState {
+        object Loading : ScoreState()
+        class Ready(val score: String) : ScoreState()
+    }
 
     fun onCreate() {
-        subscribeToGeofence()
-        _viewState.postValue(Unknown)
+        state = Loading
+    }
+
+    fun onResume() {
+        viewModelScope.launch {
+            try {
+                val score = Api.getCurrentUser().score.roundToInt().toString()
+                state = Ready(score)
+            } catch (e: Exception) {
+                Timber.d("Error getting score: $e")
+            }
+        }
     }
 
     fun onLogout() = viewModelScope.launch {
         LoginManager.logout()
-        _actions.send(LaunchLoginActivity)
-    }
-
-    private fun subscribeToGeofence() {
-        GeofenceIntentService.events.subscribeBy(onNext = {
-            handleGeofenceEvent(it)
-        }, onError = {
-            Timber.e("Unable to handle geofence event: $it")
-        }).addTo(compositeDisposable)
-    }
-
-    private fun handleGeofenceEvent(it: GeofenceIntentService.Event) = when (it) {
-        GeofenceIntentService.Event.Entered -> handleGeofenceEnter()
-        GeofenceIntentService.Event.Exited -> handleGeofenceExit()
-    }
-
-    private fun handleGeofenceEnter() {
-        //User is home
-        _viewState.postValue(Home)
-    }
-
-    private fun handleGeofenceExit() {
-        _viewState.postValue(Away)
+        action(LaunchLoginActivity)
     }
 
     override fun onCleared() {

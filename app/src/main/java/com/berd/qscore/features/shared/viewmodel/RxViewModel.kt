@@ -18,4 +18,5 @@ abstract class RxViewModel<A, S> : ViewModel() {
     protected var state: S?
         get() = _state.value
         set(value) = _state.postValue(value)
+
 }
