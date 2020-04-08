@@ -32,7 +32,7 @@ fun View.visible() {
     visibility = View.VISIBLE
 }
 
-fun EditText.onChangeDebounce(Delay : Long, cb: () -> Unit) {
+fun EditText.onChangeDebounce(delay : Long, cb: () -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         private var timer = Timer()
 
@@ -45,7 +45,7 @@ fun EditText.onChangeDebounce(Delay : Long, cb: () -> Unit) {
                         cb()
                     }
                 },
-                Delay   //milliseconds
+                delay   //milliseconds
             )
         }
 
