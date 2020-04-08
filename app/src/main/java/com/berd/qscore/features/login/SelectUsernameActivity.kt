@@ -3,6 +3,7 @@ package com.berd.qscore.features.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
@@ -12,7 +13,7 @@ import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.onChange
+import com.berd.qscore.utils.extensions.onChangeDebounce
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import splitties.activities.start
@@ -36,9 +37,10 @@ class SelectUsernameActivity : BaseActivity() {
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
+                LaunchScoreActivity -> launchScoreActivity()
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 is LaunchScoreActivity -> launchScoreActivity()
-                ReturnToSignup -> returnToSignup()
+                ReturnToLogIn -> returnToLogIn()
             }
         }
         viewModel.observeState {
@@ -55,8 +57,8 @@ class SelectUsernameActivity : BaseActivity() {
         }
     }
 
-    private fun returnToSignup() {
-        start<SignUpActivity> {
+    private fun returnToLogIn() {
+        start<LoginActivity> {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         finish()
@@ -109,12 +111,25 @@ class SelectUsernameActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        username.onChange {
+        username.onChangeDebounce(500) {
             viewModel.onFieldsUpdated(username.text.toString())
         }
 
         continueButton.setOnClickListener {
             viewModel.onContinue(username.text.toString())
+        }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        android.R.id.home -> {
+            viewModel.onBackPressed()
+            true
+        }
+
+        else -> {
+            super.onOptionsItemSelected(item)
         }
     }
 

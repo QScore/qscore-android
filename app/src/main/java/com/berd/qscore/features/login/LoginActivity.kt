@@ -17,10 +17,7 @@ import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.onChange
-import com.berd.qscore.utils.extensions.showProgressDialog
-import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
@@ -149,7 +146,7 @@ class LoginActivity : BaseActivity() {
             email.setText(Prefs.userEmail)
             viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
         }
-        email.onChange(changeListener)
+        email.onChangeDebounce(500, changeListener)
         password.onChange(changeListener)
 
         login.setOnClickListener {
