@@ -29,9 +29,6 @@ class AddFriendsActivity : BaseActivity() {
     }
 
     private fun observeEvents() {
-        viewModel.observeActions {
-
-        }
         viewModel.observeState {
             when (it) {
                 InProgress -> handleInProgress()
@@ -59,15 +56,8 @@ class AddFriendsActivity : BaseActivity() {
         errorText.invisible()
     }
 
-    private fun launchScoreActivity() {
-        start<ScoreActivity>()
-        finish()
-    }
-
     private fun setupViews() = binding.apply {
-        val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(username.text.toString()) }
-        username.onChangeDebounce(100, changeListener)
+        username.onChangeDebounce(100) { viewModel.onFieldsUpdated(username.text.toString()) }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -81,10 +71,5 @@ class AddFriendsActivity : BaseActivity() {
         else -> {
             super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onDestroy() {
-        compositeDisposable.clear()
-        super.onDestroy()
     }
 }

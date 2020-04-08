@@ -17,7 +17,7 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
     sealed class Action {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
-        object ReturnToSignup : Action()
+        object ReturnToLogIn : Action()
     }
 
     sealed class State {
@@ -57,11 +57,6 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
         state = FieldsUpdated(usernameError, signUpIsReady)
     }
 
-    fun onLogout() = viewModelScope.launch {
-        LoginManager.logout()
-        action(LaunchLoginActivity)
-    }
-
     private fun handleSuccess() {
         state = Ready
         if (Prefs.userLocation != null) {
@@ -73,6 +68,6 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
 
     fun onBackPressed() {
         LoginManager.logout()
-        action(Action.ReturnToSignup)
+        action(ReturnToLogIn)
     }
 }

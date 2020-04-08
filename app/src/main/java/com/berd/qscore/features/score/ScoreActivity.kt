@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityScoreBinding
+import com.berd.qscore.features.friends.AddFriendsActivity
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState

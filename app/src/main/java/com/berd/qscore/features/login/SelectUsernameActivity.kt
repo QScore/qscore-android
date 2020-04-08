@@ -16,7 +16,6 @@ import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.onChangeDebounce
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
-import com.berd.qscore.utils.extensions.onChange
 import splitties.activities.start
 
 class SelectUsernameActivity : BaseActivity() {
@@ -41,7 +40,7 @@ class SelectUsernameActivity : BaseActivity() {
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 is LaunchScoreActivity -> launchScoreActivity()
-                ReturnToSignup -> returnToSignup()
+                ReturnToLogIn -> returnToLogIn()
             }
         }
         viewModel.observeState {
@@ -58,8 +57,8 @@ class SelectUsernameActivity : BaseActivity() {
         }
     }
 
-    private fun returnToSignup() {
-        start<SignUpActivity> {
+    private fun returnToLogIn() {
+        start<LoginActivity> {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         finish()
@@ -111,16 +110,10 @@ class SelectUsernameActivity : BaseActivity() {
         finish()
     }
 
-    private fun launchLoginActivity() {
-        start<LoginActivity>()
-        progressDialog?.dismiss()
-        finish()
-    }
-
     private fun setupViews() = binding.apply {
-        val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(username.text.toString()) }
-        username.onChangeDebounce(500, changeListener)
+        username.onChangeDebounce(500) {
+            viewModel.onFieldsUpdated(username.text.toString())
+        }
 
         continueButton.setOnClickListener {
             viewModel.onContinue(username.text.toString())
@@ -131,7 +124,7 @@ class SelectUsernameActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
-            viewModel.onLogout()
+            viewModel.onBackPressed()
             true
         }
 
