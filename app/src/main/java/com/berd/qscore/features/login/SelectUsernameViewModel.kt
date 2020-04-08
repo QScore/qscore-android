@@ -2,8 +2,7 @@ package com.berd.qscore.features.login
 
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.LaunchScoreActivity
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
 import com.berd.qscore.features.login.SelectUsernameViewModel.State
 import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
 import com.berd.qscore.features.shared.api.Api
@@ -18,7 +17,7 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
     sealed class Action {
         object LaunchScoreActivity : Action()
         object LaunchWelcomeActivity : Action()
-        object ReturnToSignup : Action()
+        object ReturnToLogIn : Action()
     }
 
     sealed class State {
@@ -69,6 +68,6 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
 
     fun onBackPressed() {
         LoginManager.logout()
-        action(Action.ReturnToSignup)
+        action(ReturnToLogIn)
     }
 }

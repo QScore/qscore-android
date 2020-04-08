@@ -113,7 +113,7 @@ class SignUpActivity : BaseActivity() {
     private fun setupViews() = binding.apply {
         val changeListener: () -> Unit =
             { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
-        email.onChange(changeListener)
+        email.onChangeDebounce(500, changeListener)
         password.onChange(changeListener)
 
         signup.setOnClickListener {
