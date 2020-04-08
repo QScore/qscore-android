@@ -8,11 +8,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/loginMessage"
@@ -34,15 +34,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
+                android:text="@string/login_error"
                 android:textColor="@color/red"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/email_layout"
                 app:layout_constraintStart_toStartOf="@+id/email_layout"
-                app:layout_constraintTop_toBottomOf="@+id/loginMessage"
-                android:text="@string/login_error" />
+                app:layout_constraintTop_toBottomOf="@+id/loginMessage" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -53,8 +54,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/errorText"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/errorText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
@@ -65,6 +65,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/password_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -73,13 +74,12 @@
                 android:hint="@string/hint_password"
                 app:counterEnabled="true"
                 app:endIconMode="password_toggle"
-                app:helperTextEnabled="true"
                 app:helperText="@string/helper_password"
+                app:helperTextEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:layout_constraintTop_toBottomOf="@+id/email_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
@@ -94,8 +94,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="@string/login"
                 android:enabled="false"
+                android:text="@string/login"
                 app:layout_constraintEnd_toEndOf="@+id/fbLogin"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/fbLogin"
@@ -106,8 +106,8 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/goto_forgot"
                 android:enabled="false"
+                android:text="@string/goto_forgot"
                 app:layout_constraintEnd_toEndOf="@+id/login"
                 app:layout_constraintStart_toStartOf="@+id/login"
                 app:layout_constraintTop_toBottomOf="@+id/login" />
@@ -156,9 +156,11 @@
                 android:elevation="2dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/fbLogin"
                 app:layout_constraintStart_toStartOf="@+id/fbLogin"
-                app:layout_constraintTop_toBottomOf="@+id/fbLogin">
+                app:layout_constraintTop_toBottomOf="@+id/fbLogin"
+                tools:visibility="visible">
 
                 <ImageView
                     android:layout_width="40dp"

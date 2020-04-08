@@ -16,11 +16,10 @@ import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.onChangeDebounce
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
-import com.facebook.CallbackManager
+import com.berd.qscore.utils.extensions.onChange
 import splitties.activities.start
 
 class SelectUsernameActivity : BaseActivity() {
-    private val callbackManager by lazy { CallbackManager.Factory.create() }
     private val viewModel by viewModels<SelectUsernameViewModel>()
     private var progressDialog: ProgressDialog? = null
 
@@ -41,7 +40,8 @@ class SelectUsernameActivity : BaseActivity() {
             when (it) {
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchWelcomeActivity -> launchWelcomeActivity()
-                LaunchLoginActivity -> launchLoginActivity()
+                is LaunchScoreActivity -> launchScoreActivity()
+                ReturnToSignup -> returnToSignup()
             }
         }
         viewModel.observeState {
@@ -56,6 +56,13 @@ class SelectUsernameActivity : BaseActivity() {
                 )
             }
         }
+    }
+
+    private fun returnToSignup() {
+        start<SignUpActivity> {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        finish()
     }
 
     private fun handleContinueError() = binding.apply {
@@ -133,9 +140,9 @@ class SelectUsernameActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onBackPressed() {
+        super.onBackPressed()
+        viewModel.onBackPressed()
     }
 
     override fun onDestroy() {

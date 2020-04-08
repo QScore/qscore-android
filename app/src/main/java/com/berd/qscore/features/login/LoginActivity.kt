@@ -10,15 +10,17 @@ import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
 import com.berd.qscore.features.login.LoginViewModel.Action
-import com.berd.qscore.features.login.LoginViewModel.Action.LaunchScoreActivity
-import com.berd.qscore.features.login.LoginViewModel.Action.LaunchWelcomeActivity
+import com.berd.qscore.features.login.LoginViewModel.Action.*
 import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.*
+import com.berd.qscore.utils.extensions.invisible
+import com.berd.qscore.utils.extensions.onChange
+import com.berd.qscore.utils.extensions.showProgressDialog
+import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
@@ -50,8 +52,10 @@ class LoginActivity : BaseActivity() {
         when (it) {
             LaunchScoreActivity -> launchScoreActivity()
             is LaunchWelcomeActivity -> launchWelcomeActivity()
+            LaunchUsernameActivity -> launchUsernameActivity()
         }
     }
+
 
     private fun handleState(state: State) {
         when (state) {
@@ -120,6 +124,12 @@ class LoginActivity : BaseActivity() {
         finish()
     }
 
+    private fun launchUsernameActivity() {
+        start<SelectUsernameActivity>()
+        progressDialog?.dismiss()
+        finish()
+    }
+
     private fun launchScoreActivity() {
         start<ScoreActivity>()
         progressDialog?.dismiss()
@@ -162,13 +172,13 @@ class LoginActivity : BaseActivity() {
         gotoForgotText.setOnClickListener {
             MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
                 .setTitle(getString(R.string.reset_password_title))
-                .setMessage(getString(R.string.reset_password_message)+" "+email.text.toString())
-                .setPositiveButton(getString(R.string.reset)){ dialog, which ->
+                .setMessage(getString(R.string.reset_password_message) + " " + email.text.toString())
+                .setPositiveButton(getString(R.string.reset)) { dialog, which ->
                     // Do something for button click
                     // reset the password
                     viewModel.resetPassword(email.text.toString())
                 }
-                .setNegativeButton(getString(R.string.cancel),null)
+                .setNegativeButton(getString(R.string.cancel), null)
                 .show()
         }
     }
