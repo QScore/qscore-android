@@ -3,12 +3,10 @@ package com.berd.qscore.features.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.drawable.Animatable
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.core.view.ViewCompat.postOnAnimation
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.berd.qscore.R

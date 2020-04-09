@@ -1,6 +1,5 @@
 package com.berd.qscore.features.login
 
-import android.os.Handler
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
