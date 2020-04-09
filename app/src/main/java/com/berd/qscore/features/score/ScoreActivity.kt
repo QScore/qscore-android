@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityScoreBinding
 import com.berd.qscore.features.geofence.QLocationService
@@ -16,6 +17,7 @@ import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
+import kotlinx.coroutines.launch
 import splitties.activities.start
 import splitties.toast.toast
 
@@ -50,6 +52,9 @@ class ScoreActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.onResume()
+        lifecycleScope.launch {
+            LocationHelper.fetchCurrentLocation()
+        }
     }
 
     private fun observeEvents() {

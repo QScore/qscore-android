@@ -51,7 +51,7 @@ class QLocationService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun setupLocationUpdates() = scope.launch {
+    private fun setupLocationUpdates() {
         val interval = TimeUnit.MINUTES.toMillis(LOCATION_UPDATE_INTERVAL_MINUTES)
         LocationHelper.startLocationUpdates(interval) {
             Timber.d("Updated location: ${it.lastLocation}")
