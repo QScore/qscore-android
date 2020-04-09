@@ -1,5 +1,6 @@
 package com.berd.qscore.features.login
 
+import android.os.Handler
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
@@ -11,6 +12,7 @@ import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.type.UpdateUserInfoInput
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 
 class SelectUsernameViewModel : RxViewModel<Action, State>() {
 
@@ -51,10 +53,19 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
     fun onFieldsUpdated(username: String) = viewModelScope.launch {
         state = CheckingUsername
 
-        val usernameError = false
-        val signUpIsReady = !usernameError
+        val timer = Timer()
+        timer.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    val usernameError = false
+                    val signUpIsReady = !usernameError
 
-        state = FieldsUpdated(usernameError, signUpIsReady)
+                    state = FieldsUpdated(usernameError, signUpIsReady)
+                }
+            },
+            2000   //milliseconds
+        )
+
     }
 
     private fun handleSuccess() {
