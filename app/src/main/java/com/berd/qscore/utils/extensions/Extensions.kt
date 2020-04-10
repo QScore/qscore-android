@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
 import androidx.core.app.ActivityCompat
@@ -30,6 +32,10 @@ fun View.invisible() {
 
 fun View.visible() {
     visibility = View.VISIBLE
+}
+
+fun Float.dpToPixels(dm : DisplayMetrics): Float {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, dm)
 }
 
 fun EditText.onChangeDebounce(delay : Long, cb: () -> Unit) {

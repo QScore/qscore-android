@@ -28,27 +28,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
+    <com.berd.qscore.utils.views.ScoreProgressBar
+        android:id="@+id/scoreProgress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/qscoreLabel"/>
+
     <TextView
         android:id="@+id/qscoreValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:color="@color/black"
-        android:textSize="30sp"
+        android:textSize="50sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/qscoreLabel"
-        app:layout_constraintStart_toStartOf="@+id/qscoreLabel"
-        app:layout_constraintTop_toBottomOf="@+id/qscoreLabel"
+        app:layout_constraintEnd_toEndOf="@+id/scoreProgress"
+        app:layout_constraintStart_toStartOf="@+id/scoreProgress"
+        app:layout_constraintTop_toTopOf="@+id/scoreProgress"
+        app:layout_constraintBottom_toBottomOf="@+id/scoreProgress"
         tools:text="100" />
-
-    <ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qscoreLabel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
