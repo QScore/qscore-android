@@ -72,7 +72,6 @@ class ScoreActivity : BaseActivity() {
     }
 
     private fun handleLoading() = with(binding) {
-        //ScoreProgressBar.indeterminate = true
         scoreProgress.progress = 0f
         qscoreValue.invisible()
     }

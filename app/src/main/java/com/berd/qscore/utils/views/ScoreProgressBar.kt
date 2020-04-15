@@ -1,14 +1,18 @@
 package com.berd.qscore.utils.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import com.berd.qscore.R
 import com.berd.qscore.utils.extensions.dpToPixels
+import kotlin.math.roundToInt
 
 class ScoreProgressBar  @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -35,24 +39,38 @@ class ScoreProgressBar  @JvmOverloads constructor(
         isAntiAlias = true
     }
 
-    var progress: Float = 0.75f
+    var progress: Float = 0f
         set(value) {
-            field = if (value > maxProgress) {
-                maxProgress
-            } else {
-                value
+
+            val finalProgress: Float = when {
+                (value == 1f) -> value
+                (value > maxProgress) -> maxProgress
+                else -> value
             }
-            /*if (field < 0.5f) {
-                val green = value * 2 * 255
-                progressPaint.color = Color.rgb(255,green.roundToInt(),0)
-            } else if (field < 1.0f) {
-                val red = (1.25-value/2) * 255
-                progressPaint.color = Color.rgb(red.roundToInt(),255,0)
-            }   else {
-                progressPaint.color = Color.rgb(0,255,0)
-            }*/
+
+            var animator = ValueAnimator.ofFloat(progress, finalProgress).apply {
+                duration = 750
+                addUpdateListener { updatedAnimation ->
+                    field = updatedAnimation.animatedValue as Float
+                    //call updateProgressPaint if you want to updated colors when progress changes
+                    invalidate()
+                }
+                start()
+            }
             invalidate()
         }
+
+    fun updateProgressPaint() {
+        if (progress < 0.5f) {
+            val green = progress * 2 * 255
+            progressPaint.color = Color.rgb(255,green.roundToInt(),0)
+        } else if (progress < 1.0f) {
+            val red = (1.25 - progress / 2) * 255
+            progressPaint.color = Color.rgb(red.roundToInt(),255,0)
+        }  else {
+            progressPaint.color = Color.rgb(0,255,0)
+        }
+    }
 
     private val oval = RectF()
     private var centerX: Float = 0f

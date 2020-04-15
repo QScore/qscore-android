@@ -37,17 +37,7 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
         viewModelScope.launch {
             try {
                 val score = Api.getCurrentUser().score.roundToInt()
-                val TOTAL_TIME = 750L
-                val timeOutRemoveTimer = object : CountDownTimer(TOTAL_TIME, 10) {
-                    override fun onFinish() {
-                        state = Ready(score)
-                    }
-                    override fun onTick(millisUntilFinished: Long) {
-                        val scoreFraction = ((TOTAL_TIME - millisUntilFinished).toFloat() / TOTAL_TIME)*score
-                        state = Ready(scoreFraction.roundToInt())
-                    }
-                }
-                timeOutRemoveTimer.start()
+                state = Ready(score)
             } catch (e: Exception) {
                 Timber.d("Error getting score: $e")
             }
