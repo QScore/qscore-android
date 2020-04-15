@@ -52,19 +52,10 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
     fun onFieldsUpdated(username: String) = viewModelScope.launch {
         state = CheckingUsername
 
-        val timer = Timer()
-        timer.schedule(
-            object : TimerTask() {
-                override fun run() {
-                    val usernameError = false
-                    val signUpIsReady = !usernameError
+        val usernameError = false
+        val signUpIsReady = !usernameError
 
-                    state = FieldsUpdated(usernameError, signUpIsReady)
-                }
-            },
-            2000   //milliseconds
-        )
-
+        state = FieldsUpdated(usernameError, signUpIsReady)
     }
 
     private fun handleSuccess() {

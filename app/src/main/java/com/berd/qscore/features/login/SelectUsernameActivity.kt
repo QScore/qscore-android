@@ -122,13 +122,7 @@ class SelectUsernameActivity : BaseActivity() {
         username.onChangeDebounce(500) {
             viewModel.onFieldsUpdated(username.text.toString())
         }
-        val spinnerAnimation = usernameLayout.endIconDrawable as Animatable
-        AnimatedVectorDrawableCompat.registerAnimationCallback(usernameLayout.endIconDrawable, object : Animatable2Compat.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                usernameLayout.post { spinnerAnimation.start() }
-            }
-        })
-        spinnerAnimation.start()
+        startSpinnerAnimation()
         usernameLayout.isEndIconVisible = false
 
         continueButton.setOnClickListener {
@@ -138,6 +132,15 @@ class SelectUsernameActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    private fun startSpinnerAnimation() = binding.apply{
+        val spinnerAnimation = usernameLayout.endIconDrawable as Animatable
+        AnimatedVectorDrawableCompat.registerAnimationCallback(usernameLayout.endIconDrawable, object : Animatable2Compat.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                usernameLayout.post { spinnerAnimation.start() }
+            }
+        })
+        spinnerAnimation.start()
+    }
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
             viewModel.onBackPressed()
