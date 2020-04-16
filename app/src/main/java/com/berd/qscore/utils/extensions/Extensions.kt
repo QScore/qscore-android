@@ -38,6 +38,10 @@ fun Float.dpToPixels(dm : DisplayMetrics): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, dm)
 }
 
+fun Float.spToPixels(dm : DisplayMetrics): Float {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, this, dm)
+}
+
 fun EditText.onChangeDebounce(delay : Long, cb: () -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         private var timer = Timer()

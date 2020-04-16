@@ -73,12 +73,9 @@ class ScoreActivity : BaseActivity() {
 
     private fun handleLoading() = with(binding) {
         scoreProgress.progress = 0f
-        qscoreValue.invisible()
     }
 
     private fun handleReady(score: Int) = with(binding) {
-        qscoreValue.visible()
-        qscoreValue.text = score.toString()
         scoreProgress.progress = score/100f
     }
 

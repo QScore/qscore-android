@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:text="Your QScore:"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -33,21 +34,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="100dp"
+        app:background_width="15dp"
+        app:progress_width="15dp"
+        app:progress_color_start="@color/green"
+        app:progress_color_middle="@color/green"
+        app:progress_color_end="@color/green"
+        app:progress_text_color="@color/grey_700"
+        app:progress_text_size="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qscoreLabel"/>
-
-    <TextView
-        android:id="@+id/qscoreValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:color="@color/black"
-        android:textSize="50sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/scoreProgress"
-        app:layout_constraintStart_toStartOf="@+id/scoreProgress"
-        app:layout_constraintTop_toTopOf="@+id/scoreProgress"
-        app:layout_constraintBottom_toBottomOf="@+id/scoreProgress"
-        tools:text="100" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
