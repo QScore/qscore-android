@@ -1,13 +1,8 @@
 mutation CreateGeofenceEvent($input: CreateGeofenceEventInput!) {
     createGeofenceEvent(input: $input) {
         geofenceEvent {
-            id
-            timestamp
+            userId
             eventType
-            userLocation {
-                latitude
-                longitude
-            }
             userId
         }
     }
@@ -26,6 +21,8 @@ query CurrentUser {
             id
             username
             score
+            followerCount
+            followingCount
         }
     }
 }
