@@ -64,13 +64,11 @@ object LoginManager {
 
         return try {
             val currentUser = Api.getCurrentUser()
-            Timber.d(">>CURRENT USER: $currentUser")
             if (currentUser.username.isNullOrEmpty()) {
                 return false
             }
             true
         } catch (e: IOException) {
-            Timber.d(">>Could not find user with this ID: ")
             //Current user does not exist
             false
         }
@@ -83,9 +81,6 @@ object LoginManager {
                 Timber.d("Successful login with facebook, continuing to aws")
                 val credential = FacebookAuthProvider.getCredential(token)
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
-                    firebaseAuth.currentUser?.getIdToken(true)?.addOnCompleteListener {
-                        Timber.d(">>TOKEN: ${it.result?.token}")
-                    }
                     cont.resume(task.resultEvent)
                 }
             }
