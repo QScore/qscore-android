@@ -3,6 +3,7 @@ package com.berd.qscore.features.score
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -71,14 +72,11 @@ class ScoreActivity : BaseActivity() {
     }
 
     private fun handleLoading() = with(binding) {
-        progress.visible()
-        qscoreValue.invisible()
+        scoreProgress.progress = 0f
     }
 
-    private fun handleReady(score: String) = with(binding) {
-        progress.invisible()
-        qscoreValue.visible()
-        qscoreValue.text = score
+    private fun handleReady(score: Int) = with(binding) {
+        scoreProgress.progress = score/100f
     }
 
     private fun handleActions(it: ScoreViewModel.ScoreAction) {
@@ -98,6 +96,7 @@ class ScoreActivity : BaseActivity() {
 
     private fun setupViews() = binding.apply {
         setSupportActionBar(toolbar)
+        scoreProgress.progress = 1f
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

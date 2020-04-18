@@ -1,5 +1,6 @@
 package com.berd.qscore.features.score
 
+import android.os.CountDownTimer
 import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.score.ScoreViewModel.ScoreAction
@@ -25,7 +26,7 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
 
     sealed class ScoreState {
         object Loading : ScoreState()
-        class Ready(val score: String) : ScoreState()
+        class Ready(val score: Int) : ScoreState()
     }
 
     fun onCreate() {
@@ -35,7 +36,7 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
     fun onResume() {
         viewModelScope.launch {
             try {
-                val score = Api.getCurrentUser().score.roundToInt().toString()
+                val score = Api.getCurrentUser().score.roundToInt()
                 state = Ready(score)
             } catch (e: Exception) {
                 Timber.d("Error getting score: $e")
