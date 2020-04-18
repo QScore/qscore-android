@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ScoreProgressBar">
+        <attr name="progress_width" format="dimension" />
+        <attr name="background_width" format="dimension" />
+        <attr name="progress_color_start" format="color" />
+        <attr name="progress_color_middle" format="color" />
+        <attr name="progress_color_end" format="color" />
+        <attr name="progress_text_color" format="color" />
+        <attr name="progress_text_size" format="dimension" />
+    </declare-styleable>
+</resources>

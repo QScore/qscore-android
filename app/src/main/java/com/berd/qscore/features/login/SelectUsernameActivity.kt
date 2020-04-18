@@ -2,9 +2,13 @@ package com.berd.qscore.features.login
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
@@ -81,12 +85,16 @@ class SelectUsernameActivity : BaseActivity() {
     }
 
     private fun handleCheckingUsername() = binding.apply {
-        usernameLayout.error = null
+        usernameLayout.isEndIconVisible = true
         usernameLayout.helperText = getString(R.string.checking_usernames)
+        if (!usernameLayout.error.isNullOrEmpty()) {
+            usernameLayout.error = null
+        }
     }
 
     private fun handleFieldsUpdated(usernameError: Boolean, signUpIsReady: Boolean) =
         binding.apply {
+            usernameLayout.isEndIconVisible = false
             usernameLayout.helperText = getString(R.string.helper_username)
 
             if (usernameError) {
@@ -114,6 +122,8 @@ class SelectUsernameActivity : BaseActivity() {
         username.onChangeDebounce(500) {
             viewModel.onFieldsUpdated(username.text.toString())
         }
+        startSpinnerAnimation()
+        usernameLayout.isEndIconVisible = false
 
         continueButton.setOnClickListener {
             viewModel.onContinue(username.text.toString())
@@ -122,6 +132,15 @@ class SelectUsernameActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    private fun startSpinnerAnimation() = binding.apply{
+        val spinnerAnimation = usernameLayout.endIconDrawable as Animatable
+        AnimatedVectorDrawableCompat.registerAnimationCallback(usernameLayout.endIconDrawable, object : Animatable2Compat.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                usernameLayout.post { spinnerAnimation.start() }
+            }
+        })
+        spinnerAnimation.start()
+    }
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
             viewModel.onBackPressed()
