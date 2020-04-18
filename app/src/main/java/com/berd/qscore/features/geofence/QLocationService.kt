@@ -90,9 +90,7 @@ class QLocationService : Service() {
             val location = LocationHelper.fetchLastLocation()
             location?.let {
                 val input = CreateGeofenceEventInput(
-                    eventType = eventType,
-                    userLocationLat = it.lat.toString(),
-                    userLocationLng = it.lng.toString()
+                    eventType = eventType
                 )
                 Api.createGeofenceEvent(input)
             }

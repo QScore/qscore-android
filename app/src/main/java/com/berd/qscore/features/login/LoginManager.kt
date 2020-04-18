@@ -64,11 +64,13 @@ object LoginManager {
 
         return try {
             val currentUser = Api.getCurrentUser()
+            Timber.d(">>CURRENT USER: $currentUser")
             if (currentUser.username.isNullOrEmpty()) {
                 return false
             }
             true
         } catch (e: IOException) {
+            Timber.d(">>Could not find user with this ID: ")
             //Current user does not exist
             false
         }
