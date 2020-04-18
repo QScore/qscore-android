@@ -11,7 +11,6 @@ import com.berd.qscore.UpdateUserInfoMutation
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.type.CreateGeofenceEventInput
 import com.berd.qscore.type.UpdateUserInfoInput
-import com.berd.qscore.utils.injection.Injector
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
@@ -21,7 +20,6 @@ object Api {
 
     private const val SERVER_URL = "https://tjeslxndo2.execute-api.us-east-1.amazonaws.com/dev/graphql"
 
-    private val context = Injector.appContext
     private val apolloClient by lazy { buildApolloClient() }
 
     private fun buildApolloClient(): ApolloClient {
@@ -49,7 +47,7 @@ object Api {
         return QUser(
             userId = currentUser.id,
             username = currentUser.username,
-            score = currentUser.score
+            score = currentUser.score ?: 0.0
         )
     }
 
@@ -58,7 +56,7 @@ object Api {
         apolloClient.mutate(mutation).call()
     }
 
-    private suspend fun <T: Any> ApolloQueryCall<T>.call(): T {
+    private suspend fun <T : Any> ApolloQueryCall<T>.call(): T {
         val result = toDeferred().await()
         if (result.hasErrors()) {
             throw IOException(result.errors().toString())
@@ -66,7 +64,7 @@ object Api {
         return checkNotNull(result.data())
     }
 
-    private suspend fun <T: Any> ApolloMutationCall<T>.call(): T? {
+    private suspend fun <T : Any> ApolloMutationCall<T>.call(): T? {
         val result = toDeferred().await()
         if (result.hasErrors()) {
             throw IOException(result.errors().toString())
