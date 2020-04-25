@@ -3,6 +3,7 @@ package com.berd.qscore.features.login
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
 import com.berd.qscore.features.shared.api.Api
@@ -15,7 +16,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
-import java.io.IOException
 import java.util.regex.Pattern
 import kotlin.coroutines.resume
 
@@ -68,7 +68,7 @@ object LoginManager {
                 return false
             }
             true
-        } catch (e: IOException) {
+        } catch (e: ApolloException) {
             //Current user does not exist
             false
         }

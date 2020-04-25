@@ -1,6 +1,8 @@
 package com.berd.qscore.features.login
 
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
 import com.berd.qscore.features.login.SelectUsernameViewModel.State
@@ -38,7 +40,7 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
         try {
             Api.updateUserInfo(input)
             handleSuccess()
-        } catch (e: Error) {
+        } catch (e: ApolloException) {
             Timber.d("Unable to update username: $e")
             //TODO: show error
         }

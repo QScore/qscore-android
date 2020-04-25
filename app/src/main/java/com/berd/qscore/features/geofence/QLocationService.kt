@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.R
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
@@ -25,7 +26,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import splitties.intents.toPendingActivity
 import timber.log.Timber
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -94,7 +94,7 @@ class QLocationService : Service() {
                 )
                 Api.createGeofenceEvent(input)
             }
-        } catch (e: IOException) {
+        } catch (e: ApolloException) {
             Timber.w("Unable to submit event: $e")
         }
     }

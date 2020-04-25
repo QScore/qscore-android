@@ -3,7 +3,7 @@ mutation CreateGeofenceEvent($input: CreateGeofenceEventInput!) {
         geofenceEvent {
             userId
             eventType
-            userId
+            timestamp
         }
     }
 }
@@ -18,11 +18,11 @@ mutation UpdateUserInfo($input: UpdateUserInfoInput!){
 query CurrentUser {
     currentUser {
         user {
-            id
-            username
-            score
-            followerCount
-            followingCount
+            userId,
+            username,
+            score,
+            allTimeScore,
+            isCurrentUserFollowing
         }
     }
 }

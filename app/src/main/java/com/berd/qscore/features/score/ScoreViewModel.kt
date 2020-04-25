@@ -1,7 +1,7 @@
 package com.berd.qscore.features.score
 
-import android.os.CountDownTimer
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.score.ScoreViewModel.ScoreAction
 import com.berd.qscore.features.score.ScoreViewModel.ScoreAction.LaunchLoginActivity
@@ -38,7 +38,7 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
             try {
                 val score = Api.getCurrentUser().score.roundToInt()
                 state = Ready(score)
-            } catch (e: Exception) {
+            } catch (e: ApolloException) {
                 Timber.d("Error getting score: $e")
             }
         }
