@@ -35,14 +35,39 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="100dp"
         app:background_width="15dp"
-        app:progress_width="15dp"
-        app:progress_color_start="@color/green"
-        app:progress_color_middle="@color/green"
-        app:progress_color_end="@color/green"
-        app:progress_text_color="@color/grey_700"
-        app:progress_text_size="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qscoreLabel"/>
+        app:layout_constraintTop_toBottomOf="@+id/qscoreLabel"
+        app:progress_color_end="@color/green"
+        app:progress_color_middle="@color/green"
+        app:progress_color_start="@color/green"
+        app:progress_text_color="@color/grey_700"
+        app:progress_text_size="50sp"
+        app:progress_width="15dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        style="@style/BottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemHorizontalTranslationEnabled="false"
+        app:labelVisibilityMode="selected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+    <TextView
+        android:id="@+id/allTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreProgress"
+        tools:text="All time score: 43958734985" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

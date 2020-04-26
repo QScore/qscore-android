@@ -47,7 +47,8 @@ object Api {
         return QUser(
             userId = currentUser.userId,
             username = currentUser.username,
-            score = currentUser.score ?: 0.0
+            score = currentUser.score ?: 0.0,
+            allTimeScore = currentUser.allTimeScore ?: 0.0
         )
     }
 

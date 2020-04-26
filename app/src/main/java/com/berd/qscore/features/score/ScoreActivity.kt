@@ -1,9 +1,7 @@
 package com.berd.qscore.features.score
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -15,8 +13,6 @@ import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState
 import com.berd.qscore.features.shared.activity.BaseActivity
-import com.berd.qscore.utils.extensions.invisible
-import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
 import splitties.activities.start
 import splitties.toast.toast
@@ -67,7 +63,7 @@ class ScoreActivity : BaseActivity() {
     private fun handleState(state: ScoreState) = with(binding) {
         when (state) {
             is ScoreState.Loading -> handleLoading()
-            is ScoreState.Ready -> handleReady(state.score)
+            is ScoreState.Ready -> handleReady(state.score, state.allTimeScore)
         }
     }
 
@@ -75,8 +71,9 @@ class ScoreActivity : BaseActivity() {
         scoreProgress.progress = 0f
     }
 
-    private fun handleReady(score: Int) = with(binding) {
-        scoreProgress.progress = score/100f
+    private fun handleReady(score: Int, allTimeScore: Int) = with(binding) {
+        scoreProgress.progress = score / 100f
+        allTime.text = getString(R.string.all_time_score, allTimeScore)
     }
 
     private fun handleActions(it: ScoreViewModel.ScoreAction) {

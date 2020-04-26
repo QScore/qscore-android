@@ -13,7 +13,6 @@ import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.math.roundToInt
 
 
 class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
@@ -26,7 +25,7 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
 
     sealed class ScoreState {
         object Loading : ScoreState()
-        class Ready(val score: Int) : ScoreState()
+        class Ready(val score: Int, val allTimeScore: Int) : ScoreState()
     }
 
     fun onCreate() {
@@ -36,8 +35,8 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
     fun onResume() {
         viewModelScope.launch {
             try {
-                val score = Api.getCurrentUser().score.roundToInt()
-                state = Ready(score)
+                val user = Api.getCurrentUser()
+                state = Ready(user.score.toInt(), user.allTimeScore.toInt())
             } catch (e: ApolloException) {
                 Timber.d("Error getting score: $e")
             }

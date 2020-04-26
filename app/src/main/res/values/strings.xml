@@ -70,4 +70,8 @@
 
     <string name="helper_search_username">Search Qbuddies by username</string>
     <string name="connection_error">Failed to connect to servers, please try again later</string>
+    <string name="me">Me</string>
+    <string name="search">Search</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="all_time_score">All time score: %1$d</string>
 </resources>
