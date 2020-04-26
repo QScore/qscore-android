@@ -12,7 +12,7 @@ import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySignupBinding
 import com.berd.qscore.features.login.SignUpViewModel.Action.*
 import com.berd.qscore.features.login.SignUpViewModel.State.*
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.*
@@ -99,7 +99,7 @@ class SignUpActivity : BaseActivity() {
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
+        start<MainActivity>()
         progressDialog?.dismiss()
         finish()
     }

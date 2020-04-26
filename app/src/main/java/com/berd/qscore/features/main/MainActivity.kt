@@ -1,4 +1,4 @@
-package com.berd.qscore.features.score
+package com.berd.qscore.features.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,16 +11,22 @@ import com.berd.qscore.databinding.ActivityScoreBinding
 import com.berd.qscore.features.friends.AddFriendsActivity
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
-import com.berd.qscore.features.score.ScoreViewModel.ScoreState
+import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
+import com.berd.qscore.features.main.bottomnav.BottomTab
+import com.berd.qscore.features.main.bottomnav.FragmentStateManager
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.utils.location.LocationHelper
 import splitties.activities.start
 import splitties.toast.toast
 
 
-class ScoreActivity : BaseActivity() {
+class MainActivity : BaseActivity() {
 
-    private val viewModel by viewModels<ScoreViewModel>()
+    private val viewModel by viewModels<MainViewModel>()
+
+    private val fragmentStateManager: FragmentStateManager by lazy {
+        FragmentStateManager(binding.fragmentContainer, supportFragmentManager)
+    }
 
     private val binding: ActivityScoreBinding by lazy {
         ActivityScoreBinding.inflate(layoutInflater)
@@ -30,10 +36,35 @@ class ScoreActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         val view = binding.root
         setContentView(view)
+        setupBottomNav()
+        startLocationService()
         observeEvents()
         setupViews()
-        startLocationService()
-        viewModel.onCreate()
+    }
+
+    private fun setupBottomNav() = with(binding.bottomNavigation) {
+        fragmentStateManager.changeFragment(BottomTab.ME)
+        setOnNavigationItemSelectedListener {
+            val bottomTab = BottomTab.fromMenuItemId(it.itemId)
+            fragmentStateManager.changeFragment(bottomTab)
+            true
+        }
+        setOnNavigationItemReselectedListener {
+            // Do nothing
+        }
+    }
+
+    private fun observeEvents() {
+        viewModel.observeActions {
+            when (it) {
+                LaunchLoginActivity -> launchLoginActivity()
+            }
+        }
+    }
+
+    private fun setupViews() = binding.apply {
+        setSupportActionBar(toolbar)
+        //Set up bottom tabs
     }
 
     private fun startLocationService() {
@@ -45,43 +76,6 @@ class ScoreActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onResume()
-    }
-
-    private fun observeEvents() {
-        viewModel.observeActions {
-            handleActions(it)
-        }
-
-        viewModel.observeState {
-            handleState(it)
-        }
-    }
-
-    private fun handleState(state: ScoreState) = with(binding) {
-        when (state) {
-            is ScoreState.Loading -> handleLoading()
-            is ScoreState.Ready -> handleReady(state.score, state.allTimeScore)
-        }
-    }
-
-    private fun handleLoading() = with(binding) {
-        scoreProgress.progress = 0f
-    }
-
-    private fun handleReady(score: Int, allTimeScore: Int) = with(binding) {
-        scoreProgress.progress = score / 100f
-        allTime.text = getString(R.string.all_time_score, allTimeScore)
-    }
-
-    private fun handleActions(it: ScoreViewModel.ScoreAction) {
-        when (it) {
-            ScoreViewModel.ScoreAction.LaunchLoginActivity -> launchLoginActivity()
-        }
-    }
-
     private fun launchLoginActivity() {
         start<LoginActivity>()
         finish()
@@ -89,11 +83,6 @@ class ScoreActivity : BaseActivity() {
 
     private fun launchAddFriendsActivity() {
         start<AddFriendsActivity>()
-    }
-
-    private fun setupViews() = binding.apply {
-        setSupportActionBar(toolbar)
-        scoreProgress.progress = 1f
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

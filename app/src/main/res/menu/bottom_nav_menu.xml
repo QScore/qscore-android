@@ -13,3 +13,4 @@
         android:icon="@drawable/ic_trophy"
         android:title="@string/leaderboards" />
 </menu>
+

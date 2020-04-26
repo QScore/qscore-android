@@ -12,7 +12,7 @@ import com.berd.qscore.features.geofence.GeofenceIntentService.Event
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Entered
 import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
 import com.berd.qscore.features.geofence.GeofenceState.*
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.type.CreateGeofenceEventInput
 import com.berd.qscore.type.GeofenceEventType
@@ -100,7 +100,7 @@ class QLocationService : Service() {
     }
 
     private fun buildNotification(state: GeofenceState): Notification {
-        val pendingIntent = Intent(this, ScoreActivity::class.java).toPendingActivity(
+        val pendingIntent = Intent(this, MainActivity::class.java).toPendingActivity(
             reqCode = 0,
             flags = PendingIntent.FLAG_UPDATE_CURRENT
         )

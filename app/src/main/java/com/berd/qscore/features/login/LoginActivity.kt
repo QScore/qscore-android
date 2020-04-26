@@ -13,7 +13,7 @@ import com.berd.qscore.features.login.LoginViewModel.Action
 import com.berd.qscore.features.login.LoginViewModel.Action.*
 import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.welcome.WelcomeActivity
@@ -128,7 +128,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
+        start<MainActivity>()
         progressDialog?.dismiss()
         finish()
     }

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.databinding.ActivitySetupBinding
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.ShowError
 import com.berd.qscore.features.welcome.WelcomeViewModel.State.FindingLocation
@@ -64,7 +64,7 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
+        start<MainActivity>()
         finish()
     }
 

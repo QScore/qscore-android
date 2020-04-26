@@ -13,7 +13,7 @@ import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
 import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.invisible
@@ -113,7 +113,7 @@ class SelectUsernameActivity : BaseActivity() {
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
+        start<MainActivity>()
         progressDialog?.dismiss()
         finish()
     }
@@ -132,15 +132,18 @@ class SelectUsernameActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun startSpinnerAnimation() = binding.apply{
+    private fun startSpinnerAnimation() = binding.apply {
         val spinnerAnimation = usernameLayout.endIconDrawable as Animatable
-        AnimatedVectorDrawableCompat.registerAnimationCallback(usernameLayout.endIconDrawable, object : Animatable2Compat.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                usernameLayout.post { spinnerAnimation.start() }
-            }
-        })
+        AnimatedVectorDrawableCompat.registerAnimationCallback(
+            usernameLayout.endIconDrawable,
+            object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    usernameLayout.post { spinnerAnimation.start() }
+                }
+            })
         spinnerAnimation.start()
     }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
             viewModel.onBackPressed()

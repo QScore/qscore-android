@@ -6,7 +6,7 @@ import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.login.SelectUsernameActivity
 import com.berd.qscore.features.login.SignUpActivity
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.features.welcome.WelcomeActivity
@@ -56,7 +56,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
+        start<MainActivity>()
         finish()
     }
 

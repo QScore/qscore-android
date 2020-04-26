@@ -6,12 +6,10 @@ import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityFriendsBinding
 import com.berd.qscore.features.friends.AddFriendsViewModel.State.*
-import com.berd.qscore.features.score.ScoreActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.onChangeDebounce
 import com.berd.qscore.utils.extensions.visible
-import splitties.activities.start
 
 class AddFriendsActivity : BaseActivity() {
     private val viewModel by viewModels<AddFriendsViewModel>()
