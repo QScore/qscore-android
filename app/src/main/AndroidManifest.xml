@@ -42,7 +42,7 @@
         <activity android:name=".features.welcome.WelcomeActivity" />
         <activity
             android:name=".features.main.MainActivity"
-            android:theme="@style/ScoreTheme"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustPan" />
 
         <meta-data

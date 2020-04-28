@@ -54,7 +54,7 @@ class ScoreFragment : BaseFragment() {
         username.text = user.username
         scoreProgress.progress = user.score.toFloat() / 100f
         allTimeScore.text = user.allTimeScore
-        rankNumber.text = user.rank
+        rankNumber.text = "#${user.rank}"
     }
 
     private fun setupViews() = binding.apply {
