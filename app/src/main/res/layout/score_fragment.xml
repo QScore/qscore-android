@@ -5,47 +5,135 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/ScoreTheme"
+    tools:background="@color/colorPrimary"
     tools:context=".features.main.MainActivity">
-
-    <TextView
-        android:id="@+id/qscoreLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="Your QScore:"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.berd.qscore.utils.views.ScoreProgressBar
         android:id="@+id/scoreProgress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="100dp"
-        app:background_width="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/white"
+        app:background_width="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qscoreLabel"
-        app:progress_color_end="@color/green"
-        app:progress_color_middle="@color/green"
-        app:progress_color_start="@color/green"
-        app:progress_text_color="@color/grey_700"
-        app:progress_text_size="50sp"
-        app:progress_width="15dp" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomInfoBg"
+        app:progress_color_end="@color/colorPrimaryDark"
+        app:progress_color_middle="@color/colorPrimaryDark"
+        app:progress_color_start="@color/colorPrimaryDark"
+        app:progress_text_color="@color/colorPrimaryDark"
+        app:progress_text_size="40sp"
+        app:progress_width="10dp" />
+
+    <View
+        android:id="@+id/topInfoBg"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/rounded_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/bottomInfoBg"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/rounded_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topInfoBg" />
+
+    <View
+        android:id="@+id/avatarBorder"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/topInfoBg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/topInfoBg" />
 
     <TextView
-        android:id="@+id/allTime"
+        android:id="@+id/allTimeScore"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/allTimeLabel"
+        app:layout_constraintEnd_toEndOf="@+id/bottomInfoBg"
+        app:layout_constraintTop_toTopOf="@+id/bottomInfoBg"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="3276" />
+
+    <TextView
+        android:id="@+id/rankNumber"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/rankLabel"
+        app:layout_constraintEnd_toStartOf="@+id/allTimeScore"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/bottomInfoBg"
+        app:layout_constraintTop_toTopOf="@+id/bottomInfoBg"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="#306" />
+
+    <TextView
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scoreProgress"
-        tools:text="All time score: 43958734985" />
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/topInfoBg"
+        app:layout_constraintEnd_toEndOf="@+id/topInfoBg"
+        app:layout_constraintStart_toStartOf="@+id/topInfoBg"
+        app:layout_constraintTop_toBottomOf="@+id/avatarBorder"
+        tools:text="SomeUser86" />
+
+    <TextView
+        android:id="@+id/allTimeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All Time"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomInfoBg"
+        app:layout_constraintEnd_toEndOf="@+id/allTimeScore"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/allTimeScore"
+        app:layout_constraintTop_toBottomOf="@+id/allTimeScore" />
+
+    <TextView
+        android:id="@+id/rankLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rank"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomInfoBg"
+        app:layout_constraintEnd_toEndOf="@+id/rankNumber"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/rankNumber"
+        app:layout_constraintTop_toBottomOf="@+id/rankNumber" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

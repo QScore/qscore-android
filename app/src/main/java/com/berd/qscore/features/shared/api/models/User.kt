@@ -4,5 +4,6 @@ data class QUser(
     val userId: String,
     val username: String,
     val score: Double,
-    val allTimeScore: Double
+    val rank: String,
+    val allTimeScore: String
 )

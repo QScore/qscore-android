@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#67b62b</color>
-    <color name="colorPrimaryDark">#67b62b</color>
-    <color name="colorAccent">#98df61</color>
+    <color name="colorPrimary">#a9daf2</color>
+    <color name="colorPrimaryDark">#279fff</color>
+    <color name="colorAccent">#ebf2f6</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#b62b2b</color>
     <color name="yellow">#dede2b</color>
@@ -10,4 +10,6 @@
     <color name="google_blue">#4285F4</color>
     <color name="google_red">#db4b39</color>
     <color name="black">#000000</color>
+    <color name="gray">#9B9B9B</color>
+    <color name="light_gray">#E8E8E8</color>
 </resources>

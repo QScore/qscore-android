@@ -16,11 +16,12 @@ import com.berd.qscore.type.SearchUsersInput
 import com.berd.qscore.type.UpdateUserInfoInput
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import kotlin.math.roundToInt
 
 
 object Api {
     const val STAGE_URL = "https://tjeslxndo2.execute-api.us-east-1.amazonaws.com/dev/graphql"
-    const val LOCAL_URL = "https://16f99a98.ngrok.io/dev/graphql"
+    const val LOCAL_URL = "https://711f6c36.ngrok.io/dev/graphql"
 
     private val apolloClient by lazy { buildApolloClient() }
 
@@ -50,7 +51,8 @@ object Api {
             userId = currentUser.userId,
             username = currentUser.username,
             score = currentUser.score ?: 0.0,
-            allTimeScore = currentUser.allTimeScore ?: 0.0
+            allTimeScore = (currentUser.allTimeScore ?: 0.0).roundToInt().toString(),
+            rank = currentUser.rank?.toString() ?: "Unknown"
         )
     }
 
@@ -67,7 +69,8 @@ object Api {
                 userId = it.userId,
                 username = it.username,
                 score = it.score ?: 0.0,
-                allTimeScore = it.allTimeScore ?: 0.0
+                allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
+                rank = "Unknown"
             )
         }
     }

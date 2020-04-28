@@ -7,13 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.databinding.SearchFragmentBinding
-import com.berd.qscore.features.search.SearchViewModel.SearchAction.HideProgress
-import com.berd.qscore.features.search.SearchViewModel.SearchAction.ShowProgress
-import com.berd.qscore.features.search.SearchViewModel.SearchState.EmptyResults
-import com.berd.qscore.features.search.SearchViewModel.SearchState.UsersLoaded
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.utils.extensions.gone
+import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.visible
 import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import io.reactivex.rxkotlin.addTo
@@ -45,24 +42,26 @@ class SearchFragment : BaseFragment() {
     private fun observeEvents() {
         viewModel.observeState {
             when (it) {
-                is UsersLoaded -> showUsers(it.users)
-                EmptyResults -> handleEmptyResults()
+                is SearchViewModel.SearchState.UsersLoaded -> showUsers(it.users)
+                SearchViewModel.SearchState.EmptyResults -> handleEmptyResults()
             }
         }
 
         viewModel.observeActions {
             when (it) {
-                ShowProgress -> showProgress()
-                HideProgress -> hideProgress()
+                SearchViewModel.SearchAction.ShowProgress -> showProgress()
+                SearchViewModel.SearchAction.HideProgress -> hideProgress()
             }
         }
     }
 
     private fun hideProgress() {
-        binding.progressBar.gone()
+        Timber.d(">>HIDING PROGRESS")
+        binding.progressBar.invisible()
     }
 
     private fun showProgress() {
+        Timber.d(">>SHOWING PROGRESS")
         binding.progressBar.visible()
     }
 
@@ -70,13 +69,13 @@ class SearchFragment : BaseFragment() {
         searchAdapter.submitList(users)
         binding.recyclerView.visible()
         binding.noUsersFound.gone()
-        binding.progressBar.gone()
+        binding.progressBar.invisible()
     }
 
     private fun handleEmptyResults() {
         binding.recyclerView.gone()
         binding.noUsersFound.visible()
-        binding.progressBar.gone()
+        binding.progressBar.invisible()
     }
 
     private fun setupRecyclerView() = activity?.let { activity ->
@@ -87,7 +86,6 @@ class SearchFragment : BaseFragment() {
     private fun setupSearchBar() {
         binding.searchField
             .afterTextChangeEvents()
-            .skip(1)
             .map { it.editable.toString() }
             .distinctUntilChanged()
             .debounce(300, TimeUnit.MILLISECONDS)

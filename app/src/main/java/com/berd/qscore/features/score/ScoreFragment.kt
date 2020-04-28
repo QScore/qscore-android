@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.berd.qscore.R
 import com.berd.qscore.databinding.ScoreFragmentBinding
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
+import com.berd.qscore.features.shared.api.models.QUser
 
 
 class ScoreFragment : BaseFragment() {
@@ -41,7 +41,7 @@ class ScoreFragment : BaseFragment() {
         viewModel.observeState { state ->
             when (state) {
                 is Loading -> handleLoading()
-                is Ready -> handleReady(state.score, state.allTimeScore)
+                is Ready -> handleReady(state.user)
             }
         }
     }
@@ -50,9 +50,11 @@ class ScoreFragment : BaseFragment() {
         scoreProgress.progress = 0f
     }
 
-    private fun handleReady(score: Int, allTimeScore: Int) = with(binding) {
-        scoreProgress.progress = score / 100f
-        allTime.text = getString(R.string.all_time_score, allTimeScore)
+    private fun handleReady(user: QUser) = with(binding) {
+        username.text = user.username
+        scoreProgress.progress = user.score.toFloat() / 100f
+        allTimeScore.text = user.allTimeScore
+        rankNumber.text = user.rank
     }
 
     private fun setupViews() = binding.apply {

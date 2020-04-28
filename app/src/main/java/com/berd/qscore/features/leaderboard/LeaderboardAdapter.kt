@@ -1,14 +1,13 @@
-package com.berd.qscore.features.search
+package com.berd.qscore.features.leaderboard
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.berd.qscore.databinding.RowSearchUserBinding
-import com.berd.qscore.features.leaderboard.LeaderboardViewHolder
 import com.berd.qscore.features.shared.api.models.QUser
 import splitties.systemservices.layoutInflater
 
-class SearchAdapter : ListAdapter<QUser, LeaderboardViewHolder>(DiffCallback()) {
+class LeaderboardAdapter : ListAdapter<QUser, LeaderboardViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderboardViewHolder {
         val binding = RowSearchUserBinding.inflate(parent.layoutInflater)
         return LeaderboardViewHolder(binding)

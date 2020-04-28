@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
-import com.berd.qscore.databinding.ActivityScoreBinding
+import com.berd.qscore.databinding.ActivityMainBinding
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
@@ -28,8 +28,8 @@ class MainActivity : BaseActivity() {
         FragmentStateManager(binding.fragmentContainer, supportFragmentManager)
     }
 
-    private val binding: ActivityScoreBinding by lazy {
-        ActivityScoreBinding.inflate(layoutInflater)
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

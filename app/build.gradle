@@ -105,6 +105,10 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-runtime:1.4.3"
     implementation 'com.apollographql.apollo:apollo-coroutines-support:1.4.3'
 
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
     //OkHttp
     implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
 

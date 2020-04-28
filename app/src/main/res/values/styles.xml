@@ -17,7 +17,7 @@
     </style>
 
     <style name="BottomNav" parent="Widget.Design.BottomNavigationView">
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">@color/white</item>
         <item name="itemIconTint">@color/bottom_nav_colors</item>
         <item name="itemTextColor">@color/bottom_nav_colors</item>
     </style>
