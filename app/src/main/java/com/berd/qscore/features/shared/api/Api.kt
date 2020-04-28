@@ -8,9 +8,11 @@ import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.CreateGeofenceEventMutation
 import com.berd.qscore.CurrentUserQuery
+import com.berd.qscore.SearchUsersQuery
 import com.berd.qscore.UpdateUserInfoMutation
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.type.CreateGeofenceEventInput
+import com.berd.qscore.type.SearchUsersInput
 import com.berd.qscore.type.UpdateUserInfoInput
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -57,19 +59,32 @@ object Api {
         apolloClient.mutate(mutation).call()
     }
 
+    suspend fun searchUsers(input: SearchUsersInput): List<QUser> {
+        val query = SearchUsersQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.searchUsers.users.map {
+            QUser(
+                userId = it.userId,
+                username = it.username,
+                score = it.score ?: 0.0,
+                allTimeScore = it.allTimeScore ?: 0.0
+            )
+        }
+    }
+
     private suspend fun <T : Any> ApolloQueryCall<T>.call(): T {
         val result = toDeferred().await()
-        if (result.hasErrors()) {
+        if (result.hasErrors() || result.data() == null) {
             throw ApolloException(result.errors().toString())
         }
         return checkNotNull(result.data())
     }
 
-    private suspend fun <T : Any> ApolloMutationCall<T>.call(): T? {
+    private suspend fun <T : Any> ApolloMutationCall<T>.call(): T {
         val result = toDeferred().await()
-        if (result.hasErrors()) {
+        if (result.hasErrors() || result.data() == null) {
             throw ApolloException(result.errors().toString())
         }
-        return result.data()
+        return checkNotNull(result.data())
     }
 }

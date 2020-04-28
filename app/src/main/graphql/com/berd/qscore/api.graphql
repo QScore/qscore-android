@@ -26,3 +26,17 @@ query CurrentUser {
         }
     }
 }
+
+query SearchUsers($input: SearchUsersInput!) {
+    searchUsers(input: $input) {
+        users {
+            userId,
+            username,
+            score,
+            allTimeScore,
+            isCurrentUserFollowing,
+            followingCount,
+            followerCount
+        }
+    }
+}

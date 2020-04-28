@@ -7,11 +7,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".QscoreApplication"
@@ -22,10 +22,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".features.login.SignUpActivity"
-            android:label="SignUpActivity"/>
+            android:label="SignUpActivity" />
         <activity
             android:name=".features.login.SelectUsernameActivity"
-            android:label="SelectUsernameActivity"/>
+            android:label="SelectUsernameActivity" />
         <activity
             android:name=".features.login.LoginActivity"
             android:label="@string/title_activity_login" />
@@ -38,11 +38,13 @@
         </activity>
         <activity
             android:name=".features.friends.AddFriendsActivity"
-            android:label="AddFriendsActivity"/>
+            android:label="AddFriendsActivity" />
         <activity android:name=".features.welcome.WelcomeActivity" />
         <activity
             android:name=".features.main.MainActivity"
-            android:theme="@style/ScoreTheme" /> <!-- Facebook -->
+            android:theme="@style/ScoreTheme"
+            android:windowSoftInputMode="adjustPan" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

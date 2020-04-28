@@ -3,10 +3,11 @@ package com.berd.qscore.features.main.bottomnav
 import androidx.fragment.app.Fragment
 import com.berd.qscore.R
 import com.berd.qscore.features.score.ScoreFragment
+import com.berd.qscore.features.search.SearchFragment
 
 enum class BottomTab(val fragment: Fragment) {
     ME(ScoreFragment.newInstance()),
-    SEARCH(ScoreFragment.newInstance()),
+    SEARCH(SearchFragment.newInstance()),
     LEADERBOARD(ScoreFragment.newInstance());
 
     companion object {

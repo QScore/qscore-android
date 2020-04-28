@@ -8,11 +8,11 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityScoreBinding
-import com.berd.qscore.features.friends.AddFriendsActivity
 import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
 import com.berd.qscore.features.main.bottomnav.BottomTab
+import com.berd.qscore.features.main.bottomnav.BottomTab.*
 import com.berd.qscore.features.main.bottomnav.FragmentStateManager
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.utils.location.LocationHelper
@@ -36,22 +36,32 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         val view = binding.root
         setContentView(view)
-        setupBottomNav()
         startLocationService()
         observeEvents()
         setupViews()
+        setupBottomNav()
     }
 
     private fun setupBottomNav() = with(binding.bottomNavigation) {
-        fragmentStateManager.changeFragment(BottomTab.ME)
+        changeFragment(ME)
         setOnNavigationItemSelectedListener {
             val bottomTab = BottomTab.fromMenuItemId(it.itemId)
-            fragmentStateManager.changeFragment(bottomTab)
+            changeFragment(bottomTab)
             true
         }
         setOnNavigationItemReselectedListener {
             // Do nothing
         }
+    }
+
+    private fun changeFragment(bottomTab: BottomTab) {
+        fragmentStateManager.changeFragment(bottomTab)
+        val toolbarTitleResId = when (bottomTab) {
+            ME -> R.string.me
+            SEARCH -> R.string.search
+            LEADERBOARD -> R.string.leaderboards
+        }
+        supportActionBar?.title = getString(toolbarTitleResId)
     }
 
     private fun observeEvents() {
@@ -81,10 +91,6 @@ class MainActivity : BaseActivity() {
         finish()
     }
 
-    private fun launchAddFriendsActivity() {
-        start<AddFriendsActivity>()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.appbar_menu, menu)
         return true
@@ -92,11 +98,6 @@ class MainActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
-            true
-        }
-
-        R.id.action_add_friends -> {
-            launchAddFriendsActivity()
             true
         }
 

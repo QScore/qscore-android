@@ -8,10 +8,6 @@
         android:icon="@drawable/ic_settings"
         app:showAsAction="ifRoom"
         android:visible="false"/>
-    <item android:id="@+id/action_add_friends"
-        android:title="@string/action_add_friends"
-        android:icon="@drawable/ic_add_friend"
-        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_logout"
         android:title="@string/action_logout"
