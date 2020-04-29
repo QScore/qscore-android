@@ -3,7 +3,6 @@ package com.berd.qscore.features.main.bottomnav
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import timber.log.Timber
 
 class FragmentStateManager(private var container: ViewGroup, private val fragmentManager: FragmentManager) {
 
@@ -25,7 +24,7 @@ class FragmentStateManager(private var container: ViewGroup, private val fragmen
             setPrimaryNavigationFragment(fragment)
             setReorderingAllowed(true)
             commitNowAllowingStateLoss()
-            fragment.also { Timber.d(">>FRAGMENT $it") }
+            fragment
         }
     }
 

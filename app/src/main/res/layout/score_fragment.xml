@@ -16,6 +16,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/circle"
         android:backgroundTint="@color/white"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bottomInfoBg"
@@ -35,6 +36,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_rectangle"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,6 +49,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_rectangle"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,6 +63,7 @@
         android:layout_marginEnd="30dp"
         android:background="@drawable/circle"
         android:backgroundTint="@color/white"
+        android:elevation="1dp"
         app:layout_constraintBottom_toTopOf="@+id/topInfoBg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +74,7 @@
         android:layout_width="124dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
+        android:elevation="1dp"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
@@ -84,6 +89,7 @@
         android:id="@+id/rankNumber"
         android:layout_width="124dp"
         android:layout_height="wrap_content"
+        android:elevation="1dp"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
@@ -102,6 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:elevation="1dp"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -115,6 +122,7 @@
         android:id="@+id/allTimeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="1dp"
         android:letterSpacing="0.02"
         android:text="All Time"
         android:textAllCaps="true"
@@ -129,6 +137,7 @@
         android:id="@+id/rankLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="1dp"
         android:letterSpacing="0.02"
         android:text="Rank"
         android:textAllCaps="true"
@@ -138,6 +147,17 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/rankNumber"
         app:layout_constraintTop_toBottomOf="@+id/rankNumber" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/avatarBorder"
+        app:layout_constraintEnd_toEndOf="@+id/avatarBorder"
+        app:layout_constraintStart_toStartOf="@+id/avatarBorder"
+        app:layout_constraintTop_toTopOf="@+id/avatarBorder"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,12 @@ import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.utils.extensions.loadUrl
+import com.bumptech.glide.request.RequestOptions
+import com.giphy.sdk.core.models.Media
+import com.giphy.sdk.ui.Giphy
+import com.giphy.sdk.ui.views.GiphyDialogFragment
+import timber.log.Timber
 
 
 class ScoreFragment : BaseFragment() {
@@ -59,6 +65,30 @@ class ScoreFragment : BaseFragment() {
 
     private fun setupViews() = binding.apply {
         scoreProgress.progress = 1f
+        avatarBorder.setOnClickListener { loadGiphy() }
+    }
+
+    private fun updateAvatar(id: String) {
+        binding.avatar.loadUrl("https://media.giphy.com/media/${id}/giphy.gif", customOptions = RequestOptions().circleCrop())
+    }
+
+    private fun loadGiphy() = activity?.let { activity ->
+        Giphy.configure(activity.applicationContext, "LrZT9E87QWUQfNqmkWw6e86j64BSlCUR", verificationMode = true)
+        val giphyDialog = GiphyDialogFragment.newInstance()
+        giphyDialog.show(childFragmentManager, "giphy_dialog")
+        giphyDialog.gifSelectionListener = object : GiphyDialogFragment.GifSelectionListener {
+            override fun didSearchTerm(term: String) {
+            }
+
+            override fun onDismissed() {
+            }
+
+            override fun onGifSelected(media: Media) {
+                //"https://giphy.com/embed/d2jibZKKA0k3RUgU"
+                Timber.d(">>SELECTED: " + media)
+                updateAvatar(media.id)
+            }
+        }
     }
 
     companion object {
