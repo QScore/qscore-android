@@ -46,7 +46,6 @@ class QLocationService : Service() {
         }
         startService(Unknown)
         observeGeofenceEvents()
-        setupLocationUpdates()
         return START_NOT_STICKY
     }
 

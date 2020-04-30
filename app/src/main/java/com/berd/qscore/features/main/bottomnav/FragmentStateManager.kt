@@ -1,36 +1,41 @@
 package com.berd.qscore.features.main.bottomnav
 
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 
-class FragmentStateManager(private var container: ViewGroup, private val fragmentManager: FragmentManager) {
+class FragmentStateManager(private val contentResId: Int, private val fragmentManager: FragmentManager) {
 
-    fun changeFragment(bottomTab: BottomTab): Fragment? {
-        val tag = makeFragmentName(
-            container.id,
-            bottomTab.name
-        )
+    private val currentFragment get() = fragmentManager.primaryNavigationFragment
 
-        return fragmentManager.beginTransaction().run {
-            val fragment = fragmentManager.findFragmentByTag(tag)?.also {
-                show(it)
-            } ?: bottomTab.fragment.also {
-                add(container.id, it, tag)
-            }
-            if (fragment != fragmentManager.primaryNavigationFragment) {
-                fragmentManager.primaryNavigationFragment?.let { hide(it) }
-            }
-            setPrimaryNavigationFragment(fragment)
-            setReorderingAllowed(true)
+    fun changeTab(tab: BottomTab) {
+        //Check for existing fragment
+        fragmentManager.beginTransaction().apply {
+            val fragment = fragmentManager.findTabFragment(tab) ?: addTabFragment(tab)
+            makeFragmentVisible(fragment)
             commitNowAllowingStateLoss()
-            fragment
         }
     }
 
-    companion object {
-        private fun makeFragmentName(viewId: Int, id: String): String {
-            return "android:switcher:$viewId:$id"
+    private fun FragmentManager.findTabFragment(tab: BottomTab): Fragment? {
+        return findFragmentByTag(tab.getTag())
+    }
+
+    private fun FragmentTransaction.addTabFragment(tab: BottomTab): Fragment {
+        val fragment = tab.buildFragment()
+        add(contentResId, fragment, tab.getTag())
+        return fragment
+    }
+
+    private fun FragmentTransaction.makeFragmentVisible(fragment: Fragment) {
+        show(fragment)
+        if (currentFragment != fragment) {
+            currentFragment?.let { hide(it) }
         }
+        setPrimaryNavigationFragment(fragment)
+    }
+
+    private fun BottomTab.getTag(): String {
+        return "tab:$name"
     }
 }

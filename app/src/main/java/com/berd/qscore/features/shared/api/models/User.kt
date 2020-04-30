@@ -5,5 +5,6 @@ data class QUser(
     val username: String,
     val score: Double,
     val rank: String,
-    val allTimeScore: String
+    val allTimeScore: String,
+    val isCurrentUserFollowing: Boolean = false
 )

@@ -76,4 +76,6 @@
     <string name="all_time_score">All time score: %1$s</string>
     <string name="search_users">Search users</string>
     <string name="no_users_found">No users found</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
 </resources>

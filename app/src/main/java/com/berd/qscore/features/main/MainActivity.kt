@@ -25,7 +25,7 @@ class MainActivity : BaseActivity() {
     private val viewModel by viewModels<MainViewModel>()
 
     private val fragmentStateManager: FragmentStateManager by lazy {
-        FragmentStateManager(binding.fragmentContainer, supportFragmentManager)
+        FragmentStateManager(R.id.fragmentContainer, supportFragmentManager)
     }
 
     private val binding: ActivityMainBinding by lazy {
@@ -55,7 +55,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun changeFragment(bottomTab: BottomTab) {
-        fragmentStateManager.changeFragment(bottomTab)
+        fragmentStateManager.changeTab(bottomTab)
         val toolbarTitleResId = when (bottomTab) {
             ME -> R.string.me
             SEARCH -> R.string.search

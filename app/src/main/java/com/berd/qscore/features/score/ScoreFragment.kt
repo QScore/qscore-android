@@ -35,9 +35,15 @@ class ScoreFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Setup stuff
-        observeEvents()
         setupViews()
+        observeEvents()
         viewModel.onCreate()
+        Timber.d(">>ON VIEW CREATED")
+    }
+
+    override fun onDestroy() {
+        Timber.d(">>VIEW DESTROYED")
+        super.onDestroy()
     }
 
     override fun onResume() {
@@ -60,7 +66,7 @@ class ScoreFragment : BaseFragment() {
 
     private fun handleReady(user: QUser) = with(binding) {
         username.text = user.username
-        scoreProgress.progress = user.score.toFloat() / 100f
+        scoreProgress.progress = user.score.toFloat() / 100
         allTimeScore.text = user.allTimeScore
         rankNumber.text = "#${user.rank}"
     }

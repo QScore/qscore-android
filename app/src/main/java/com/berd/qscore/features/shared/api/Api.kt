@@ -74,6 +74,7 @@ object Api {
                 username = it.username,
                 score = it.score ?: 0.0,
                 allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
+                isCurrentUserFollowing = it.isCurrentUserFollowing ?: false,
                 rank = "Unknown"
             )
         }
