@@ -12,6 +12,7 @@ import com.berd.qscore.SearchUsersQuery
 import com.berd.qscore.UpdateUserInfoMutation
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.type.CreateGeofenceEventInput
+import com.berd.qscore.type.GeofenceEventType
 import com.berd.qscore.type.SearchUsersInput
 import com.berd.qscore.type.UpdateUserInfoInput
 import okhttp3.OkHttpClient
@@ -38,7 +39,8 @@ object Api {
             .build()
     }
 
-    suspend fun updateUserInfo(input: UpdateUserInfoInput) {
+    suspend fun updateUserInfo(username: String) {
+        val input = UpdateUserInfoInput(username)
         val mutation = UpdateUserInfoMutation(input)
         apolloClient.mutate(mutation).call()
     }
@@ -56,12 +58,14 @@ object Api {
         )
     }
 
-    suspend fun createGeofenceEvent(input: CreateGeofenceEventInput) {
+    suspend fun createGeofenceEvent(eventType: GeofenceEventType) {
+        val input = CreateGeofenceEventInput(eventType)
         val mutation = CreateGeofenceEventMutation(input)
         apolloClient.mutate(mutation).call()
     }
 
-    suspend fun searchUsers(input: SearchUsersInput): List<QUser> {
+    suspend fun searchUsers(query: String, limit: Int = 30): List<QUser> {
+        val input = SearchUsersInput(query, limit)
         val query = SearchUsersQuery(input)
         val result = apolloClient.query(query).call()
         return result.searchUsers.users.map {

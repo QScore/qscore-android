@@ -7,7 +7,6 @@ import com.berd.qscore.features.search.SearchViewModel.SearchState.UsersLoaded
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.type.SearchUsersInput
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -20,7 +19,7 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
         action(SearchAction.ShowProgress)
         viewModelScope.launch {
             try {
-                val users = Api.searchUsers(SearchUsersInput(query))
+                val users = Api.searchUsers(query)
                 if (users.isEmpty()) {
                     state = EmptyResults
                 }

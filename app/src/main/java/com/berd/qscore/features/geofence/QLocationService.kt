@@ -14,7 +14,6 @@ import com.berd.qscore.features.geofence.GeofenceIntentService.Event.Exited
 import com.berd.qscore.features.geofence.GeofenceState.*
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.api.Api
-import com.berd.qscore.type.CreateGeofenceEventInput
 import com.berd.qscore.type.GeofenceEventType
 import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.disposables.CompositeDisposable
@@ -89,10 +88,7 @@ class QLocationService : Service() {
         try {
             val location = LocationHelper.fetchLastLocation()
             location?.let {
-                val input = CreateGeofenceEventInput(
-                    eventType = eventType
-                )
-                Api.createGeofenceEvent(input)
+                Api.createGeofenceEvent(eventType)
             }
         } catch (e: ApolloException) {
             Timber.w("Unable to submit event: $e")

@@ -2,7 +2,6 @@ package com.berd.qscore.features.login
 
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action
 import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
 import com.berd.qscore.features.login.SelectUsernameViewModel.State
@@ -10,10 +9,8 @@ import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.type.UpdateUserInfoInput
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 
 class SelectUsernameViewModel : RxViewModel<Action, State>() {
 
@@ -36,9 +33,8 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
 
     fun onContinue(username: String) = viewModelScope.launch {
         state = InProgress
-        val input = UpdateUserInfoInput(username = username)
         try {
-            Api.updateUserInfo(input)
+            Api.updateUserInfo(username)
             handleSuccess()
         } catch (e: ApolloException) {
             Timber.d("Unable to update username: $e")
