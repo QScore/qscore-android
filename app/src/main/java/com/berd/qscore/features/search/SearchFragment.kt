@@ -35,8 +35,13 @@ class SearchFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSearchBar()
+        setupViews()
         setupRecyclerView()
         observeEvents()
+    }
+
+    private fun setupViews() = with(binding) {
+        clearButton.setOnClickListener { searchField.setText("") }
     }
 
     private fun observeEvents() {
@@ -44,38 +49,34 @@ class SearchFragment : BaseFragment() {
             when (it) {
                 is SearchViewModel.SearchState.UsersLoaded -> showUsers(it.users)
                 SearchViewModel.SearchState.EmptyResults -> handleEmptyResults()
-            }
-        }
-
-        viewModel.observeActions {
-            when (it) {
-                SearchViewModel.SearchAction.ShowProgress -> showProgress()
-                SearchViewModel.SearchAction.HideProgress -> hideProgress()
+                SearchViewModel.SearchState.Loading -> handleLoading()
+                SearchViewModel.SearchState.Error -> handleError()
             }
         }
     }
 
-    private fun hideProgress() {
-        Timber.d(">>HIDING PROGRESS")
-        binding.progressBar.invisible()
+    private fun handleError() {
+        handleEmptyResults()
     }
 
-    private fun showProgress() {
-        Timber.d(">>SHOWING PROGRESS")
-        binding.progressBar.visible()
+    private fun handleLoading() = with(binding) {
+        progressBar.visible()
+        clearButton.gone()
     }
 
-    private fun showUsers(users: List<QUser>) {
+    private fun showUsers(users: List<QUser>) = with(binding) {
         searchAdapter.submitList(users)
-        binding.recyclerView.visible()
-        binding.noUsersFound.gone()
-        binding.progressBar.invisible()
+        recyclerView.visible()
+        noUsersFound.gone()
+        clearButton.visible()
+        progressBar.invisible()
     }
 
-    private fun handleEmptyResults() {
-        binding.recyclerView.gone()
-        binding.noUsersFound.visible()
-        binding.progressBar.invisible()
+    private fun handleEmptyResults() = with(binding) {
+        recyclerView.gone()
+        noUsersFound.visible()
+        clearButton.visible()
+        progressBar.invisible()
     }
 
     private fun setupRecyclerView() = activity?.let { activity ->
