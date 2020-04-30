@@ -34,7 +34,7 @@ class SelectUsernameViewModel : RxViewModel<Action, State>() {
     fun onContinue(username: String) = viewModelScope.launch {
         state = InProgress
         try {
-            Api.updateUserInfo(username)
+            Api.createUser(username)
             handleSuccess()
         } catch (e: ApolloException) {
             Timber.d("Unable to update username: $e")

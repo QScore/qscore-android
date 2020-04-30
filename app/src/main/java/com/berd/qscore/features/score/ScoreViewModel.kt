@@ -37,4 +37,14 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
             }
         }
     }
+
+    fun onGifAvatarSelected(url: String) {
+        viewModelScope.launch {
+            try {
+                Api.updateUserInfo(avatar = url)
+            } catch (e: ApolloException) {
+                Timber.d("Unable to update avatar: $e")
+            }
+        }
+    }
 }

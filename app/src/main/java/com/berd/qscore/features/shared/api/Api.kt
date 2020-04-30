@@ -3,18 +3,13 @@ package com.berd.qscore.features.shared.api
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.ApolloMutationCall
 import com.apollographql.apollo.ApolloQueryCall
+import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
-import com.berd.qscore.CreateGeofenceEventMutation
-import com.berd.qscore.CurrentUserQuery
-import com.berd.qscore.SearchUsersQuery
-import com.berd.qscore.UpdateUserInfoMutation
+import com.berd.qscore.*
 import com.berd.qscore.features.shared.api.models.QUser
-import com.berd.qscore.type.CreateGeofenceEventInput
-import com.berd.qscore.type.GeofenceEventType
-import com.berd.qscore.type.SearchUsersInput
-import com.berd.qscore.type.UpdateUserInfoInput
+import com.berd.qscore.type.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import kotlin.math.roundToInt
@@ -22,7 +17,7 @@ import kotlin.math.roundToInt
 
 object Api {
     const val STAGE_URL = "https://tjeslxndo2.execute-api.us-east-1.amazonaws.com/dev/graphql"
-    const val LOCAL_URL = "https://711f6c36.ngrok.io/dev/graphql"
+    const val LOCAL_URL = "https://6d02c50b.ngrok.io/dev/graphql"
 
     private val apolloClient by lazy { buildApolloClient() }
 
@@ -39,8 +34,14 @@ object Api {
             .build()
     }
 
-    suspend fun updateUserInfo(username: String) {
-        val input = UpdateUserInfoInput(username)
+    suspend fun createUser(username: String) {
+        val input = CreateUserInput(username)
+        val mutation = CreateUserMutation(input)
+        apolloClient.mutate(mutation).call()
+    }
+
+    suspend fun updateUserInfo(username: String? = null, avatar: String? = null) {
+        val input = UpdateUserInfoInput(Input.optional(username), Input.optional(avatar))
         val mutation = UpdateUserInfoMutation(input)
         apolloClient.mutate(mutation).call()
     }
@@ -54,7 +55,8 @@ object Api {
             username = currentUser.username,
             score = currentUser.score ?: 0.0,
             allTimeScore = (currentUser.allTimeScore ?: 0.0).roundToInt().toString(),
-            rank = currentUser.rank?.toString() ?: "Unknown"
+            rank = currentUser.rank?.toString() ?: "Unknown",
+            avatar = currentUser.avatar
         )
     }
 
@@ -75,7 +77,8 @@ object Api {
                 score = it.score ?: 0.0,
                 allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
                 isCurrentUserFollowing = it.isCurrentUserFollowing ?: false,
-                rank = "Unknown"
+                rank = "Unknown",
+                avatar = it.avatar
             )
         }
     }

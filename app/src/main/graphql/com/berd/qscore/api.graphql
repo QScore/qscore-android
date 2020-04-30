@@ -15,6 +15,14 @@ mutation UpdateUserInfo($input: UpdateUserInfoInput!){
     }
 }
 
+mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+        user {
+            userId
+        }
+    }
+}
+
 query CurrentUser {
     currentUser {
         user {
@@ -23,7 +31,8 @@ query CurrentUser {
             score,
             rank,
             allTimeScore,
-            isCurrentUserFollowing
+            isCurrentUserFollowing,
+            avatar
         }
     }
 }
@@ -37,7 +46,8 @@ query SearchUsers($input: SearchUsersInput!) {
             allTimeScore,
             isCurrentUserFollowing,
             followingCount,
-            followerCount
+            followerCount,
+            avatar
         }
     }
 }

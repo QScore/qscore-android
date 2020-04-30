@@ -69,6 +69,7 @@ class ScoreFragment : BaseFragment() {
         scoreProgress.progress = user.score.toFloat() / 100
         allTimeScore.text = user.allTimeScore
         rankNumber.text = "#${user.rank}"
+        user.avatar?.let { updateAvatar(it) }
     }
 
     private fun setupViews() = binding.apply {
@@ -77,7 +78,6 @@ class ScoreFragment : BaseFragment() {
     }
 
     private fun updateAvatar(url: String) {
-
         Glide.with(this) //.asBitmap()
             .load(url)
             .optionalTransform(CircleCrop())
@@ -99,11 +99,11 @@ class ScoreFragment : BaseFragment() {
             }
 
             override fun onGifSelected(media: Media) {
-                //"https://giphy.com/embed/d2jibZKKA0k3RUgU"
-                Timber.d(">>SELECTED: " + media)
-                val item = media.images.fixedWidthSmall
-                updateAvatar(item?.webPUrl ?: "")
-                Timber.d(">>SIZE: " + item?.webPSize)
+                val item = media.images.fixedWidthSmall?.webPUrl
+                if (item != null) {
+                    viewModel.onGifAvatarSelected(item)
+                    updateAvatar(item)
+                }
             }
         }
     }
