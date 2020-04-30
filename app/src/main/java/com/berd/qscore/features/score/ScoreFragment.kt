@@ -10,8 +10,10 @@ import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
-import com.berd.qscore.utils.extensions.loadUrl
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.webp.decoder.WebpDrawable
+import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
 import com.giphy.sdk.ui.views.GiphyDialogFragment
@@ -68,8 +70,15 @@ class ScoreFragment : BaseFragment() {
         avatarBorder.setOnClickListener { loadGiphy() }
     }
 
-    private fun updateAvatar(id: String) {
-        binding.avatar.loadUrl("https://media.giphy.com/media/${id}/giphy.gif", customOptions = RequestOptions().circleCrop())
+    private fun updateAvatar(url: String) {
+
+        Glide.with(this) //.asBitmap()
+            .load(url)
+            .optionalTransform(CircleCrop())
+            .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(CircleCrop()))
+            .into(binding.avatar)
+
+//        binding.avatar.loadUrl(url, customOptions = RequestOptions().circleCrop())
     }
 
     private fun loadGiphy() = activity?.let { activity ->
@@ -86,7 +95,9 @@ class ScoreFragment : BaseFragment() {
             override fun onGifSelected(media: Media) {
                 //"https://giphy.com/embed/d2jibZKKA0k3RUgU"
                 Timber.d(">>SELECTED: " + media)
-                updateAvatar(media.id)
+                val item = media.images.fixedWidthSmall
+                updateAvatar(item?.webPUrl ?: "")
+                Timber.d(">>SIZE: " + item?.webPSize)
             }
         }
     }
