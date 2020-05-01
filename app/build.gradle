@@ -117,6 +117,9 @@ dependencies {
     //OkHttp
     implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
 
+    //Swipe refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
     //Testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

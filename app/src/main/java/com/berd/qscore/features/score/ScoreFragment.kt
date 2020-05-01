@@ -67,15 +67,17 @@ class ScoreFragment : BaseFragment() {
         allTimeScore.text = user.allTimeScore
         rankNumber.text = "#${user.rank}"
         user.avatar?.let { updateAvatar(it) }
+        pullToRefresh.isRefreshing = false
     }
 
     private fun setupViews() = binding.apply {
         scoreProgress.progress = 1f
         avatarBorder.setOnClickListener { loadGiphy() }
+        pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
     }
 
     private fun updateAvatar(url: String) {
-        binding.avatar.loadAvatar(url)
+        binding.avatarImage.loadAvatar(url)
     }
 
     private fun loadGiphy() = activity?.let { activity ->

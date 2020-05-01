@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.*
+import com.berd.qscore.features.shared.api.models.QLeaderboardScore
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.type.*
 import okhttp3.OkHttpClient
@@ -32,6 +33,21 @@ object Api {
             .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
             .okHttpClient(okHttpClient)
             .build()
+    }
+
+    suspend fun getLeaderboardRange(start: Int, end: Int): List<QLeaderboardScore> {
+        val input = LeaderboardRangeInput(start, end)
+        val query = GetLeaderboardRangeQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.getLeaderboardRange.leaderboardScores.map {
+            QLeaderboardScore(
+                userId = it.user.userId,
+                username = it.user.username,
+                rank = it.rank,
+                score = it.score,
+                avatar = it.user.avatar
+            )
+        }
     }
 
     suspend fun createUser(username: String) {

@@ -47,4 +47,8 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
             }
         }
     }
+
+    fun onRefresh() {
+        onResume()
+    }
 }

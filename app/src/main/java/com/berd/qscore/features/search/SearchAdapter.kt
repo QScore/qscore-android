@@ -6,18 +6,17 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.berd.qscore.databinding.RowSearchUserBinding
-import com.berd.qscore.features.leaderboard.LeaderboardViewHolder
 import com.berd.qscore.features.shared.api.models.QUser
 import splitties.systemservices.layoutInflater
 
-class SearchAdapter : ListAdapter<QUser, LeaderboardViewHolder>(DiffCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderboardViewHolder {
+class SearchAdapter : ListAdapter<QUser, SearchViewHolder>(DiffCallback()) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding = RowSearchUserBinding.inflate(parent.layoutInflater)
         binding.root.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        return LeaderboardViewHolder(binding)
+        return SearchViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         holder.populateFrom(getItem(position))
     }
 

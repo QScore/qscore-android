@@ -119,14 +119,14 @@ class SelectUsernameActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        username.onChangeDebounce(500) {
-            viewModel.onFieldsUpdated(username.text.toString())
+        usernameInput.onChangeDebounce(500) {
+            viewModel.onFieldsUpdated(usernameInput.text.toString())
         }
         startSpinnerAnimation()
         usernameLayout.isEndIconVisible = false
 
         continueButton.setOnClickListener {
-            viewModel.onContinue(username.text.toString())
+            viewModel.onContinue(usernameInput.text.toString())
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

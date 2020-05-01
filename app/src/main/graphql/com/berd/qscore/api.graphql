@@ -52,4 +52,16 @@ query SearchUsers($input: SearchUsersInput!) {
     }
 }
 
-
+query GetLeaderboardRange($input: LeaderboardRangeInput!) {
+    getLeaderboardRange(input: $input) {
+        leaderboardScores {
+            user {
+                userId
+                username
+                avatar
+            }
+            score
+            rank
+        }
+    }
+}
