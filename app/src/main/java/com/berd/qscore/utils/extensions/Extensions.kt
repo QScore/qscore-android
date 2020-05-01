@@ -23,13 +23,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.berd.qscore.utils.location.LatLngPair
 import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.webp.decoder.WebpDrawable
+import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import java.util.*
 
 private val whiteColorDrawable = ColorDrawable().apply { color = Color.parseColor("#FFFFFF") }
+
+fun ImageView.loadAvatar(url: String) {
+    Glide.with(this) //.asBitmap()
+        .load(url)
+        .optionalTransform(CircleCrop())
+        .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(CircleCrop()))
+        .into(this)
+}
 
 @SuppressLint("CheckResult")
 fun ImageView.loadUrl(

@@ -77,6 +77,7 @@ class SearchFragment : BaseFragment() {
         noUsersFound.visible()
         clearButton.visible()
         progressBar.invisible()
+        searchAdapter.submitList(listOf())
     }
 
     private fun setupRecyclerView() = activity?.let { activity ->

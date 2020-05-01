@@ -10,10 +10,7 @@ import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
 import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
-import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.webp.decoder.WebpDrawable
-import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.berd.qscore.utils.extensions.loadAvatar
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
 import com.giphy.sdk.ui.views.GiphyDialogFragment
@@ -78,13 +75,7 @@ class ScoreFragment : BaseFragment() {
     }
 
     private fun updateAvatar(url: String) {
-        Glide.with(this) //.asBitmap()
-            .load(url)
-            .optionalTransform(CircleCrop())
-            .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(CircleCrop()))
-            .into(binding.avatar)
-
-//        binding.avatar.loadUrl(url, customOptions = RequestOptions().circleCrop())
+        binding.avatar.loadAvatar(url)
     }
 
     private fun loadGiphy() = activity?.let { activity ->
