@@ -18,13 +18,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="100dp"
-            android:layout_marginTop="20dp"
             android:background="@drawable/circle"
             android:backgroundTint="@color/white"
             android:elevation="1dp"
+            android:scaleX="0.75"
+            android:scaleY="0.75"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bottomInfoBg"
             app:progress_background_width="10dp"
             app:progress_color_end="@color/colorPrimaryDark"
             app:progress_color_middle="@color/colorPrimaryDark"
@@ -36,7 +37,7 @@
         <View
             android:id="@+id/topInfoBg"
             android:layout_width="0dp"
-            android:layout_height="120dp"
+            android:layout_height="180dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
@@ -49,7 +50,7 @@
         <View
             android:id="@+id/bottomInfoBg"
             android:layout_width="0dp"
-            android:layout_height="75dp"
+            android:layout_height="80dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
@@ -78,7 +79,7 @@
             android:id="@+id/allTimeScore"
             android:layout_width="124dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
             android:elevation="1dp"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
@@ -86,6 +87,8 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/allTimeLabel"
             app:layout_constraintEnd_toEndOf="@+id/bottomInfoBg"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/rankNumber"
             app:layout_constraintTop_toTopOf="@+id/bottomInfoBg"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="3276" />
@@ -94,6 +97,7 @@
             android:id="@+id/rankNumber"
             android:layout_width="124dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:elevation="1dp"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
@@ -102,22 +106,53 @@
             app:layout_constraintBottom_toTopOf="@+id/rankLabel"
             app:layout_constraintEnd_toStartOf="@+id/allTimeScore"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/bottomInfoBg"
             app:layout_constraintStart_toStartOf="@+id/bottomInfoBg"
             app:layout_constraintTop_toTopOf="@+id/bottomInfoBg"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="#306" />
 
         <TextView
+            android:id="@+id/followersNumber"
+            android:layout_width="124dp"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/followersLabel"
+            app:layout_constraintEnd_toStartOf="@+id/followingNumber"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="@+id/bottomInfoBg"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="2345" />
+
+        <TextView
+            android:id="@+id/followingNumber"
+            android:layout_width="124dp"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/followingLabel"
+            app:layout_constraintEnd_toEndOf="@+id/bottomInfoBg"
+            app:layout_constraintStart_toEndOf="@+id/followersNumber"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="5394" />
+
+        <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
             android:elevation="1dp"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/topInfoBg"
             app:layout_constraintEnd_toEndOf="@+id/topInfoBg"
             app:layout_constraintStart_toStartOf="@+id/topInfoBg"
             app:layout_constraintTop_toBottomOf="@+id/avatarBorder"
@@ -127,6 +162,7 @@
             android:id="@+id/allTimeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:elevation="1dp"
             android:letterSpacing="0.02"
             android:text="All Time"
@@ -139,9 +175,25 @@
             app:layout_constraintTop_toBottomOf="@+id/allTimeScore" />
 
         <TextView
+            android:id="@+id/followingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:elevation="1dp"
+            android:letterSpacing="0.02"
+            android:text="@string/following"
+            android:textAllCaps="true"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/topInfoBg"
+            app:layout_constraintEnd_toEndOf="@+id/followingNumber"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/followingNumber" />
+
+        <TextView
             android:id="@+id/rankLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:elevation="1dp"
             android:letterSpacing="0.02"
             android:text="Rank"
@@ -152,6 +204,21 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/rankNumber"
             app:layout_constraintTop_toBottomOf="@+id/rankNumber" />
+
+        <TextView
+            android:id="@+id/followersLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:elevation="1dp"
+            android:letterSpacing="0.02"
+            android:text="@string/followers"
+            android:textAllCaps="true"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/topInfoBg"
+            app:layout_constraintEnd_toEndOf="@+id/followersNumber"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/followersNumber" />
 
         <ImageView
             android:id="@+id/avatarImage"

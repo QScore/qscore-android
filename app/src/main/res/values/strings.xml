@@ -78,4 +78,6 @@
     <string name="no_users_found">No users found</string>
     <string name="add">Add</string>
     <string name="remove">Remove</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
 </resources>

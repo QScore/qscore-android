@@ -14,7 +14,6 @@ import com.berd.qscore.utils.extensions.loadAvatar
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
 import com.giphy.sdk.ui.views.GiphyDialogFragment
-import timber.log.Timber
 
 
 class ScoreFragment : BaseFragment() {
@@ -35,12 +34,6 @@ class ScoreFragment : BaseFragment() {
         setupViews()
         observeEvents()
         viewModel.onCreate()
-        Timber.d(">>ON VIEW CREATED")
-    }
-
-    override fun onDestroy() {
-        Timber.d(">>VIEW DESTROYED")
-        super.onDestroy()
     }
 
     override fun onResume() {
@@ -68,6 +61,8 @@ class ScoreFragment : BaseFragment() {
         rankNumber.text = "#${user.rank}"
         user.avatar?.let { updateAvatar(it) }
         pullToRefresh.isRefreshing = false
+        followersNumber.text = user.followerCount.toString()
+        followingNumber.text = user.followingCount.toString()
     }
 
     private fun setupViews() = binding.apply {

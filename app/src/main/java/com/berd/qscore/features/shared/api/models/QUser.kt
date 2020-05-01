@@ -7,5 +7,7 @@ data class QUser(
     val rank: String,
     val avatar: String?,
     val allTimeScore: String,
+    val followerCount: Int,
+    val followingCount: Int,
     val isCurrentUserFollowing: Boolean = false
 )

@@ -32,6 +32,8 @@ query CurrentUser {
             rank,
             allTimeScore,
             isCurrentUserFollowing,
+            followingCount,
+            followerCount,
             avatar
         }
     }

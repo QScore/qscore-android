@@ -71,6 +71,8 @@ object Api {
             username = currentUser.username,
             score = currentUser.score ?: 0.0,
             allTimeScore = (currentUser.allTimeScore ?: 0.0).roundToInt().toString(),
+            followerCount = currentUser.followerCount ?: 0,
+            followingCount = currentUser.followingCount ?: 0,
             rank = currentUser.rank?.toString() ?: "Unknown",
             avatar = currentUser.avatar
         )
@@ -94,7 +96,9 @@ object Api {
                 allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
                 isCurrentUserFollowing = it.isCurrentUserFollowing ?: false,
                 rank = "Unknown",
-                avatar = it.avatar
+                avatar = it.avatar,
+                followingCount = it.followingCount ?: 0,
+                followerCount = it.followingCount ?: 0
             )
         }
     }
