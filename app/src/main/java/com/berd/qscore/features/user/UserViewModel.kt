@@ -1,19 +1,20 @@
-package com.berd.qscore.features.score
+package com.berd.qscore.features.user
 
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
-import com.berd.qscore.features.score.ScoreViewModel.ScoreAction
-import com.berd.qscore.features.score.ScoreViewModel.ScoreState
-import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
-import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.features.user.UserFragment.ProfileType
+import com.berd.qscore.features.user.UserViewModel.ScoreAction
+import com.berd.qscore.features.user.UserViewModel.ScoreState
+import com.berd.qscore.features.user.UserViewModel.ScoreState.Loading
+import com.berd.qscore.features.user.UserViewModel.ScoreState.Ready
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
+class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAction, ScoreState>() {
 
     sealed class ScoreAction {
     }
@@ -30,7 +31,11 @@ class ScoreViewModel : RxViewModel<ScoreAction, ScoreState>() {
     fun onResume() {
         viewModelScope.launch {
             try {
-                val user = Api.getCurrentUser()
+                val user = when (profileType) {
+                    is ProfileType.CurrentUser -> Api.getCurrentUser()
+                    is ProfileType.User -> Api.getUser(profileType.userId)
+                        ?: throw ApolloException("No user found for id: ${profileType.userId}")
+                }
                 state = Ready(user)
             } catch (e: ApolloException) {
                 Timber.d("Error getting score: $e")

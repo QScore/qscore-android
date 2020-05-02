@@ -4,14 +4,201 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pullToRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/MainTheme"
+    tools:background="@color/colorPrimary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:theme="@style/MainTheme"
-        tools:background="@color/colorPrimary"
         tools:context=".features.main.MainActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_rectangle"
+            android:elevation="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/avatarBorder">
+
+            <TextView
+                android:id="@+id/followingNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:elevation="1dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/followingLabel"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/followingLabel"
+                app:layout_constraintTop_toBottomOf="@+id/followButton"
+                tools:text="12" />
+
+            <TextView
+                android:id="@+id/followingLabel"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="1dp"
+                android:letterSpacing="0.02"
+                android:text="@string/following"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/followingNumber"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/followersLabel"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="1dp"
+                android:letterSpacing="0.02"
+                android:text="@string/followers"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/followersNumber"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/followButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="60dp"
+                android:text="@string/follow"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/username"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/followersNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:elevation="1dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/followersLabel"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="@+id/followersLabel"
+                app:layout_constraintTop_toBottomOf="@+id/followButton"
+                tools:text="342" />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:elevation="1dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="SomeUser86" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_rectangle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topInfo">
+
+            <TextView
+                android:id="@+id/rankLabel"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="1dp"
+                android:letterSpacing="0.02"
+                android:text="Rank"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rankNumber" />
+
+            <TextView
+                android:id="@+id/rankNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:elevation="1dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/rankLabel"
+                app:layout_constraintEnd_toEndOf="@+id/rankLabel"
+                app:layout_constraintStart_toStartOf="@+id/rankLabel"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="#306" />
+
+            <TextView
+                android:id="@+id/allTimeLabel"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="1dp"
+                android:letterSpacing="0.02"
+                android:text="All Time"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/allTimeScore" />
+
+            <TextView
+                android:id="@+id/allTimeScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:elevation="1dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/allTimeLabel"
+                app:layout_constraintEnd_toEndOf="@+id/allTimeLabel"
+                app:layout_constraintStart_toStartOf="@+id/allTimeLabel"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="3276" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.berd.qscore.utils.views.ScoreProgressBar
             android:id="@+id/scoreProgress"
@@ -26,6 +213,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottomInfo"
             app:progress_background_width="10dp"
             app:progress_color_end="@color/colorPrimaryDark"
             app:progress_color_middle="@color/colorPrimaryDark"
@@ -33,33 +221,6 @@
             app:progress_text_color="@color/colorPrimaryDark"
             app:progress_text_size="40sp"
             app:progress_width="10dp" />
-
-        <View
-            android:id="@+id/topInfoBg"
-            android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/rounded_rectangle"
-            android:elevation="1dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/bottomInfoBg"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/rounded_rectangle"
-            android:elevation="1dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topInfoBg" />
 
         <View
             android:id="@+id/avatarBorder"
@@ -70,155 +231,8 @@
             android:background="@drawable/circle"
             android:backgroundTint="@color/white"
             android:elevation="1dp"
-            app:layout_constraintBottom_toTopOf="@+id/topInfoBg"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/topInfoBg" />
-
-        <TextView
-            android:id="@+id/allTimeScore"
-            android:layout_width="124dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:elevation="1dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/allTimeLabel"
-            app:layout_constraintEnd_toEndOf="@+id/bottomInfoBg"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/rankNumber"
-            app:layout_constraintTop_toTopOf="@+id/bottomInfoBg"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="3276" />
-
-        <TextView
-            android:id="@+id/rankNumber"
-            android:layout_width="124dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:elevation="1dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/rankLabel"
-            app:layout_constraintEnd_toStartOf="@+id/allTimeScore"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@+id/bottomInfoBg"
-            app:layout_constraintStart_toStartOf="@+id/bottomInfoBg"
-            app:layout_constraintTop_toTopOf="@+id/bottomInfoBg"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="#306" />
-
-        <TextView
-            android:id="@+id/followersNumber"
-            android:layout_width="124dp"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/followersLabel"
-            app:layout_constraintEnd_toStartOf="@+id/followingNumber"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="@+id/bottomInfoBg"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="2345" />
-
-        <TextView
-            android:id="@+id/followingNumber"
-            android:layout_width="124dp"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/followingLabel"
-            app:layout_constraintEnd_toEndOf="@+id/bottomInfoBg"
-            app:layout_constraintStart_toEndOf="@+id/followersNumber"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="5394" />
-
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:elevation="1dp"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/topInfoBg"
-            app:layout_constraintStart_toStartOf="@+id/topInfoBg"
-            app:layout_constraintTop_toBottomOf="@+id/avatarBorder"
-            tools:text="SomeUser86" />
-
-        <TextView
-            android:id="@+id/allTimeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:elevation="1dp"
-            android:letterSpacing="0.02"
-            android:text="All Time"
-            android:textAllCaps="true"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/bottomInfoBg"
-            app:layout_constraintEnd_toEndOf="@+id/allTimeScore"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/allTimeScore"
-            app:layout_constraintTop_toBottomOf="@+id/allTimeScore" />
-
-        <TextView
-            android:id="@+id/followingLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:elevation="1dp"
-            android:letterSpacing="0.02"
-            android:text="@string/following"
-            android:textAllCaps="true"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/topInfoBg"
-            app:layout_constraintEnd_toEndOf="@+id/followingNumber"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/followingNumber" />
-
-        <TextView
-            android:id="@+id/rankLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:elevation="1dp"
-            android:letterSpacing="0.02"
-            android:text="Rank"
-            android:textAllCaps="true"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/bottomInfoBg"
-            app:layout_constraintEnd_toEndOf="@+id/rankNumber"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/rankNumber"
-            app:layout_constraintTop_toBottomOf="@+id/rankNumber" />
-
-        <TextView
-            android:id="@+id/followersLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:elevation="1dp"
-            android:letterSpacing="0.02"
-            android:text="@string/followers"
-            android:textAllCaps="true"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/topInfoBg"
-            app:layout_constraintEnd_toEndOf="@+id/followersNumber"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/followersNumber" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/avatarImage"

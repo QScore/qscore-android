@@ -2,8 +2,9 @@ package com.berd.qscore.features.main.bottomnav
 
 import com.berd.qscore.R
 import com.berd.qscore.features.leaderboard.LeaderboardFragment
-import com.berd.qscore.features.score.ScoreFragment
 import com.berd.qscore.features.search.SearchFragment
+import com.berd.qscore.features.user.UserFragment
+import com.berd.qscore.features.user.UserFragment.ProfileType
 
 enum class BottomTab() {
     ME,
@@ -11,7 +12,7 @@ enum class BottomTab() {
     LEADERBOARD;
 
     fun buildFragment() = when (this) {
-        ME -> ScoreFragment.newInstance()
+        ME -> UserFragment.newInstance(ProfileType.CurrentUser)
         SEARCH -> SearchFragment.newInstance()
         LEADERBOARD -> LeaderboardFragment.newInstance()
     }

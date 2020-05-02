@@ -50,6 +50,23 @@ object Api {
         }
     }
 
+    suspend fun getUser(userId: String): QUser? {
+        val input = GetUserInput(userId)
+        val query = GetUserQuery(input)
+        val result = apolloClient.query(query).call()
+        val user = result.getUser.user ?: return null
+        return QUser(
+            userId = user.userId,
+            username = user.username,
+            score = user.score ?: 0.0,
+            allTimeScore = (user.allTimeScore ?: 0.0).roundToInt().toString(),
+            followerCount = user.followerCount ?: 0,
+            followingCount = user.followingCount ?: 0,
+            rank = user.rank?.toString() ?: "Unknown",
+            avatar = user.avatar
+        )
+    }
+
     suspend fun createUser(username: String) {
         val input = CreateUserInput(username)
         val mutation = CreateUserMutation(input)

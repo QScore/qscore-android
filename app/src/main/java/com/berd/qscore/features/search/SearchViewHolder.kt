@@ -12,13 +12,6 @@ class SearchViewHolder(private val binding: RowSearchUserBinding) : RecyclerView
 
     fun populateFrom(user: QUser) = with(binding) {
         username.text = user.username
-        if (user.isCurrentUserFollowing) {
-            addButton.backgroundTintList = ContextCompat.getColorStateList(addButton.context, R.color.colorPrimaryDark)
-            addButton.text = addButton.resources.getString(R.string.remove)
-        } else {
-            addButton.backgroundTintList = ContextCompat.getColorStateList(addButton.context, R.color.light_gray)
-            addButton.text = addButton.resources.getString(R.string.add)
-        }
         user.avatar?.let {
             avatar.loadAvatar(it)
         } ?: Glide.with(avatar).load(R.drawable.circle).into(avatar)

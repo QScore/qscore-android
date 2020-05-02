@@ -1,24 +1,34 @@
-package com.berd.qscore.features.score
+package com.berd.qscore.features.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.core.content.ContextCompat
+import com.berd.qscore.R
 import com.berd.qscore.databinding.ScoreFragmentBinding
-import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Loading
-import com.berd.qscore.features.score.ScoreViewModel.ScoreState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.user.UserViewModel.ScoreState.Loading
+import com.berd.qscore.features.user.UserViewModel.ScoreState.Ready
+import com.berd.qscore.utils.extensions.createViewModel
 import com.berd.qscore.utils.extensions.loadAvatar
+import com.berd.qscore.utils.extensions.visible
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
 import com.giphy.sdk.ui.views.GiphyDialogFragment
+import java.io.Serializable
 
 
-class ScoreFragment : BaseFragment() {
+class UserFragment : BaseFragment() {
 
-    private val viewModel by viewModels<ScoreViewModel>()
+    private val viewModel by lazy {
+        createViewModel { UserViewModel(profileType) }
+    }
+
+    private val profileType by lazy {
+        arguments?.getSerializable(KEY_PROFILE_TYPE) as ProfileType
+    }
 
     private val binding: ScoreFragmentBinding by lazy {
         ScoreFragmentBinding.inflate(layoutInflater)
@@ -63,6 +73,26 @@ class ScoreFragment : BaseFragment() {
         pullToRefresh.isRefreshing = false
         followersNumber.text = user.followerCount.toString()
         followingNumber.text = user.followingCount.toString()
+        if (profileType != ProfileType.CurrentUser) {
+            setupFollowButton(user)
+        }
+    }
+
+    private fun setupFollowButton(user: QUser) = with(binding) {
+        activity?.let { activity ->
+            when {
+                user.isCurrentUserFollowing -> {
+                    followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.colorPrimaryDark)
+                    followButton.text = resources.getString(R.string.remove)
+                    followButton.visible()
+                }
+                else -> {
+                    followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.light_gray)
+                    followButton.text = resources.getString(R.string.add)
+                    followButton.visible()
+                }
+            }
+        }
     }
 
     private fun setupViews() = binding.apply {
@@ -87,16 +117,29 @@ class ScoreFragment : BaseFragment() {
             }
 
             override fun onGifSelected(media: Media) {
-                val item = media.images.fixedWidthSmall?.webPUrl
-                if (item != null) {
-                    viewModel.onGifAvatarSelected(item)
-                    updateAvatar(item)
+                var image = media.images.fixedWidthSmall ?: return
+                if (image.width > image.height) {
+                    image = media.images.fixedHeight ?: return
                 }
+                val item = image.webPUrl ?: return
+                viewModel.onGifAvatarSelected(item)
+                updateAvatar(item)
             }
         }
     }
 
     companion object {
-        fun newInstance() = ScoreFragment()
+        val KEY_PROFILE_TYPE = "KEY_PROFILE_TYPE"
+
+        fun newInstance(profileType: ProfileType) = UserFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(KEY_PROFILE_TYPE, profileType)
+            }
+        }
+    }
+
+    sealed class ProfileType : Serializable {
+        object CurrentUser : ProfileType()
+        class User(val userId: String) : ProfileType()
     }
 }
