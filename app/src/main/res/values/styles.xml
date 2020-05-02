@@ -9,10 +9,6 @@
         <item name="fontFamily">@font/scanno</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar">true</item>
-    </style>
-
-    <style name="MainTheme" parent="AppTheme">
-        <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

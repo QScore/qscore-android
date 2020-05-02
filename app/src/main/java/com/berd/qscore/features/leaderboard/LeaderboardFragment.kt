@@ -9,17 +9,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
-import com.berd.qscore.features.shared.api.models.QLeaderboardScore
+import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.gone
 
 class LeaderboardFragment : BaseFragment() {
 
     private val viewModel by viewModels<LeaderboardViewModel>()
 
-    private val leaderboardAdapter = LeaderboardAdapter()
+    private val leaderboardAdapter = LeaderboardAdapter(::handleLeaderboardClick)
 
     private val binding: LeaderboardFragmentBinding by lazy {
         LeaderboardFragmentBinding.inflate(layoutInflater)
+    }
+
+    private fun handleLeaderboardClick(userId: String) {
+        activity?.let { activity ->
+            val intent = UserActivity.newIntent(activity, userId)
+            startActivity(intent)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,7 +54,7 @@ class LeaderboardFragment : BaseFragment() {
         }
     }
 
-    private fun handleReady(leaderboard: List<QLeaderboardScore>) {
+    private fun handleReady(leaderboard: List<QUser>) {
         leaderboardAdapter.submitList(leaderboard)
         binding.pullToRefresh.isRefreshing = false
         binding.progressBar.gone()

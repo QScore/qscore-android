@@ -9,6 +9,7 @@ import com.berd.qscore.features.login.LoginViewModel.Action.*
 import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -83,7 +84,8 @@ class LoginViewModel : RxViewModel<Action, State>() {
     private suspend fun handleSuccess(email: String) {
         state = Ready
         Prefs.userEmail = email
-        if (!LoginManager.checkUserHasUsername()) {
+        UserRepository.loadCurrentUser()
+        if (UserRepository.currentUser?.username.isNullOrEmpty()) {
             action(LaunchUsernameActivity)
         } else if (Prefs.userLocation != null) {
             action(LaunchScoreActivity)

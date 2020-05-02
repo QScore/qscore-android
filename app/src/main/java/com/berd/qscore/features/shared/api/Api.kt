@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.*
-import com.berd.qscore.features.shared.api.models.QLeaderboardScore
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.type.*
 import okhttp3.OkHttpClient
@@ -18,7 +17,7 @@ import kotlin.math.roundToInt
 
 object Api {
     const val STAGE_URL = "https://tjeslxndo2.execute-api.us-east-1.amazonaws.com/dev/graphql"
-    const val LOCAL_URL = "https://6d02c50b.ngrok.io/dev/graphql"
+    const val LOCAL_URL = "https://359960b3.ngrok.io/dev/graphql"
 
     private val apolloClient by lazy { buildApolloClient() }
 
@@ -35,19 +34,34 @@ object Api {
             .build()
     }
 
-    suspend fun getLeaderboardRange(start: Int, end: Int): List<QLeaderboardScore> {
+    suspend fun getLeaderboardRange(start: Int, end: Int): List<QUser> {
         val input = LeaderboardRangeInput(start, end)
         val query = GetLeaderboardRangeQuery(input)
         val result = apolloClient.query(query).call()
-        return result.getLeaderboardRange.leaderboardScores.map {
-            QLeaderboardScore(
-                userId = it.user.userId,
-                username = it.user.username,
-                rank = it.rank,
-                score = it.score,
-                avatar = it.user.avatar
+        return result.getLeaderboardRange.users.map {
+            QUser(
+                userId = it.userId,
+                username = it.username,
+                score = it.score ?: 0.0,
+                allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
+                followerCount = it.followerCount ?: 0,
+                followingCount = it.followingCount ?: 0,
+                rank = it.rank?.toString(),
+                avatar = it.avatar
             )
         }
+    }
+
+    suspend fun followUser(userId: String) {
+        val input = FollowUserInput(userId)
+        val mutation = FollowUserMutation(input)
+        apolloClient.mutate(mutation).call()
+    }
+
+    suspend fun unfollowUser(userId: String) {
+        val input = UnfollowUserInput(userId)
+        val mutation = UnfollowUserMutation(input)
+        apolloClient.mutate(mutation).call()
     }
 
     suspend fun getUser(userId: String): QUser? {
@@ -62,7 +76,7 @@ object Api {
             allTimeScore = (user.allTimeScore ?: 0.0).roundToInt().toString(),
             followerCount = user.followerCount ?: 0,
             followingCount = user.followingCount ?: 0,
-            rank = user.rank?.toString() ?: "Unknown",
+            rank = user.rank?.toString(),
             avatar = user.avatar
         )
     }

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.user.UserFragment.ProfileType
 import com.berd.qscore.features.user.UserViewModel.ScoreAction
@@ -55,5 +56,11 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAct
 
     fun onRefresh() {
         onResume()
+    }
+
+    fun onFollowButtonClicked(userId: String) {
+        viewModelScope.launch {
+            UserRepository.followUser(userId)
+        }
     }
 }

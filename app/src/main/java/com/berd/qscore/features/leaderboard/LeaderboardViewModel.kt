@@ -3,7 +3,7 @@ package com.berd.qscore.features.leaderboard
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.shared.api.Api
-import com.berd.qscore.features.shared.api.models.QLeaderboardScore
+import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,7 +33,7 @@ class LeaderboardViewModel : RxViewModel<LeaderboardViewModel.LeaderboardAction,
     }
 
     sealed class LeaderboardState {
-        class Ready(val leaderboard: List<QLeaderboardScore>) : LeaderboardState()
+        class Ready(val leaderboard: List<QUser>) : LeaderboardState()
     }
 
 

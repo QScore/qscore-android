@@ -9,11 +9,13 @@ import com.berd.qscore.databinding.RowSearchUserBinding
 import com.berd.qscore.features.shared.api.models.QUser
 import splitties.systemservices.layoutInflater
 
-class SearchAdapter : ListAdapter<QUser, SearchViewHolder>(DiffCallback()) {
+typealias SearchClickListener = (String) -> Unit
+
+class SearchAdapter(private val clickListener: SearchClickListener) : ListAdapter<QUser, SearchViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding = RowSearchUserBinding.inflate(parent.layoutInflater)
         binding.root.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        return SearchViewHolder(binding)
+        return SearchViewHolder(binding, clickListener)
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {

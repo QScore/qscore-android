@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.databinding.SearchFragmentBinding
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.visible
@@ -22,7 +23,7 @@ class SearchFragment : BaseFragment() {
 
     private val viewModel by viewModels<SearchViewModel>()
 
-    private val searchAdapter = SearchAdapter()
+    private val searchAdapter = SearchAdapter(::handleSearchItemClicked)
 
     private val binding: SearchFragmentBinding by lazy {
         SearchFragmentBinding.inflate(layoutInflater)
@@ -42,6 +43,13 @@ class SearchFragment : BaseFragment() {
 
     private fun setupViews() = with(binding) {
         clearButton.setOnClickListener { searchField.setText("") }
+    }
+
+    private fun handleSearchItemClicked(userId: String) {
+        activity?.let { activity ->
+            val intent = UserActivity.newIntent(activity, userId)
+            startActivity(intent)
+        }
     }
 
     private fun observeEvents() {

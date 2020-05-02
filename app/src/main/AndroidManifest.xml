@@ -24,6 +24,9 @@
             android:name=".features.login.SignUpActivity"
             android:label="SignUpActivity" />
         <activity
+            android:name=".features.user.UserActivity"
+            android:label="UserActivity" />
+        <activity
             android:name=".features.login.SelectUsernameActivity"
             android:label="SelectUsernameActivity" />
         <activity
@@ -36,13 +39,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".features.friends.AddFriendsActivity"
-            android:label="AddFriendsActivity" />
         <activity android:name=".features.welcome.WelcomeActivity" />
         <activity
             android:name=".features.main.MainActivity"
-            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustPan" />
 
         <meta-data

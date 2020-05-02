@@ -5,13 +5,32 @@
     android:id="@+id/pullToRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/MainTheme"
     tools:background="@color/colorPrimary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".features.main.MainActivity">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="@+id/avatarBorder"
+            app:layout_constraintStart_toStartOf="@+id/avatarBorder"
+            app:layout_constraintTop_toTopOf="@+id/view" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/topInfo"
@@ -46,7 +65,7 @@
                 android:id="@+id/followingLabel"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="80dp"
+                android:layout_marginEnd="60dp"
                 android:layout_marginBottom="20dp"
                 android:elevation="1dp"
                 android:letterSpacing="0.02"
@@ -63,7 +82,7 @@
                 android:id="@+id/followersLabel"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginBottom="20dp"
                 android:elevation="1dp"
                 android:letterSpacing="0.02"
@@ -108,10 +127,13 @@
 
             <TextView
                 android:id="@+id/username"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="70dp"
+                android:layout_marginEnd="20dp"
                 android:elevation="1dp"
+                android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -119,6 +141,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="SomeUser86" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -137,7 +160,7 @@
                 android:id="@+id/rankLabel"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginBottom="20dp"
                 android:elevation="1dp"
                 android:letterSpacing="0.02"
@@ -170,7 +193,7 @@
                 android:id="@+id/allTimeLabel"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="80dp"
+                android:layout_marginEnd="60dp"
                 android:layout_marginBottom="20dp"
                 android:elevation="1dp"
                 android:letterSpacing="0.02"
@@ -210,6 +233,7 @@
             android:elevation="1dp"
             android:scaleX="0.75"
             android:scaleY="0.75"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -220,7 +244,8 @@
             app:progress_color_start="@color/colorPrimaryDark"
             app:progress_text_color="@color/colorPrimaryDark"
             app:progress_text_size="40sp"
-            app:progress_width="10dp" />
+            app:progress_width="10dp"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/avatarBorder"
@@ -239,11 +264,11 @@
             android:layout_width="95dp"
             android:layout_height="95dp"
             android:elevation="1dp"
+            android:src="@drawable/circle"
             app:layout_constraintBottom_toBottomOf="@+id/avatarBorder"
             app:layout_constraintEnd_toEndOf="@+id/avatarBorder"
             app:layout_constraintStart_toStartOf="@+id/avatarBorder"
-            app:layout_constraintTop_toTopOf="@+id/avatarBorder"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="@+id/avatarBorder" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

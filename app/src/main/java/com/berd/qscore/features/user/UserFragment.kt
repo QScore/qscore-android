@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
-import com.berd.qscore.databinding.ScoreFragmentBinding
+import com.berd.qscore.databinding.UserFragmentBinding
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserViewModel.ScoreState.Loading
 import com.berd.qscore.features.user.UserViewModel.ScoreState.Ready
 import com.berd.qscore.utils.extensions.createViewModel
+import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.loadAvatar
 import com.berd.qscore.utils.extensions.visible
 import com.giphy.sdk.core.models.Media
@@ -30,9 +32,17 @@ class UserFragment : BaseFragment() {
         arguments?.getSerializable(KEY_PROFILE_TYPE) as ProfileType
     }
 
-    private val binding: ScoreFragmentBinding by lazy {
-        ScoreFragmentBinding.inflate(layoutInflater)
+    private val binding: UserFragmentBinding by lazy {
+        UserFragmentBinding.inflate(layoutInflater)
     }
+
+    private val isCurrentUser
+        get() = profileType.let {
+            when (it) {
+                is ProfileType.CurrentUser -> true
+                is ProfileType.User -> it.userId == UserRepository.currentUser?.userId
+            }
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return binding.root
@@ -62,18 +72,27 @@ class UserFragment : BaseFragment() {
 
     private fun handleLoading() = with(binding) {
         scoreProgress.progress = 0f
+        progress.visible()
     }
 
     private fun handleReady(user: QUser) = with(binding) {
         username.text = user.username
         scoreProgress.progress = user.score.toFloat() / 100
         allTimeScore.text = user.allTimeScore
-        rankNumber.text = "#${user.rank}"
+        rankNumber.text =
+            if (user.rank.isNullOrEmpty() || user.rank == "0") {
+                "Unknown"
+            } else {
+                "#${user.rank}"
+            }
         user.avatar?.let { updateAvatar(it) }
         pullToRefresh.isRefreshing = false
         followersNumber.text = user.followerCount.toString()
         followingNumber.text = user.followingCount.toString()
-        if (profileType != ProfileType.CurrentUser) {
+        progress.gone()
+        if (isCurrentUser) {
+            scoreProgress.visible()
+        } else {
             setupFollowButton(user)
         }
     }
@@ -82,23 +101,28 @@ class UserFragment : BaseFragment() {
         activity?.let { activity ->
             when {
                 user.isCurrentUserFollowing -> {
-                    followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.colorPrimaryDark)
+                    followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.light_gray)
                     followButton.text = resources.getString(R.string.remove)
                     followButton.visible()
                 }
                 else -> {
-                    followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.light_gray)
+                    followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.colorPrimaryDark)
                     followButton.text = resources.getString(R.string.add)
                     followButton.visible()
                 }
             }
         }
+        followButton.setOnClickListener { viewModel.onFollowButtonClicked(user.userId) }
     }
 
     private fun setupViews() = binding.apply {
-        scoreProgress.progress = 1f
-        avatarBorder.setOnClickListener { loadGiphy() }
-        pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
+        if (isCurrentUser) {
+            scoreProgress.progress = 1f
+            avatarBorder.setOnClickListener { loadGiphy() }
+            pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
+        } else {
+            pullToRefresh.isEnabled = false
+        }
     }
 
     private fun updateAvatar(url: String) {
@@ -119,7 +143,7 @@ class UserFragment : BaseFragment() {
             override fun onGifSelected(media: Media) {
                 var image = media.images.fixedWidthSmall ?: return
                 if (image.width > image.height) {
-                    image = media.images.fixedHeight ?: return
+                    image = media.images.fixedHeightSmall ?: return
                 }
                 val item = image.webPUrl ?: return
                 viewModel.onGifAvatarSelected(item)

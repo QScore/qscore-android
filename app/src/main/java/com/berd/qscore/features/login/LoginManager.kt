@@ -3,10 +3,8 @@ package com.berd.qscore.features.login
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
-import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.utils.injection.Injector
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -54,23 +52,6 @@ object LoginManager {
     suspend fun sendPasswordResetEmail(email: String) = suspendCancellableCoroutine<AuthEvent> {
         firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             it.resume(task.resultEvent)
-        }
-    }
-
-    suspend fun checkUserHasUsername(): Boolean {
-        if (!isLoggedIn) {
-            return false
-        }
-
-        return try {
-            val currentUser = Api.getCurrentUser()
-            if (currentUser.username.isNullOrEmpty()) {
-                return false
-            }
-            true
-        } catch (e: ApolloException) {
-            //Current user does not exist
-            false
         }
     }
 

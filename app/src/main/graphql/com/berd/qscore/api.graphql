@@ -23,6 +23,18 @@ mutation CreateUser($input: CreateUserInput!) {
     }
 }
 
+mutation FollowUser($input: FollowUserInput!) {
+    followUser(input: $input) {
+        userId
+    }
+}
+
+mutation UnfollowUser($input: UnfollowUserInput!) {
+    unfollowUser(input: $input) {
+        userId
+    }
+}
+
 query CurrentUser {
     currentUser {
         user {
@@ -72,13 +84,15 @@ query SearchUsers($input: SearchUsersInput!) {
 
 query GetLeaderboardRange($input: LeaderboardRangeInput!) {
     getLeaderboardRange(input: $input) {
-        leaderboardScores {
-            user {
-                userId
-                username
-                avatar
-            }
-            score
+        users {
+            userId,
+            username,
+            score,
+            allTimeScore,
+            isCurrentUserFollowing,
+            followingCount,
+            followerCount,
+            avatar,
             rank
         }
     }
