@@ -104,7 +104,7 @@ object Api {
             allTimeScore = (currentUser.allTimeScore ?: 0.0).roundToInt().toString(),
             followerCount = currentUser.followerCount ?: 0,
             followingCount = currentUser.followingCount ?: 0,
-            rank = currentUser.rank?.toString() ?: "Unknown",
+            rank = currentUser.rank?.toString(),
             avatar = currentUser.avatar
         )
     }
@@ -115,22 +115,23 @@ object Api {
         apolloClient.mutate(mutation).call()
     }
 
-    suspend fun searchUsers(query: String, limit: Int = 30): List<QUser> {
+    suspend fun searchUsers(query: String, limit: Int): List<QUser> {
         val input = SearchUsersInput(query, limit)
         val query = SearchUsersQuery(input)
         val result = apolloClient.query(query).call()
         return result.searchUsers.users.map {
-            QUser(
+            val output = QUser(
                 userId = it.userId,
                 username = it.username,
                 score = it.score ?: 0.0,
                 allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
                 isCurrentUserFollowing = it.isCurrentUserFollowing ?: false,
-                rank = "Unknown",
+                rank = it.rank?.toString(),
                 avatar = it.avatar,
                 followingCount = it.followingCount ?: 0,
-                followerCount = it.followingCount ?: 0
+                followerCount = it.followerCount ?: 0
             )
+            output
         }
     }
 

@@ -3,8 +3,8 @@ package com.berd.qscore.features.search
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.search.SearchViewModel.SearchState.*
-import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -18,7 +18,7 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
         viewModelScope.launch {
             try {
                 state = Loading
-                val users = Api.searchUsers(query)
+                val users = UserRepository.searchUsers(query)
                 state = if (users.isEmpty()) {
                     EmptyResults
                 } else {

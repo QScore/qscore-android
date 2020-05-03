@@ -77,7 +77,8 @@ query SearchUsers($input: SearchUsersInput!) {
             isCurrentUserFollowing,
             followingCount,
             followerCount,
-            avatar
+            avatar,
+            rank
         }
     }
 }

@@ -33,8 +33,8 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAct
         viewModelScope.launch {
             try {
                 val user = when (profileType) {
-                    is ProfileType.CurrentUser -> Api.getCurrentUser()
-                    is ProfileType.User -> Api.getUser(profileType.userId)
+                    is ProfileType.CurrentUser -> UserRepository.getCurrentUser()
+                    is ProfileType.User -> UserRepository.getUser(profileType.userId)
                         ?: throw ApolloException("No user found for id: ${profileType.userId}")
                 }
                 state = Ready(user)
@@ -58,9 +58,21 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAct
         onResume()
     }
 
-    fun onFollowButtonClicked(userId: String) {
+    enum class FollowType {
+        FOLLOW,
+        UNFOLLOW
+    }
+
+    fun onFollowButtonClicked(userId: String, followType: FollowType) {
         viewModelScope.launch {
-            UserRepository.followUser(userId)
+            if (followType == FollowType.FOLLOW) {
+                UserRepository.followUser(userId)
+            } else {
+                UserRepository.unfollowUser(userId)
+            }
+            val updatedUser = UserRepository.getUser(userId)
+            updatedUser?.let { state = Ready(it) }
+                ?: Timber.d("Unable to update user after follow button clicked, no user found")
         }
     }
 }

@@ -2,6 +2,7 @@ package com.berd.qscore.features.login
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.login.LoginManager.AuthEvent
 import com.berd.qscore.features.login.SignUpViewModel.Action
 import com.berd.qscore.features.login.SignUpViewModel.Action.*
@@ -73,13 +74,16 @@ class SignUpViewModel : RxViewModel<Action, State>() {
     private suspend fun handleSuccess(email: String) {
         state = Ready
         Prefs.userEmail = email
-        UserRepository.loadCurrentUser()
-        if (UserRepository.currentUser?.username.isNullOrEmpty()) {
-            action(LaunchUsernameActivity)
-        } else if (Prefs.userLocation != null) {
-            action(LaunchScoreActivity)
-        } else {
-            action(LaunchWelcomeActivity)
+        try {
+            val currentUser = UserRepository.getCurrentUser()
+            when {
+                currentUser.username.isNullOrEmpty() -> action(LaunchUsernameActivity)
+                Prefs.userLocation != null -> action(LaunchScoreActivity)
+                else -> action(LaunchWelcomeActivity)
+            }
+        } catch (e: ApolloException) {
+            Timber.d("Unable to get current user $e")
+            state = SignUpError
         }
     }
 }

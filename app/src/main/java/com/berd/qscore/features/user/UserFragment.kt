@@ -80,7 +80,7 @@ class UserFragment : BaseFragment() {
         scoreProgress.progress = user.score.toFloat() / 100
         allTimeScore.text = user.allTimeScore
         rankNumber.text =
-            if (user.rank.isNullOrEmpty() || user.rank == "0") {
+            if (user.rank.isNullOrEmpty() || user.rank == "0" || user.rank == "Unknown") {
                 "Unknown"
             } else {
                 "#${user.rank}"
@@ -104,15 +104,16 @@ class UserFragment : BaseFragment() {
                     followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.light_gray)
                     followButton.text = resources.getString(R.string.remove)
                     followButton.visible()
+                    followButton.setOnClickListener { viewModel.onFollowButtonClicked(user.userId, UserViewModel.FollowType.UNFOLLOW) }
                 }
                 else -> {
                     followButton.backgroundTintList = ContextCompat.getColorStateList(activity, R.color.colorPrimaryDark)
                     followButton.text = resources.getString(R.string.add)
                     followButton.visible()
+                    followButton.setOnClickListener { viewModel.onFollowButtonClicked(user.userId, UserViewModel.FollowType.FOLLOW) }
                 }
             }
         }
-        followButton.setOnClickListener { viewModel.onFollowButtonClicked(user.userId) }
     }
 
     private fun setupViews() = binding.apply {

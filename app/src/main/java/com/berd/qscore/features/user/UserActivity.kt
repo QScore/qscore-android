@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUserBinding
+import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserFragment.ProfileType
 import timber.log.Timber
 
@@ -27,7 +28,12 @@ class UserActivity : AppCompatActivity() {
     private fun setupFragment() {
         Timber.d(">>SETTING UP FRAGMENT")
         val userId = intent.extras?.getString(KEY_USER_ID) as String
-        val fragment = UserFragment.newInstance(ProfileType.User(userId))
+        val profileType = if (userId == UserRepository.currentUser?.userId) {
+            ProfileType.CurrentUser
+        } else {
+            ProfileType.User(userId)
+        }
+        val fragment = UserFragment.newInstance(profileType)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainer2, fragment)
@@ -37,6 +43,7 @@ class UserActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = ""
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -22,7 +22,7 @@ class SplashViewModel : RxViewModel<Action, Unit>() {
     fun onCreate() = viewModelScope.launch {
         delay(1500)
         if (LoginManager.isLoggedIn) {
-            UserRepository.loadCurrentUser()
+            UserRepository.getCurrentUser()
             if (!UserRepository.currentUser?.username.isNullOrEmpty()) {
                 if (Prefs.userLocation != null) {
                     action(LaunchScoreActivity)
