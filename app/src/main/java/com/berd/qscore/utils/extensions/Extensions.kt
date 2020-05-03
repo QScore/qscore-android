@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.berd.qscore.R
 import com.berd.qscore.utils.location.LatLngPair
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.webp.decoder.WebpDrawable
@@ -37,6 +38,7 @@ private val whiteColorDrawable = ColorDrawable().apply { color = Color.parseColo
 fun ImageView.loadAvatar(url: String) {
     Glide.with(this) //.asBitmap()
         .load(url)
+        .error(R.drawable.circle)
         .optionalTransform(CircleCrop())
         .optionalTransform(WebpDrawable::class.java, WebpDrawableTransformation(CircleCrop()))
         .into(this)
