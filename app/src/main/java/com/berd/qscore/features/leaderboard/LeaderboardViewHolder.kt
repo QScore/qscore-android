@@ -1,11 +1,10 @@
 package com.berd.qscore.features.leaderboard
 
 import androidx.recyclerview.widget.RecyclerView
-import com.berd.qscore.R
 import com.berd.qscore.databinding.RowLeaderboardScoreBinding
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.utils.extensions.loadAvatar
-import com.bumptech.glide.Glide
+import com.berd.qscore.utils.extensions.loadDefaultAvatar
 
 class LeaderboardViewHolder(
     private val binding: RowLeaderboardScoreBinding,
@@ -18,7 +17,7 @@ class LeaderboardViewHolder(
         scoreText.text = user.allTimeScore
         user.avatar?.let {
             avatarImage.loadAvatar(it)
-        } ?: Glide.with(avatarImage).load(R.drawable.circle).into(avatarImage)
+        } ?: avatarImage.loadDefaultAvatar()
         mainLayout.setOnClickListener { clickListener(user.userId) }
     }
 }

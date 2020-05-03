@@ -12,7 +12,7 @@ import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
 import com.berd.qscore.features.main.bottomnav.BottomTab
-import com.berd.qscore.features.main.bottomnav.BottomTab.*
+import com.berd.qscore.features.main.bottomnav.BottomTab.ME
 import com.berd.qscore.features.main.bottomnav.FragmentStateManager
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.utils.location.LocationHelper
@@ -56,12 +56,6 @@ class MainActivity : BaseActivity() {
 
     private fun changeFragment(bottomTab: BottomTab) {
         fragmentStateManager.changeTab(bottomTab)
-        val toolbarTitleResId = when (bottomTab) {
-            ME -> R.string.me
-            SEARCH -> R.string.search
-            LEADERBOARD -> R.string.leaderboards
-        }
-        supportActionBar?.title = getString(toolbarTitleResId)
     }
 
     private fun observeEvents() {
@@ -73,7 +67,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        setSupportActionBar(toolbar)
         //Set up bottom tabs
     }
 

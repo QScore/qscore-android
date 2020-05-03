@@ -24,7 +24,7 @@ class LeaderboardViewModel : RxViewModel<LeaderboardViewModel.LeaderboardAction,
                 val leaderboard = UserRepository.getLeaderboardRange(0, 100)
                 state = LeaderboardState.Ready(leaderboard)
             } catch (e: ApolloException) {
-                Timber.d(">>Unable to fetch leaderboard range: $e")
+                Timber.d("Unable to fetch leaderboard range: $e")
             }
         }
     }

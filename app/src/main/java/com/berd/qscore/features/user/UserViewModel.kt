@@ -26,7 +26,11 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAct
     }
 
     fun onCreate() {
-        state = Loading
+        UserRepository?.currentUser?.let {
+            state = Ready(it)
+        } ?: run {
+            state = Loading
+        }
     }
 
     fun onResume() {

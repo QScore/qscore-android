@@ -44,6 +44,13 @@ fun ImageView.loadAvatar(url: String) {
         .into(this)
 }
 
+fun ImageView.loadDefaultAvatar() {
+    Glide.with(this) //.asBitmap()
+        .load(R.drawable.rabbit2)
+        .circleCrop()
+        .into(this)
+}
+
 @SuppressLint("CheckResult")
 fun ImageView.loadUrl(
     url: String,

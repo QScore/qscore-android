@@ -23,9 +23,7 @@
         <activity
             android:name=".features.login.SignUpActivity"
             android:label="SignUpActivity" />
-        <activity
-            android:name=".features.user.UserActivity"
-            android:label="UserActivity" />
+        <activity android:name=".features.user.UserActivity" />
         <activity
             android:name=".features.login.SelectUsernameActivity"
             android:label="SelectUsernameActivity" />

@@ -6,16 +6,20 @@ import com.berd.qscore.features.search.SearchViewModel.SearchState.*
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewModel.SearchState>() {
+    private var searchJob: Job? = null
+
     fun onSearch(query: String) {
+        searchJob?.cancel()
         if (query.isEmpty()) {
             return
         }
-        viewModelScope.launch {
+        searchJob = viewModelScope.launch {
             try {
                 state = Loading
                 val users = UserRepository.searchUsers(query)

@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.UserFragmentBinding
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserViewModel.ScoreState.Loading
 import com.berd.qscore.features.user.UserViewModel.ScoreState.Ready
-import com.berd.qscore.utils.extensions.createViewModel
-import com.berd.qscore.utils.extensions.gone
-import com.berd.qscore.utils.extensions.loadAvatar
-import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.extensions.*
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
 import com.giphy.sdk.ui.views.GiphyDialogFragment
@@ -52,8 +51,20 @@ class UserFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         //Setup stuff
         setupViews()
+        setupToolbar()
         observeEvents()
         viewModel.onCreate()
+    }
+
+    private fun setupToolbar() {
+        val activity = this.activity as? AppCompatActivity
+        activity?.apply {
+            setSupportActionBar(binding.toolbar)
+            if (this !is MainActivity) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.title = ""
+            }
+        }
     }
 
     override fun onResume() {
@@ -85,7 +96,7 @@ class UserFragment : BaseFragment() {
             } else {
                 "#${user.rank}"
             }
-        user.avatar?.let { updateAvatar(it) }
+        setupAvatar(user)
         pullToRefresh.isRefreshing = false
         followersNumber.text = user.followerCount.toString()
         followingNumber.text = user.followingCount.toString()
@@ -94,7 +105,13 @@ class UserFragment : BaseFragment() {
             scoreProgress.visible()
         } else {
             setupFollowButton(user)
+            bottomScoreLabel.gone()
         }
+    }
+
+    private fun setupAvatar(user: QUser) {
+        user.avatar?.let { updateAvatar(it) }
+            ?: binding.avatarImage.loadDefaultAvatar()
     }
 
     private fun setupFollowButton(user: QUser) = with(binding) {

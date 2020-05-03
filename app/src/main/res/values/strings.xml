@@ -81,4 +81,5 @@
     <string name="following">Following</string>
     <string name="followers">Followers</string>
     <string name="follow">Follow</string>
+    <string name="multiplier">Multiplier</string>
 </resources>
