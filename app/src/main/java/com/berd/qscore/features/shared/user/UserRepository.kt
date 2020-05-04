@@ -64,18 +64,32 @@ object UserRepository {
     }
 
     suspend fun searchUsers(query: String, limit: Int = 30): List<QUser> {
-        val users = Api.searchUsers(query, limit)
-        users.forEach {
-            userMap[it.userId] = it
-        }
-        return users
+        return Api.searchUsers(query, limit).also { saveUsers(it) }
     }
 
     suspend fun getLeaderboardRange(start: Int, end: Int): List<QUser> {
-        val users = Api.getLeaderboardRange(start, end)
-        users.map {
+        return Api.getLeaderboardRange(start, end).also { saveUsers(it) }
+    }
+
+    suspend fun getFollowers(userId: String): List<QUser> {
+        return Api.getFollowers(userId).also { saveUsers(it) }
+    }
+
+    suspend fun getFollowersWithCursor(cursor: String): List<QUser> {
+        return Api.getFollowersWithCursor(cursor).also { saveUsers(it) }
+    }
+
+    suspend fun getFollowedUsers(userId: String): List<QUser> {
+        return Api.getFollowedUsers(userId).also { saveUsers(it) }
+    }
+
+    suspend fun getFollowedUsersWithCursor(cursor: String): List<QUser> {
+        return Api.getFollowedUsersWithCursor(cursor).also { saveUsers(it) }
+    }
+
+    private fun saveUsers(users: List<QUser>) {
+        users.forEach {
             userMap[it.userId] = it
         }
-        return users
     }
 }

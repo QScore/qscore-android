@@ -9,6 +9,7 @@ import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.*
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.fragment.UserFields
 import com.berd.qscore.type.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,16 +40,7 @@ object Api {
         val query = GetLeaderboardRangeQuery(input)
         val result = apolloClient.query(query).call()
         return result.getLeaderboardRange.users.map {
-            QUser(
-                userId = it.userId,
-                username = it.username,
-                score = it.score ?: 0.0,
-                allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
-                followerCount = it.followerCount ?: 0,
-                followingCount = it.followingCount ?: 0,
-                rank = it.rank?.toString(),
-                avatar = it.avatar
-            )
+            it.fragments.userFields.toQUser()
         }
     }
 
@@ -69,16 +61,7 @@ object Api {
         val query = GetUserQuery(input)
         val result = apolloClient.query(query).call()
         val user = result.getUser.user ?: return null
-        return QUser(
-            userId = user.userId,
-            username = user.username,
-            score = user.score ?: 0.0,
-            allTimeScore = (user.allTimeScore ?: 0.0).roundToInt().toString(),
-            followerCount = user.followerCount ?: 0,
-            followingCount = user.followingCount ?: 0,
-            rank = user.rank?.toString(),
-            avatar = user.avatar
-        )
+        return user.fragments.userFields.toQUser()
     }
 
     suspend fun createUser(username: String) {
@@ -97,16 +80,7 @@ object Api {
         val query = CurrentUserQuery()
         val result = apolloClient.query(query).call()
         val currentUser = result.currentUser.user
-        return QUser(
-            userId = currentUser.userId,
-            username = currentUser.username,
-            score = currentUser.score ?: 0.0,
-            allTimeScore = (currentUser.allTimeScore ?: 0.0).roundToInt().toString(),
-            followerCount = currentUser.followerCount ?: 0,
-            followingCount = currentUser.followingCount ?: 0,
-            rank = currentUser.rank?.toString(),
-            avatar = currentUser.avatar
-        )
+        return currentUser.fragments.userFields.toQUser()
     }
 
     suspend fun createGeofenceEvent(eventType: GeofenceEventType) {
@@ -120,20 +94,58 @@ object Api {
         val query = SearchUsersQuery(input)
         val result = apolloClient.query(query).call()
         return result.searchUsers.users.map {
-            val output = QUser(
-                userId = it.userId,
-                username = it.username,
-                score = it.score ?: 0.0,
-                allTimeScore = (it.allTimeScore ?: 0.0).roundToInt().toString(),
-                isCurrentUserFollowing = it.isCurrentUserFollowing ?: false,
-                rank = it.rank?.toString(),
-                avatar = it.avatar,
-                followingCount = it.followingCount ?: 0,
-                followerCount = it.followerCount ?: 0
-            )
-            output
+            it.fragments.userFields.toQUser()
         }
     }
+
+    suspend fun getFollowers(userId: String): List<QUser> {
+        val input = GetFollowersInput(userId)
+        val query = GetFollowersQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.getFollowers.users.map {
+            it.fragments.userFields.toQUser()
+        }
+    }
+
+    suspend fun getFollowersWithCursor(cursor: String): List<QUser> {
+        val input = GetFollowersWithCursorInput(cursor)
+        val query = GetFollowersWithCursorQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.getFollowersWithCursor.users.map {
+            it.fragments.userFields.toQUser()
+        }
+    }
+
+    suspend fun getFollowedUsers(userId: String): List<QUser> {
+        val input = GetFollowedUsersInput(userId)
+        val query = GetFollowedUsersQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.getFollowedUsers.users.map {
+            it.fragments.userFields.toQUser()
+        }
+    }
+
+    suspend fun getFollowedUsersWithCursor(userId: String): List<QUser> {
+        val input = GetFollowedUsersWithCursorInput(userId)
+        val query = GetFollowedUsersWithCursorQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.getFollowedUsersWithCursor.users.map {
+            it.fragments.userFields.toQUser()
+        }
+    }
+
+    private fun UserFields.toQUser() =
+        QUser(
+            userId = userId,
+            username = username,
+            score = score ?: 0.0,
+            allTimeScore = (allTimeScore ?: 0.0).roundToInt().toString(),
+            isCurrentUserFollowing = isCurrentUserFollowing ?: false,
+            rank = rank?.toString(),
+            avatar = avatar,
+            followingCount = followingCount ?: 0,
+            followerCount = followerCount ?: 0
+        )
 
     private suspend fun <T : Any> ApolloQueryCall<T>.call(): T {
         val result = toDeferred().await()

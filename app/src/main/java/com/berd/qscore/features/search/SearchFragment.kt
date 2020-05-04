@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.databinding.SearchFragmentBinding
+import com.berd.qscore.features.search.SearchViewModel.SearchState.*
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.shared.user.UserAdapter
 import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
@@ -23,7 +26,9 @@ class SearchFragment : BaseFragment() {
 
     private val viewModel by viewModels<SearchViewModel>()
 
-    private val searchAdapter = SearchAdapter(::handleSearchItemClicked)
+    private val searchAdapter by lazy {
+        UserAdapter(::handleSearchItemClicked)
+    }
 
     private val binding: SearchFragmentBinding by lazy {
         SearchFragmentBinding.inflate(layoutInflater)
@@ -45,22 +50,32 @@ class SearchFragment : BaseFragment() {
         clearButton.setOnClickListener { searchField.setText("") }
     }
 
-    private fun handleSearchItemClicked(userId: String) {
+    private fun handleSearchItemClicked(user: QUser) {
         activity?.let { activity ->
-            val intent = UserActivity.newIntent(activity, userId)
+            val intent = UserActivity.newIntent(activity, user.userId)
             startActivity(intent)
         }
     }
 
     private fun observeEvents() {
-        viewModel.observeState {
+        viewModel.observeActions {
             when (it) {
-                is SearchViewModel.SearchState.UsersLoaded -> showUsers(it.users)
-                SearchViewModel.SearchState.EmptyResults -> handleEmptyResults()
-                SearchViewModel.SearchState.Loading -> handleLoading()
-                SearchViewModel.SearchState.Error -> handleError()
+                is SearchViewModel.SearchAction.SubmitPagedList -> handleSubmitPagedList(it.pagedList)
             }
         }
+
+        viewModel.observeState {
+            when (it) {
+                EmptyResults -> handleEmptyResults()
+                Loading -> handleLoading()
+                Error -> handleError()
+                Loaded -> handleLoaded()
+            }
+        }
+    }
+
+    private fun handleSubmitPagedList(pagedList: PagedList<QUser>) {
+        searchAdapter.submitList(pagedList)
     }
 
     private fun handleError() {
@@ -72,8 +87,7 @@ class SearchFragment : BaseFragment() {
         clearButton.gone()
     }
 
-    private fun showUsers(users: List<QUser>) = with(binding) {
-        searchAdapter.submitList(users)
+    private fun handleLoaded() = with(binding) {
         recyclerView.visible()
         noUsersFound.gone()
         clearButton.visible()
@@ -85,7 +99,6 @@ class SearchFragment : BaseFragment() {
         noUsersFound.visible()
         clearButton.visible()
         progressBar.invisible()
-        searchAdapter.submitList(listOf())
     }
 
     private fun setupRecyclerView() = activity?.let { activity ->

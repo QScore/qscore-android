@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.berd.qscore.utils.rx.RxEventSender
+import io.reactivex.disposables.CompositeDisposable
 
 abstract class RxViewModel<A, S> : ViewModel() {
+
+    val compositeDisposable = CompositeDisposable()
 
     private val _actions = RxEventSender<A>()
     val actionsObservable = _actions.observable
@@ -18,5 +21,10 @@ abstract class RxViewModel<A, S> : ViewModel() {
     protected var state: S?
         get() = _state.value
         set(value) = _state.postValue(value)
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
+    }
 
 }

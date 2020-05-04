@@ -38,15 +38,7 @@ mutation UnfollowUser($input: UnfollowUserInput!) {
 query CurrentUser {
     currentUser {
         user {
-            userId,
-            username,
-            score,
-            rank,
-            allTimeScore,
-            isCurrentUserFollowing,
-            followingCount,
-            followerCount,
-            avatar
+            ...userFields
         }
     }
 }
@@ -54,15 +46,7 @@ query CurrentUser {
 query GetUser($input: GetUserInput!) {
     getUser(input: $input) {
         user {
-            userId,
-            username,
-            score,
-            rank,
-            allTimeScore,
-            isCurrentUserFollowing,
-            followingCount,
-            followerCount,
-            avatar
+            ...userFields
         }
     }
 }
@@ -70,15 +54,40 @@ query GetUser($input: GetUserInput!) {
 query SearchUsers($input: SearchUsersInput!) {
     searchUsers(input: $input) {
         users {
-            userId,
-            username,
-            score,
-            allTimeScore,
-            isCurrentUserFollowing,
-            followingCount,
-            followerCount,
-            avatar,
-            rank
+            ...userFields
+        }
+    }
+}
+
+query GetFollowedUsers($input: GetFollowedUsersInput!) {
+    getFollowedUsers(input: $input) {
+        users {
+            ...userFields
+        }
+    }
+}
+
+
+query getFollowedUsersWithCursor($input: GetFollowedUsersWithCursorInput!) {
+    getFollowedUsersWithCursor(input: $input) {
+        users {
+            ...userFields
+        }
+    }
+}
+
+query GetFollowers($input: GetFollowersInput!) {
+    getFollowers(input: $input) {
+        users {
+            ...userFields
+        }
+    }
+}
+
+query GetFollowersWithCursor($input: GetFollowersWithCursorInput!) {
+    getFollowersWithCursor(input: $input) {
+        users {
+            ...userFields
         }
     }
 }
@@ -86,15 +95,19 @@ query SearchUsers($input: SearchUsersInput!) {
 query GetLeaderboardRange($input: LeaderboardRangeInput!) {
     getLeaderboardRange(input: $input) {
         users {
-            userId,
-            username,
-            score,
-            allTimeScore,
-            isCurrentUserFollowing,
-            followingCount,
-            followerCount,
-            avatar,
-            rank
+            ...userFields
         }
     }
+}
+
+fragment userFields on User {
+    userId
+    username
+    score
+    allTimeScore
+    isCurrentUserFollowing
+    followingCount
+    followerCount
+    avatar
+    rank
 }

@@ -10,7 +10,7 @@
         android:title="@string/search" />
     <item
         android:id="@+id/leaderboards"
-        android:icon="@drawable/ic_trophy"
+        android:icon="@drawable/trophy"
         android:title="@string/leaderboards" />
 </menu>
 

@@ -32,6 +32,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import java.util.*
+import kotlin.math.abs
 
 private val whiteColorDrawable = ColorDrawable().apply { color = Color.parseColor("#FFFFFF") }
 
@@ -44,9 +45,17 @@ fun ImageView.loadAvatar(url: String) {
         .into(this)
 }
 
-fun ImageView.loadDefaultAvatar() {
+fun ImageView.loadDefaultAvatar(userId: String) {
+    val selector = abs(userId.hashCode()) % 4
+    val resId = when (selector) {
+        0 -> R.drawable.rabbit
+        1 -> R.drawable.bear
+        2 -> R.drawable.monkey
+        3 -> R.drawable.panda
+        else -> R.drawable.panda
+    }
     Glide.with(this) //.asBitmap()
-        .load(R.drawable.rabbit2)
+        .load(resId)
         .circleCrop()
         .into(this)
 }

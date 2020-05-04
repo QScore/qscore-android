@@ -111,7 +111,7 @@ class UserFragment : BaseFragment() {
 
     private fun setupAvatar(user: QUser) {
         user.avatar?.let { updateAvatar(it) }
-            ?: binding.avatarImage.loadDefaultAvatar()
+            ?: binding.avatarImage.loadDefaultAvatar(user.userId)
     }
 
     private fun setupFollowButton(user: QUser) = with(binding) {

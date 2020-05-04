@@ -17,7 +17,7 @@ class LeaderboardViewHolder(
         scoreText.text = user.allTimeScore
         user.avatar?.let {
             avatarImage.loadAvatar(it)
-        } ?: avatarImage.loadDefaultAvatar()
+        } ?: avatarImage.loadDefaultAvatar(user.userId)
         mainLayout.setOnClickListener { clickListener(user.userId) }
     }
 }
