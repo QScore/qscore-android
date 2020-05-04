@@ -38,9 +38,14 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
         val pagedListHelper = object : PagedListHelper<QUser>() {
             override fun loadFirstPage(limit: Int): LoadResult = runBlocking {
                 state = Loading
-                val users = UserRepository.searchUsers(query)
+                val result = UserRepository.searchUsers(query, limit)
                 state = Loaded
-                LoadResult(users, null)
+                LoadResult(result.users, result.nextCursor)
+            }
+
+            override fun loadNextPage(cursor: String): LoadResult = runBlocking {
+                val result = UserRepository.searchUsersWithCursor(cursor)
+                LoadResult(result.users, result.nextCursor)
             }
 
             override fun onNoItemsLoaded() {

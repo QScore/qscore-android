@@ -63,28 +63,32 @@ object UserRepository {
         return user
     }
 
-    suspend fun searchUsers(query: String, limit: Int = 30): List<QUser> {
-        return Api.searchUsers(query, limit).also { saveUsers(it) }
+    suspend fun searchUsers(query: String, limit: Int = 30): Api.UserListResult {
+        return Api.searchUsers(query, limit).also { saveUsers(it.users) }
+    }
+
+    suspend fun searchUsersWithCursor(cursor: String): Api.UserListResult {
+        return Api.searchUsersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
     suspend fun getLeaderboardRange(start: Int, end: Int): List<QUser> {
         return Api.getLeaderboardRange(start, end).also { saveUsers(it) }
     }
 
-    suspend fun getFollowers(userId: String): List<QUser> {
-        return Api.getFollowers(userId).also { saveUsers(it) }
+    suspend fun getFollowers(userId: String): Api.UserListResult {
+        return Api.getFollowers(userId).also { saveUsers(it.users) }
     }
 
-    suspend fun getFollowersWithCursor(cursor: String): List<QUser> {
-        return Api.getFollowersWithCursor(cursor).also { saveUsers(it) }
+    suspend fun getFollowersWithCursor(cursor: String): Api.UserListResult {
+        return Api.getFollowersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
-    suspend fun getFollowedUsers(userId: String): List<QUser> {
-        return Api.getFollowedUsers(userId).also { saveUsers(it) }
+    suspend fun getFollowedUsers(userId: String): Api.UserListResult {
+        return Api.getFollowedUsers(userId).also { saveUsers(it.users) }
     }
 
-    suspend fun getFollowedUsersWithCursor(cursor: String): List<QUser> {
-        return Api.getFollowedUsersWithCursor(cursor).also { saveUsers(it) }
+    suspend fun getFollowedUsersWithCursor(cursor: String): Api.UserListResult {
+        return Api.getFollowedUsersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
     private fun saveUsers(users: List<QUser>) {

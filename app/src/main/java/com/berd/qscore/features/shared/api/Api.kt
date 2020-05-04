@@ -89,50 +89,82 @@ object Api {
         apolloClient.mutate(mutation).call()
     }
 
-    suspend fun searchUsers(query: String, limit: Int): List<QUser> {
+    suspend fun searchUsers(query: String, limit: Int): UserListResult {
         val input = SearchUsersInput(query, limit)
         val query = SearchUsersQuery(input)
         val result = apolloClient.query(query).call()
-        return result.searchUsers.users.map {
-            it.fragments.userFields.toQUser()
-        }
+        return UserListResult(
+            users = result.searchUsers.users.map {
+                it.fragments.userFields.toQUser()
+            },
+            nextCursor = result.searchUsers.nextCursor
+        )
     }
 
-    suspend fun getFollowers(userId: String): List<QUser> {
+    suspend fun searchUsersWithCursor(cursor: String): UserListResult {
+        val input = SearchUsersWithCursorInput(cursor)
+        val query = SearchUsersWithCursorQuery(input)
+        val result = apolloClient.query(query).call()
+        return UserListResult(
+            users = result.searchUsersWithCursor.users.map {
+                it.fragments.userFields.toQUser()
+            },
+            nextCursor = result.searchUsersWithCursor.nextCursor
+        )
+    }
+
+    suspend fun getFollowers(userId: String): UserListResult {
         val input = GetFollowersInput(userId)
         val query = GetFollowersQuery(input)
         val result = apolloClient.query(query).call()
-        return result.getFollowers.users.map {
-            it.fragments.userFields.toQUser()
-        }
+        return UserListResult(
+            users = result.getFollowers.users.map {
+                it.fragments.userFields.toQUser()
+            },
+            nextCursor = result.getFollowers.nextCursor
+        )
     }
 
-    suspend fun getFollowersWithCursor(cursor: String): List<QUser> {
+    suspend fun getFollowersWithCursor(cursor: String): UserListResult {
         val input = GetFollowersWithCursorInput(cursor)
         val query = GetFollowersWithCursorQuery(input)
         val result = apolloClient.query(query).call()
-        return result.getFollowersWithCursor.users.map {
-            it.fragments.userFields.toQUser()
-        }
+        return UserListResult(
+            users = result.getFollowersWithCursor.users.map {
+                it.fragments.userFields.toQUser()
+            },
+            nextCursor = result.getFollowersWithCursor.nextCursor
+        )
     }
 
-    suspend fun getFollowedUsers(userId: String): List<QUser> {
+    suspend fun getFollowedUsers(userId: String): UserListResult {
         val input = GetFollowedUsersInput(userId)
         val query = GetFollowedUsersQuery(input)
         val result = apolloClient.query(query).call()
-        return result.getFollowedUsers.users.map {
-            it.fragments.userFields.toQUser()
-        }
+        return UserListResult(
+            users = result.getFollowedUsers.users.map {
+                it.fragments.userFields.toQUser()
+            },
+            nextCursor = result.getFollowedUsers.nextCursor
+        )
     }
 
-    suspend fun getFollowedUsersWithCursor(userId: String): List<QUser> {
+    suspend fun getFollowedUsersWithCursor(userId: String): UserListResult {
         val input = GetFollowedUsersWithCursorInput(userId)
         val query = GetFollowedUsersWithCursorQuery(input)
         val result = apolloClient.query(query).call()
-        return result.getFollowedUsersWithCursor.users.map {
-            it.fragments.userFields.toQUser()
-        }
+        return UserListResult(
+            users = result.getFollowedUsersWithCursor.users.map {
+                it.fragments.userFields.toQUser()
+            },
+            nextCursor = result.getFollowedUsersWithCursor.nextCursor
+        )
     }
+
+    data class UserListResult(
+        val users: List<QUser>,
+        val nextCursor: String?
+    )
 
     private fun UserFields.toQUser() =
         QUser(

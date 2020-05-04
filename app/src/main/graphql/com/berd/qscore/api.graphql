@@ -56,6 +56,16 @@ query SearchUsers($input: SearchUsersInput!) {
         users {
             ...userFields
         }
+        nextCursor
+    }
+}
+
+query SearchUsersWithCursor($input: SearchUsersWithCursorInput!) {
+    searchUsersWithCursor(input: $input) {
+        users {
+            ...userFields
+        }
+        nextCursor
     }
 }
 
@@ -64,6 +74,7 @@ query GetFollowedUsers($input: GetFollowedUsersInput!) {
         users {
             ...userFields
         }
+        nextCursor
     }
 }
 
@@ -73,6 +84,7 @@ query getFollowedUsersWithCursor($input: GetFollowedUsersWithCursorInput!) {
         users {
             ...userFields
         }
+        nextCursor
     }
 }
 
@@ -81,6 +93,7 @@ query GetFollowers($input: GetFollowersInput!) {
         users {
             ...userFields
         }
+        nextCursor
     }
 }
 
@@ -89,6 +102,7 @@ query GetFollowersWithCursor($input: GetFollowersWithCursorInput!) {
         users {
             ...userFields
         }
+        nextCursor
     }
 }
 

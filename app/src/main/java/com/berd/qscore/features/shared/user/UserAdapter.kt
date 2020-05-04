@@ -22,6 +22,7 @@ class UserAdapter(private val userClickListener: UserClickListener) : PagedListA
 
     private fun handleClicked(item: QUser) {
         //Do something
+
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
