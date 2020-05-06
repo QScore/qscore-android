@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityWelcomeBinding
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.LaunchScoreActivity
@@ -14,6 +15,7 @@ import com.berd.qscore.features.welcome.WelcomeViewModel.State.FindingLocation
 import com.berd.qscore.features.welcome.WelcomeViewModel.State.Ready
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.location.LocationHelper
+import com.github.florent37.runtimepermission.kotlin.PermissionException
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -71,10 +73,15 @@ class WelcomeActivity : AppCompatActivity() {
     private fun setupViews() = binding.let {
         it.userHomeButton.setOnClickListener {
             lifecycleScope.launch {
-                if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
-                    viewModel.setupHome()
-                } else {
-                    toast("You must allow permissions to continue")
+                try {
+                    if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
+                        viewModel.setupHome()
+                    } else {
+                        toast(getString(R.string.you_must_allow_permissions))
+                    }
+                } catch (e: PermissionException) {
+                    Timber.d("Unable to grant permissions: $e")
+                    toast(getString(R.string.you_must_allow_permissions))
                 }
             }
         }

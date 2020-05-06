@@ -7,6 +7,7 @@ import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.splash.Action.*
+import com.berd.qscore.utils.location.LocationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,7 +28,7 @@ class SplashViewModel : RxViewModel<Action, Unit>() {
             if (LoginManager.isLoggedIn) {
                 UserRepository.getCurrentUser()
                 if (!UserRepository.currentUser?.username.isNullOrEmpty()) {
-                    if (Prefs.userLocation != null) {
+                    if (Prefs.userLocation != null && LocationHelper.hasAllPermissions) {
                         action(LaunchScoreActivity)
                     } else {
                         action(LaunchWelcomeActivity)

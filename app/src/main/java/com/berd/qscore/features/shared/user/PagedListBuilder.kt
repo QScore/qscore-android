@@ -33,9 +33,7 @@ data class PagedListBuilder<T>(
             }
 
             override fun onNoItemsLoaded() {
-                onNoItemsLoaded?.let {
-                    onNoItemsLoaded()
-                }
+                onNoItemsLoaded?.invoke()
             }
         }
 

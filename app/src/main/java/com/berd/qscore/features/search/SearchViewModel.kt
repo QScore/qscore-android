@@ -46,6 +46,9 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
             onLoadNextPage = { cursor ->
                 val result = UserRepository.searchUsersWithCursor(cursor)
                 PagedResult(result.users, result.nextCursor)
+            },
+            onNoItemsLoaded = {
+                state = EmptyResults
             }
         )
         return builder.build()

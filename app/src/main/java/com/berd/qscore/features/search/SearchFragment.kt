@@ -85,6 +85,7 @@ class SearchFragment : BaseFragment() {
     private fun handleLoading() = with(binding) {
         progressBar.visible()
         clearButton.gone()
+        instructions.gone()
     }
 
     private fun handleLoaded() = with(binding) {
@@ -92,6 +93,7 @@ class SearchFragment : BaseFragment() {
         noUsersFound.gone()
         clearButton.visible()
         progressBar.invisible()
+        instructions.gone()
     }
 
     private fun handleEmptyResults() = with(binding) {
@@ -99,6 +101,7 @@ class SearchFragment : BaseFragment() {
         noUsersFound.visible()
         clearButton.visible()
         progressBar.invisible()
+        instructions.gone()
     }
 
     private fun setupRecyclerView() = activity?.let { activity ->

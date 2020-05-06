@@ -12,8 +12,7 @@ import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserAdapter
 import com.berd.qscore.features.user.UserListViewModel.UserListAction.SubmitPagedList
-import com.berd.qscore.features.user.UserListViewModel.UserListState.Loaded
-import com.berd.qscore.features.user.UserListViewModel.UserListState.Loading
+import com.berd.qscore.features.user.UserListViewModel.UserListState.*
 import com.berd.qscore.utils.extensions.createViewModel
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
@@ -89,6 +88,7 @@ class UserListActivity : BaseActivity() {
             when (it) {
                 Loading -> handleLoading()
                 Loaded -> handleLoaded()
+                NoUsersFound -> handleNoUsersFound()
             }
         }
     }
@@ -97,12 +97,22 @@ class UserListActivity : BaseActivity() {
         userAdapter.submitList(pagedList)
     }
 
+    private fun handleNoUsersFound() {
+        binding.emptyText.visible()
+        binding.progress.gone()
+        binding.recyclerView.gone()
+    }
+
     private fun handleLoaded() {
         binding.progress.gone()
+        binding.emptyText.gone()
+        binding.recyclerView.visible()
     }
 
     private fun handleLoading() {
         binding.progress.visible()
+        binding.recyclerView.gone()
+        binding.emptyText.gone()
     }
 
     enum class UserListType : Serializable {
