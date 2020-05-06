@@ -3,7 +3,7 @@ package com.berd.qscore.utils.geofence
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
-import com.berd.qscore.features.geofence.GeofenceIntentService
+import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver
 import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.location.LatLngPair
 import com.berd.qscore.utils.location.LocationHelper
@@ -18,13 +18,9 @@ object GeofenceHelper {
     private val context = Injector.appContext
     const val REQUEST_ID = "GEOFENCE_REQUEST_ID"
 
-    private val pendingIntent: PendingIntent by lazy {
-        PendingIntent.getService(
-            context,
-            0,
-            Intent(context, GeofenceIntentService::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+    private val pendingIntentBroadcast: PendingIntent by lazy {
+        val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
+        PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private val geofenceClient: GeofencingClient by lazy {
@@ -53,7 +49,7 @@ object GeofenceHelper {
 
         @SuppressLint("MissingPermission")
         if (LocationHelper.hasFineLocationPermission) {
-            geofenceClient.addGeofences(request, pendingIntent)
+            geofenceClient.addGeofences(request, pendingIntentBroadcast)
                 .addOnSuccessListener {
                     Timber.d("Successfully created geofence: $geofence")
                 }.addOnFailureListener {
@@ -63,7 +59,7 @@ object GeofenceHelper {
     }
 
     fun clearGeofences() {
-        geofenceClient.removeGeofences(pendingIntent)
+        geofenceClient.removeGeofences(pendingIntentBroadcast)
             .addOnSuccessListener {
                 Timber.d("Successfully cleared geofences")
             }.addOnFailureListener {

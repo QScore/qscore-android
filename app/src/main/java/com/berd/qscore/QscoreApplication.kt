@@ -1,6 +1,7 @@
 package com.berd.qscore
 
 import android.app.Application
+import com.berd.qscore.features.geofence.UpdateLocationWorker
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.injection.Injector
@@ -19,6 +20,11 @@ class QscoreApplication : Application() {
         setupInjection()
         setupFacebook()
         setupGeofence()
+        setupLocationUpdates()
+    }
+
+    private fun setupLocationUpdates() {
+        UpdateLocationWorker.schedule(this)
     }
 
     private fun setupInjection() {

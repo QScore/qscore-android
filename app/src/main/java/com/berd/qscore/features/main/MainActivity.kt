@@ -1,23 +1,18 @@
 package com.berd.qscore.features.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityMainBinding
-import com.berd.qscore.features.geofence.QLocationService
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
 import com.berd.qscore.features.main.bottomnav.BottomTab
 import com.berd.qscore.features.main.bottomnav.BottomTab.ME
 import com.berd.qscore.features.main.bottomnav.FragmentStateManager
 import com.berd.qscore.features.shared.activity.BaseActivity
-import com.berd.qscore.utils.location.LocationHelper
 import splitties.activities.start
-import splitties.toast.toast
 
 
 class MainActivity : BaseActivity() {
@@ -36,7 +31,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         val view = binding.root
         setContentView(view)
-        startLocationService()
         observeEvents()
         setupViews()
         setupBottomNav()
@@ -68,15 +62,6 @@ class MainActivity : BaseActivity() {
 
     private fun setupViews() = binding.apply {
         //Set up bottom tabs
-    }
-
-    private fun startLocationService() {
-        if (LocationHelper.hasAllPermissions) {
-            val serviceIntent = Intent(this, QLocationService::class.java)
-            ContextCompat.startForegroundService(this, serviceIntent)
-        } else {
-            toast("Location permissions are not available!")
-        }
     }
 
     private fun launchLoginActivity() {
