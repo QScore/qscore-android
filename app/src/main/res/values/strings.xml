@@ -56,8 +56,8 @@
     <string name="add_friends_title">Search and Add Qbuddies!</string>
 
     <string name="reset_password_title">Reset Password</string>
-    <string name="reset_password_message">email:</string>
-    <string name="reset_password_success">check you email for a password reset link</string>
+    <string name="reset_password_message">An email with instructions to reset your password will be sent to %1$s</string>
+    <string name="reset_password_success">Please check your email for a link to reset your password</string>
     <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
     <string name="progress_message_reset_password">Resetting Password…</string>
@@ -81,5 +81,6 @@
     <string name="following">Following</string>
     <string name="followers">Followers</string>
     <string name="follow">Follow</string>
-    <string name="multiplier">Multiplier</string>
+    <string name="multiplier">Last 24 Hours</string>
+    <string name="ok">Ok</string>
 </resources>

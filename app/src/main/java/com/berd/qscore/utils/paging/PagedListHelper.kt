@@ -2,6 +2,7 @@ package com.berd.qscore.utils.paging
 
 import androidx.lifecycle.LiveData
 import androidx.paging.*
+import com.berd.qscore.features.shared.user.PagedResult
 import io.reactivex.Observable
 
 abstract class PagedListHelper<T>(
@@ -15,7 +16,7 @@ abstract class PagedListHelper<T>(
             return object : PageKeyedDataSource<String, T>() {
                 override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, T>) {
                     val result = loadFirstPage(params.requestedLoadSize)
-                    callback.onResult(result.items, null, result.nextKey)
+                    callback.onResult(result.items, null, result.nextCursor)
                     if (result.items.size < params.requestedLoadSize) {
                         isFinished = true
                     }
@@ -27,7 +28,7 @@ abstract class PagedListHelper<T>(
                         return
                     }
                     val result = loadNextPage(params.key)
-                    callback.onResult(result.items, result.nextKey)
+                    callback.onResult(result.items, result.nextCursor)
                     if (result.items.size < params.requestedLoadSize) {
                         isFinished = true
                     }
@@ -39,13 +40,11 @@ abstract class PagedListHelper<T>(
         }
     }
 
-    abstract fun loadFirstPage(limit: Int): LoadResult
+    abstract fun loadFirstPage(limit: Int): PagedResult<T>
 
-    open fun loadNextPage(nextKey: String): LoadResult {
-        return LoadResult(emptyList(), null)
+    open fun loadNextPage(nextKey: String): PagedResult<T> {
+        return PagedResult(emptyList(), null)
     }
-
-    inner class LoadResult(val items: List<T>, val nextKey: String?)
 
     open fun onNoItemsLoaded() {
         //optional override

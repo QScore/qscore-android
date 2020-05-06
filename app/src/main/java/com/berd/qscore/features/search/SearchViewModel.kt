@@ -3,16 +3,15 @@ package com.berd.qscore.features.search
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
 import com.apollographql.apollo.exception.ApolloException
+import com.berd.qscore.features.search.SearchViewModel.SearchAction.SubmitPagedList
 import com.berd.qscore.features.search.SearchViewModel.SearchState.*
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.shared.user.PagedListBuilder
+import com.berd.qscore.features.shared.user.PagedResult
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.utils.paging.PagedListHelper
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewModel.SearchState>() {
@@ -26,7 +25,8 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
         searchJob = viewModelScope.launch {
             try {
                 state = Loading
-                buildPagedList(query)
+                val pagedList = buildPagedList(query)
+                action(SubmitPagedList(pagedList))
             } catch (e: ApolloException) {
                 Timber.d("Unable to search users: $e")
                 state = Error
@@ -34,31 +34,21 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
         }
     }
 
-    private fun buildPagedList(query: String) {
-        val pagedListHelper = object : PagedListHelper<QUser>() {
-            override fun loadFirstPage(limit: Int): LoadResult = runBlocking {
+    private suspend fun buildPagedList(query: String): PagedList<QUser> {
+        val builder = PagedListBuilder(
+            limit = 30,
+            onLoadFirstPage = { limit ->
                 state = Loading
                 val result = UserRepository.searchUsers(query, limit)
                 state = Loaded
-                LoadResult(result.users, result.nextCursor)
-            }
-
-            override fun loadNextPage(cursor: String): LoadResult = runBlocking {
+                PagedResult(result.users, result.nextCursor)
+            },
+            onLoadNextPage = { cursor ->
                 val result = UserRepository.searchUsersWithCursor(cursor)
-                LoadResult(result.users, result.nextCursor)
+                PagedResult(result.users, result.nextCursor)
             }
-
-            override fun onNoItemsLoaded() {
-                state = EmptyResults
-            }
-        }
-        pagedListHelper.buildObservable()
-            .take(1)
-            .subscribeBy(onNext = {
-                action(SearchAction.SubmitPagedList(it))
-            }, onError = {
-                Timber.d("Unable to build paged list: $it")
-            }).addTo(compositeDisposable)
+        )
+        return builder.build()
     }
 
     sealed class SearchAction {

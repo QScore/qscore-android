@@ -3,12 +3,20 @@ package com.berd.qscore.features.user
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUserListBinding
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserAdapter
+import com.berd.qscore.features.user.UserListViewModel.UserListAction.SubmitPagedList
+import com.berd.qscore.features.user.UserListViewModel.UserListState.Loaded
+import com.berd.qscore.features.user.UserListViewModel.UserListState.Loading
 import com.berd.qscore.utils.extensions.createViewModel
+import com.berd.qscore.utils.extensions.gone
+import com.berd.qscore.utils.extensions.visible
 import java.io.Serializable
 
 class UserListActivity : BaseActivity() {
@@ -42,26 +50,59 @@ class UserListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        setupToolbar()
         setupRecyclerView()
         observeViewModel()
         viewModel.onCreate()
     }
 
-    private fun observeViewModel() {
-        viewModel.observeState {
-            when (it) {
-//                is Ready -> handleReady(it.users)
-            }
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = when (listType) {
+            UserListType.FOLLOWERS -> getString(R.string.followers)
+            UserListType.FOLLOWED -> getString(R.string.following)
         }
     }
 
-//    private fun handleReady(users: List<QUser>) {
-//        userAdapter.submitList(users)
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = userAdapter
+    }
+
+    private fun observeViewModel() {
+        viewModel.observeActions {
+            when (it) {
+                is SubmitPagedList -> submitPagedList(it.pagedList)
+            }
+        }
+
+        viewModel.observeState {
+            when (it) {
+                Loading -> handleLoading()
+                Loaded -> handleLoaded()
+            }
+        }
+    }
+
+    private fun submitPagedList(pagedList: PagedList<QUser>) {
+        userAdapter.submitList(pagedList)
+    }
+
+    private fun handleLoaded() {
+        binding.progress.gone()
+    }
+
+    private fun handleLoading() {
+        binding.progress.visible()
     }
 
     enum class UserListType : Serializable {

@@ -7,22 +7,24 @@ import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.user.UserFragment.ProfileType
-import com.berd.qscore.features.user.UserViewModel.ScoreAction
-import com.berd.qscore.features.user.UserViewModel.ScoreState
-import com.berd.qscore.features.user.UserViewModel.ScoreState.Loading
-import com.berd.qscore.features.user.UserViewModel.ScoreState.Ready
+import com.berd.qscore.features.user.UserViewModel.UserAction
+import com.berd.qscore.features.user.UserViewModel.UserState
+import com.berd.qscore.features.user.UserViewModel.UserState.Loading
+import com.berd.qscore.features.user.UserViewModel.UserState.Ready
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAction, ScoreState>() {
+class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserAction, UserState>() {
 
-    sealed class ScoreAction {
+    sealed class UserAction {
+        class LaunchFollowingUserList(val userId: String) : UserAction()
+        class LaunchFollowersUserList(val userId: String) : UserAction()
     }
 
-    sealed class ScoreState {
-        object Loading : ScoreState()
-        class Ready(val user: QUser) : ScoreState()
+    sealed class UserState {
+        object Loading : UserState()
+        class Ready(val user: QUser) : UserState()
     }
 
     fun onCreate() {
@@ -79,4 +81,21 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<ScoreAct
                 ?: Timber.d("Unable to update user after follow button clicked, no user found")
         }
     }
+
+    fun onFollowersClicked() {
+        val userId = profileType.userId
+        action(UserAction.LaunchFollowersUserList(userId))
+    }
+
+    fun onFollowingClicked() {
+        val userId = profileType.userId
+        action(UserAction.LaunchFollowingUserList(userId))
+    }
+
+    val ProfileType.userId
+        get() = when (this) {
+            ProfileType.CurrentUser -> UserRepository.currentUser?.userId
+                ?: throw  Exception("Unable to launch user list activity, missing current user")
+            is ProfileType.User -> userId
+        }
 }

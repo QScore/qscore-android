@@ -13,6 +13,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Secondary" parent="AppTheme">
+        <item name="android:statusBarColor">@color/colorAccent</item>
+    </style>
+
     <style name="BottomNav" parent="Widget.Design.BottomNavigationView">
         <item name="android:background">@color/white</item>
         <item name="itemIconTint">@color/bottom_nav_colors</item>

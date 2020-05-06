@@ -2,6 +2,7 @@ package com.berd.qscore.features.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +13,12 @@ import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
-import com.berd.qscore.features.user.UserViewModel.ScoreState.Loading
-import com.berd.qscore.features.user.UserViewModel.ScoreState.Ready
+import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWED
+import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWERS
+import com.berd.qscore.features.user.UserViewModel.UserAction.LaunchFollowersUserList
+import com.berd.qscore.features.user.UserViewModel.UserAction.LaunchFollowingUserList
+import com.berd.qscore.features.user.UserViewModel.UserState.Loading
+import com.berd.qscore.features.user.UserViewModel.UserState.Ready
 import com.berd.qscore.utils.extensions.*
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
@@ -65,6 +70,14 @@ class UserFragment : BaseFragment() {
                 supportActionBar?.title = ""
             }
         }
+        setHasOptionsMenu(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            activity?.finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
@@ -73,12 +86,29 @@ class UserFragment : BaseFragment() {
     }
 
     private fun observeEvents() {
+        viewModel.observeActions { action ->
+            when (action) {
+                is LaunchFollowingUserList -> launchFollowingUserList(action.userId)
+                is LaunchFollowersUserList -> launchFollowersUserList(action.userId)
+            }
+        }
+
         viewModel.observeState { state ->
             when (state) {
                 is Loading -> handleLoading()
                 is Ready -> handleReady(state.user)
             }
         }
+    }
+
+    private fun launchFollowingUserList(userId: String) = activity?.let { activity ->
+        val intent = UserListActivity.newIntent(activity, userId, FOLLOWED)
+        startActivity(intent)
+    }
+
+    private fun launchFollowersUserList(userId: String) = activity?.let { activity ->
+        val intent = UserListActivity.newIntent(activity, userId, FOLLOWERS)
+        startActivity(intent)
     }
 
     private fun handleLoading() = with(binding) {
@@ -140,6 +170,14 @@ class UserFragment : BaseFragment() {
             pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
         } else {
             pullToRefresh.isEnabled = false
+        }
+
+        followersNumber.setOnClickListener {
+            viewModel.onFollowersClicked()
+        }
+
+        followingNumber.setOnClickListener {
+            viewModel.onFollowingClicked()
         }
     }
 

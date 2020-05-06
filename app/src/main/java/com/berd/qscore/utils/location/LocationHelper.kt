@@ -36,14 +36,14 @@ object LocationHelper {
     val hasAllPermissions get() = context.hasPermissions(ACCESS_COARSE_LOCATION)
 
     suspend fun checkPermissions(activity: FragmentActivity): Boolean {
-        return if (activity.hasPermissions(ACCESS_FINE_LOCATION)) {
-            if (activity.hasPermissions(ACCESS_BACKGROUND_LOCATION)) {
+        return if (activity.hasPermissions(ACCESS_COARSE_LOCATION)) {
+            if (activity.hasPermissions(ACCESS_FINE_LOCATION)) {
                 true
             } else {
-                activity.askPermission(ACCESS_BACKGROUND_LOCATION).isAccepted
+                activity.askPermission(ACCESS_FINE_LOCATION).isAccepted
             }
         } else {
-            activity.askPermission(ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION).isAccepted
+            activity.askPermission(ACCESS_COARSE_LOCATION).isAccepted
         }
     }
 

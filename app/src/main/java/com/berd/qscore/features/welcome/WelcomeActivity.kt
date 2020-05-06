@@ -6,7 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.berd.qscore.databinding.ActivitySetupBinding
+import com.berd.qscore.databinding.ActivityWelcomeBinding
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.ShowError
@@ -25,7 +25,7 @@ import timber.log.Timber
 class WelcomeActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
-    private val binding: ActivitySetupBinding by lazy { ActivitySetupBinding.inflate(layoutInflater) }
+    private val binding: ActivityWelcomeBinding by lazy { ActivityWelcomeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()
     private var progressDialog: ProgressDialog? = null
 

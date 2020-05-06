@@ -24,6 +24,7 @@
             android:name=".features.login.SignUpActivity"
             android:label="SignUpActivity" />
         <activity android:name=".features.user.UserActivity" />
+        <activity android:name=".features.user.UserListActivity" />
         <activity
             android:name=".features.login.SelectUsernameActivity"
             android:label="SelectUsernameActivity" />
@@ -37,7 +38,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".features.welcome.WelcomeActivity" />
+        <activity
+            android:name=".features.welcome.WelcomeActivity"
+            android:theme="@style/AppTheme.Secondary" />
         <activity
             android:name=".features.main.MainActivity"
             android:windowSoftInputMode="adjustPan" />
