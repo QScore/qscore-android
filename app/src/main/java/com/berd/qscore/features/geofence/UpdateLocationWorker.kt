@@ -9,7 +9,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class UpdateLocationWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
-    override suspend fun doWork(): Result = withContext(Dispatchers.Main) {
+    override suspend fun doWork(): Result = withContext(Dispatchers.Main.immediate) {
         try {
             val result = LocationHelper.fetchCurrentLocation()
             Timber.d("Worker fetched location: $result")

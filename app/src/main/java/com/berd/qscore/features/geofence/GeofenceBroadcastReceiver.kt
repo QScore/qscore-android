@@ -18,18 +18,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class GeofenceBroadcastReceiver : BroadcastReceiver() {
-    sealed class Event {
-        object Entered : Event()
-        object Exited : Event()
-    }
+enum class GeofenceStatus {
+    HOME,
+    AWAY
+}
 
+class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
     companion object {
-        private val eventSubject = ReplaySubject.create<Event>(1)
-        val events = eventSubject as Observable<Event>
+        private val eventSubject = ReplaySubject.create<GeofenceStatus>(1)
+        val events = eventSubject as Observable<GeofenceStatus>
+        var currentStatus = GeofenceStatus.HOME
+            private set
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -45,14 +47,15 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             return
         }
 
-        // Get the transition type.
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                eventSubject.onNext(Event.Entered)
+                eventSubject.onNext(GeofenceStatus.HOME)
+                currentStatus = GeofenceStatus.HOME
                 handleEntered()
             }
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                eventSubject.onNext(Event.Exited)
+                eventSubject.onNext(GeofenceStatus.AWAY)
+                currentStatus = GeofenceStatus.AWAY
                 handleExited()
             }
         }

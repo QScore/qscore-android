@@ -9,13 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.UserFragmentBinding
+import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWED
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWERS
-import com.berd.qscore.features.user.UserViewModel.GeofenceStatus
 import com.berd.qscore.features.user.UserViewModel.UserAction.*
 import com.berd.qscore.features.user.UserViewModel.UserState.Loading
 import com.berd.qscore.features.user.UserViewModel.UserState.Ready
@@ -104,8 +104,8 @@ class UserFragment : BaseFragment() {
 
     private fun handleGeofenceStatus(status: GeofenceStatus) {
         val colorResId = when (status) {
-            GeofenceStatus.HOME -> R.color.punch_red
-            GeofenceStatus.AWAY -> R.color.colorPrimary
+            GeofenceStatus.HOME -> R.color.colorPrimary
+            GeofenceStatus.AWAY -> R.color.punch_red
         }
         binding.toolbar.setBackgroundResource(colorResId)
         setStatusbarColor(colorResId)

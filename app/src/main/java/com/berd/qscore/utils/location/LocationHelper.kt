@@ -1,9 +1,9 @@
 package com.berd.qscore.utils.location
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.IntentSender
+import android.os.Build
 import android.os.Looper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -33,14 +33,18 @@ object LocationHelper {
         numUpdates = 1
     }
 
-    val hasFineLocationPermission get() = context.hasPermissions(ACCESS_FINE_LOCATION)
-    val hasAllPermissions get() = context.hasPermissions(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)
+    private val allPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        arrayOf(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION)
+    } else {
+        arrayOf(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)
+    }
+    val hasAllPermissions get() = context.hasPermissions(*allPermissions)
 
     suspend fun checkPermissions(activity: FragmentActivity): Boolean {
-        return if (activity.hasPermissions(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)) {
+        return if (activity.hasPermissions(*allPermissions)) {
             true
         } else {
-            activity.askPermission(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION).isAccepted
+            activity.askPermission(*allPermissions).isAccepted
         }
     }
 
@@ -66,7 +70,7 @@ object LocationHelper {
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun fetchCurrentLocation() = suspendCancellableCoroutine<LatLngPair?> {
+    suspend fun fetchCurrentLocation(looper: Looper? = null) = suspendCancellableCoroutine<LatLngPair?> {
         if (!hasAllPermissions) {
             it.resumeWithException(IllegalStateException("Cannot fetch current location, permissions not granted"))
         }
@@ -81,7 +85,7 @@ object LocationHelper {
                     Timber.d("Location result: $locationResult")
                     it.resume(locationResult?.lastLocation?.toLatLngPair())
                 }
-            }, null)
+            }, looper)
         } catch (e: Exception) {
             Timber.d("Unable to get location")
             it.resumeWithException(e)

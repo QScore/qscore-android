@@ -3,9 +3,7 @@ package com.berd.qscore.features.user
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver
-import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event
-import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event.Entered
-import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event.Exited
+import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
@@ -23,11 +21,6 @@ import timber.log.Timber
 
 
 class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserAction, UserState>() {
-    enum class GeofenceStatus {
-        HOME,
-        AWAY
-    }
-
     sealed class UserAction {
         class LaunchFollowingUserList(val userId: String) : UserAction()
         class LaunchFollowersUserList(val userId: String) : UserAction()
@@ -53,17 +46,10 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
 
     private fun listenToGeofenceEvents() {
         GeofenceBroadcastReceiver.events.subscribeBy(onNext = {
-            handleGeofenceEvent(it)
+            action(SetGeofenceStatus(GeofenceStatus.HOME))
         }, onError = {
             Timber.d("Unable to listen to geofence events: $it")
         }).addTo(compositeDisposable)
-    }
-
-    private fun handleGeofenceEvent(event: Event) {
-        when (event) {
-            Entered -> action(SetGeofenceStatus(GeofenceStatus.HOME))
-            Exited -> action(SetGeofenceStatus(GeofenceStatus.AWAY))
-        }
     }
 
     fun onResume() {
@@ -125,8 +111,8 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
 
     fun onHiddenChanged(hidden: Boolean) {
         if (!hidden) {
-            val geofenceStatus = GeofenceBroadcastReceiver.events.blockingFirst()
-            handleGeofenceEvent(geofenceStatus)
+            val geofenceStatus = GeofenceBroadcastReceiver.currentStatus
+            action(SetGeofenceStatus(geofenceStatus))
         }
     }
 

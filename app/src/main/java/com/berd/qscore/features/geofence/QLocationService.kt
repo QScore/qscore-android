@@ -3,7 +3,6 @@ package com.berd.qscore.features.geofence
 import android.app.Service
 import android.content.Intent
 import com.apollographql.apollo.exception.ApolloException
-import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.type.GeofenceEventType
 import com.berd.qscore.utils.location.LocationHelper
@@ -42,17 +41,11 @@ class QLocationService : Service() {
         }).addTo(compositeDisposable)
     }
 
-    private fun handleGeofenceEvent(event: Event) = when (event) {
-        Event.Entered -> handleEntered()
-        Event.Exited -> handleExited()
-    }
-
-    private fun handleEntered() = scope.launch {
-        submitEvent(GeofenceEventType.HOME)
-    }
-
-    private fun handleExited() = scope.launch {
-        submitEvent(GeofenceEventType.AWAY)
+    private fun handleGeofenceEvent(status: GeofenceStatus) = scope.launch {
+        when (status) {
+            GeofenceStatus.HOME -> submitEvent(GeofenceEventType.HOME)
+            GeofenceStatus.AWAY -> submitEvent(GeofenceEventType.AWAY)
+        }
     }
 
     private suspend fun submitEvent(eventType: GeofenceEventType) {
@@ -73,5 +66,4 @@ class QLocationService : Service() {
         compositeDisposable.clear()
         super.onDestroy()
     }
-
 }

@@ -48,7 +48,7 @@ object GeofenceHelper {
         }.build()
 
         @SuppressLint("MissingPermission")
-        if (LocationHelper.hasFineLocationPermission) {
+        if (LocationHelper.hasAllPermissions) {
             geofenceClient.addGeofences(request, pendingIntentBroadcast)
                 .addOnSuccessListener {
                     Timber.d("Successfully created geofence: $geofence")
