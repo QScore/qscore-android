@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.berd.qscore.R
 import com.berd.qscore.databinding.SearchFragmentBinding
 import com.berd.qscore.features.search.SearchViewModel.SearchState.*
 import com.berd.qscore.features.shared.activity.BaseFragment
@@ -15,6 +16,7 @@ import com.berd.qscore.features.shared.user.UserAdapter
 import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.invisible
+import com.berd.qscore.utils.extensions.setStatusbarColor
 import com.berd.qscore.utils.extensions.visible
 import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import io.reactivex.rxkotlin.addTo
@@ -47,7 +49,12 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun setupViews() = with(binding) {
+        setStatusbarColor(R.color.colorPrimary)
         clearButton.setOnClickListener { searchField.setText("") }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        setStatusbarColor(R.color.colorPrimary)
     }
 
     private fun handleSearchItemClicked(user: QUser) {

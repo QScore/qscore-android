@@ -9,16 +9,14 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class UpdateLocationWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
-    override suspend fun doWork(): Result {
-        return withContext(Dispatchers.IO) {
-            try {
-                Timber.d(">>Fetching location at time: " + System.currentTimeMillis())
-                LocationHelper.fetchCurrentLocation()
-                Result.success()
-            } catch (e: Exception) {
-                Timber.d("Unable to get location  ${e.message}")
-                Result.failure()
-            }
+    override suspend fun doWork(): Result = withContext(Dispatchers.Main) {
+        try {
+            val result = LocationHelper.fetchCurrentLocation()
+            Timber.d("Worker fetched location: $result")
+            Result.success()
+        } catch (e: Exception) {
+            Timber.d("Unable to get location  ${e.message}")
+            Result.failure()
         }
     }
 
@@ -30,9 +28,6 @@ class UpdateLocationWorker(context: Context, workerParams: WorkerParameters) : C
             val worker = PeriodicWorkRequestBuilder<UpdateLocationWorker>(DEFAULT_MIN_INTERVAL, TimeUnit.MINUTES).addTag(TAG).build()
             val workManager = WorkManager.getInstance(context.applicationContext)
             workManager.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.REPLACE, worker)
-            workManager.getWorkInfosByTagLiveData(TAG).observeForever {
-                Timber.d(">>WORK STAUS changed: " + it)
-            }
         }
     }
 }

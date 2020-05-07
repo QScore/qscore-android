@@ -84,5 +84,5 @@
     <string name="multiplier">Last 24 Hours</string>
     <string name="ok">Ok</string>
     <string name="you_must_allow_permissions">You must allow permissions to continue</string>
-    <string name="search_for_your_friends">Search for your friends by username and follow them to compare scores!</string>
+    <string name="search_for_your_friends">Search for your friends and follow them to compare scores!</string>
 </resources>

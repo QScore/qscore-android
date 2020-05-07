@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="@+id/avatarBorder" />
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/topBg"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:background="@color/colorPrimary"

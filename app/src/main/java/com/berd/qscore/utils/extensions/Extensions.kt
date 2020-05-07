@@ -14,9 +14,11 @@ import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
@@ -208,4 +210,19 @@ inline fun <reified T : ViewModel> Fragment.createViewModel(crossinline initiali
         override fun <T : ViewModel?> create(modelClass: Class<T>): T = initializer() as T
     }
     return ViewModelProvider(this, factory).get(T::class.java)
+}
+
+fun Activity.setStatusbarColor(colorResId: Int) {
+    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.statusBarColor = ContextCompat.getColor(this, colorResId)
+}
+
+fun Fragment.setStatusbarColor(colorResId: Int) = activity?.let { activity ->
+    activity.setStatusbarColor(colorResId)
+}
+
+fun View.setBackgroundColorResId(colorResId: Int) {
+    val color = ContextCompat.getColor(context, colorResId)
+    setBackgroundColor(color)
 }

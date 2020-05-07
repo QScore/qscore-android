@@ -75,7 +75,7 @@ class WelcomeActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
-                        viewModel.setupHome()
+                        viewModel.onHomeClicked()
                     } else {
                         toast(getString(R.string.you_must_allow_permissions))
                     }

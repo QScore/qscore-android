@@ -2,24 +2,36 @@ package com.berd.qscore.features.user
 
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
+import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver
+import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event
+import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event.Entered
+import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver.Event.Exited
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.user.UserFragment.ProfileType
 import com.berd.qscore.features.user.UserViewModel.UserAction
+import com.berd.qscore.features.user.UserViewModel.UserAction.*
 import com.berd.qscore.features.user.UserViewModel.UserState
 import com.berd.qscore.features.user.UserViewModel.UserState.Loading
 import com.berd.qscore.features.user.UserViewModel.UserState.Ready
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserAction, UserState>() {
+    enum class GeofenceStatus {
+        HOME,
+        AWAY
+    }
 
     sealed class UserAction {
         class LaunchFollowingUserList(val userId: String) : UserAction()
         class LaunchFollowersUserList(val userId: String) : UserAction()
+        class SetGeofenceStatus(val status: GeofenceStatus) : UserAction()
     }
 
     sealed class UserState {
@@ -32,6 +44,25 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
             state = Ready(it)
         } ?: run {
             state = Loading
+        }
+
+        if (profileType is ProfileType.CurrentUser) {
+            listenToGeofenceEvents()
+        }
+    }
+
+    private fun listenToGeofenceEvents() {
+        GeofenceBroadcastReceiver.events.subscribeBy(onNext = {
+            handleGeofenceEvent(it)
+        }, onError = {
+            Timber.d("Unable to listen to geofence events: $it")
+        }).addTo(compositeDisposable)
+    }
+
+    private fun handleGeofenceEvent(event: Event) {
+        when (event) {
+            Entered -> action(SetGeofenceStatus(GeofenceStatus.HOME))
+            Exited -> action(SetGeofenceStatus(GeofenceStatus.AWAY))
         }
     }
 
@@ -84,12 +115,19 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
 
     fun onFollowersClicked() {
         val userId = profileType.userId
-        action(UserAction.LaunchFollowersUserList(userId))
+        action(LaunchFollowersUserList(userId))
     }
 
     fun onFollowingClicked() {
         val userId = profileType.userId
-        action(UserAction.LaunchFollowingUserList(userId))
+        action(LaunchFollowingUserList(userId))
+    }
+
+    fun onHiddenChanged(hidden: Boolean) {
+        if (!hidden) {
+            val geofenceStatus = GeofenceBroadcastReceiver.events.blockingFirst()
+            handleGeofenceEvent(geofenceStatus)
+        }
     }
 
     val ProfileType.userId

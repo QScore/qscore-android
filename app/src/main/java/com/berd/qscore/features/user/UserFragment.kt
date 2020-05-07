@@ -15,8 +15,8 @@ import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWED
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWERS
-import com.berd.qscore.features.user.UserViewModel.UserAction.LaunchFollowersUserList
-import com.berd.qscore.features.user.UserViewModel.UserAction.LaunchFollowingUserList
+import com.berd.qscore.features.user.UserViewModel.GeofenceStatus
+import com.berd.qscore.features.user.UserViewModel.UserAction.*
 import com.berd.qscore.features.user.UserViewModel.UserState.Loading
 import com.berd.qscore.features.user.UserViewModel.UserState.Ready
 import com.berd.qscore.utils.extensions.*
@@ -90,6 +90,7 @@ class UserFragment : BaseFragment() {
             when (action) {
                 is LaunchFollowingUserList -> launchFollowingUserList(action.userId)
                 is LaunchFollowersUserList -> launchFollowersUserList(action.userId)
+                is SetGeofenceStatus -> handleGeofenceStatus(action.status)
             }
         }
 
@@ -99,6 +100,21 @@ class UserFragment : BaseFragment() {
                 is Ready -> handleReady(state.user)
             }
         }
+    }
+
+    private fun handleGeofenceStatus(status: GeofenceStatus) {
+        val colorResId = when (status) {
+            GeofenceStatus.HOME -> R.color.punch_red
+            GeofenceStatus.AWAY -> R.color.colorPrimary
+        }
+        binding.toolbar.setBackgroundResource(colorResId)
+        setStatusbarColor(colorResId)
+        binding.topBg.setBackgroundColorResId(colorResId)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        viewModel.onHiddenChanged(hidden)
     }
 
     private fun launchFollowingUserList(userId: String) = activity?.let { activity ->

@@ -59,12 +59,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun handleEntered() = scope.launch {
-        Timber.d(">>GEOFENCE ENTERED")
         submitEvent(GeofenceEventType.HOME)
     }
 
     private fun handleExited() = scope.launch {
-        Timber.d(">>GEOFENCE EXITED")
         submitEvent(GeofenceEventType.AWAY)
     }
 

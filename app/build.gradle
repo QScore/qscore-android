@@ -97,6 +97,9 @@ dependencies {
     //Giphy
     implementation 'com.giphy.sdk:ui:1.2.6'
 
+    //Lottie
+    implementation 'com.airbnb.android:lottie:3.4.0'
+
     //WorkManager
     implementation "androidx.work:work-runtime-ktx:2.3.4"
 

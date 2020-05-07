@@ -3,6 +3,7 @@ package com.berd.qscore.features.splash
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.berd.qscore.databinding.ActivitySplashBinding
+import com.berd.qscore.features.geofence.UpdateLocationWorker
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.login.SelectUsernameActivity
 import com.berd.qscore.features.login.SignUpActivity
@@ -25,7 +26,12 @@ class SplashActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
         observeViewModel()
+        setupLocationUpdates()
         viewModel.onCreate()
+    }
+
+    private fun setupLocationUpdates() {
+        UpdateLocationWorker.schedule(this)
     }
 
     private fun observeViewModel() {

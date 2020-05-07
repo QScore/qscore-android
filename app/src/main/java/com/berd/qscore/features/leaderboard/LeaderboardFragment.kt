@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.berd.qscore.R
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.gone
+import com.berd.qscore.utils.extensions.setStatusbarColor
 
 class LeaderboardFragment : BaseFragment() {
 
@@ -43,7 +45,12 @@ class LeaderboardFragment : BaseFragment() {
     }
 
     private fun setupViews() {
+        setStatusbarColor(R.color.colorPrimary)
         binding.pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        setStatusbarColor(R.color.colorPrimary)
     }
 
     private fun observeEvents() {

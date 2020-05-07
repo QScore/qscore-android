@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/topBg"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="30dp"
@@ -47,23 +47,27 @@
         android:requiresFadingEdge="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchField" />
+        app:layout_constraintTop_toBottomOf="@+id/searchField"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/noUsersFound"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/no_users_found"
-        android:textSize="15sp"
+        android:textAlignment="center"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/robot"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchField"
         tools:visibility="visible" />
 
     <TextView
@@ -72,14 +76,29 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/search_for_your_friends"
         android:textAlignment="center"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/robot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/searching"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchField" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.557"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/searching"
+        tools:background="@color/lighter_gray" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -121,5 +140,16 @@
         app:menu="@menu/appbar_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/search" />
+
+    <ImageView
+        android:id="@+id/robot"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchField"
+        app:srcCompat="@drawable/search_robot" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
