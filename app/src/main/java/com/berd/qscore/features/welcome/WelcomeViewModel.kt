@@ -1,12 +1,16 @@
 package com.berd.qscore.features.welcome
 
+import androidx.lifecycle.viewModelScope
+import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.LaunchScoreActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.ShowError
 import com.berd.qscore.features.welcome.WelcomeViewModel.State.FindingLocation
+import com.berd.qscore.type.GeofenceEventType
 import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.location.LocationHelper
+import kotlinx.coroutines.launch
 
 class WelcomeViewModel : RxViewModel<WelcomeViewModel.Action, WelcomeViewModel.State>() {
 
@@ -32,5 +36,12 @@ class WelcomeViewModel : RxViewModel<WelcomeViewModel.Action, WelcomeViewModel.S
             state = State.Ready
             action(ShowError)
         }
+    }
+
+    fun continueWithoutLocation() = viewModelScope.launch {
+        //Set status to AWAY
+        GeofenceHelper.clearGeofences()
+        Api.createGeofenceEvent(GeofenceEventType.AWAY)
+        action(LaunchScoreActivity)
     }
 }

@@ -13,6 +13,7 @@ import com.berd.qscore.features.welcome.WelcomeViewModel.Action.LaunchScoreActiv
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.ShowError
 import com.berd.qscore.features.welcome.WelcomeViewModel.State.FindingLocation
 import com.berd.qscore.features.welcome.WelcomeViewModel.State.Ready
+import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.location.LocationHelper
 import com.github.florent37.runtimepermission.kotlin.PermissionException
@@ -72,18 +73,33 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun setupViews() = binding.let {
         it.userHomeButton.setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
-                        viewModel.onHomeClicked()
-                    } else {
-                        toast(getString(R.string.you_must_allow_permissions))
-                    }
-                } catch (e: PermissionException) {
-                    Timber.d("Unable to grant permissions: $e")
-                    toast(getString(R.string.you_must_allow_permissions))
+            setupHomeLocation()
+        }
+    }
+
+    private fun setupHomeLocation() {
+        lifecycleScope.launch {
+            try {
+                if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
+                    viewModel.onHomeClicked()
+                } else {
+                    showNoPermissionConfirmationDialog()
                 }
+            } catch (e: PermissionException) {
+                Timber.d("Unable to grant permissions: $e")
+                showNoPermissionConfirmationDialog()
             }
+        }
+    }
+
+    private fun showNoPermissionConfirmationDialog() = binding.let {
+        showDialogFragment {
+            this.title("Are you sure you want to continue?")
+            this.message("QScore needs full location access to continue.  Your location will never leave the device.\n\nIf you continue without full location access, you will not be able to earn points.")
+            this.yesButtonResId(R.string.continue_dialog)
+            this.noButtonResId(R.string.go_back)
+            this.yesButton { viewModel.continueWithoutLocation() }
+            this.noButton { }
         }
     }
 }

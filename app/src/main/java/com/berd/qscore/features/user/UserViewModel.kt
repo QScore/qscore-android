@@ -46,7 +46,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
 
     private fun listenToGeofenceEvents() {
         GeofenceBroadcastReceiver.events.subscribeBy(onNext = {
-            action(SetGeofenceStatus(GeofenceStatus.HOME))
+            action(SetGeofenceStatus(it))
         }, onError = {
             Timber.d("Unable to listen to geofence events: $it")
         }).addTo(compositeDisposable)

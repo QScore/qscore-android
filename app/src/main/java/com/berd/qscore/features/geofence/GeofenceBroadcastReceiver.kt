@@ -6,7 +6,6 @@ import android.content.Intent
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.type.GeofenceEventType
-import com.berd.qscore.utils.location.LocationHelper
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
@@ -30,7 +29,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     companion object {
         private val eventSubject = ReplaySubject.create<GeofenceStatus>(1)
         val events = eventSubject as Observable<GeofenceStatus>
-        var currentStatus = GeofenceStatus.HOME
+        var currentStatus = GeofenceStatus.AWAY
             private set
     }
 
@@ -71,10 +70,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private suspend fun submitEvent(eventType: GeofenceEventType) {
         try {
-            val location = LocationHelper.fetchLastLocation()
-            location?.let {
-                Api.createGeofenceEvent(eventType)
-            }
+            Api.createGeofenceEvent(eventType)
         } catch (e: ApolloException) {
             Timber.w("Unable to submit event: $e")
         }

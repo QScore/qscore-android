@@ -73,6 +73,7 @@ object LocationHelper {
     suspend fun fetchCurrentLocation(looper: Looper? = null) = suspendCancellableCoroutine<LatLngPair?> {
         if (!hasAllPermissions) {
             it.resumeWithException(IllegalStateException("Cannot fetch current location, permissions not granted"))
+            return@suspendCancellableCoroutine
         }
         try {
             locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
