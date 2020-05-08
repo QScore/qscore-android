@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
-import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardState.Ready
+import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardAction.SubmitPagedList
+import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardState.Loaded
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.user.UserActivity
@@ -55,13 +57,22 @@ class LeaderboardFragment : BaseFragment() {
     private fun observeEvents() {
         viewModel.observeState {
             when (it) {
-                is Ready -> handleReady(it.leaderboard)
+                Loaded -> handleLoaded()
+            }
+        }
+
+        viewModel.observeActions {
+            when (it) {
+                is SubmitPagedList -> handleSubmitPagedList(it.pagedList)
             }
         }
     }
 
-    private fun handleReady(leaderboard: List<QUser>) {
-        leaderboardAdapter.submitList(leaderboard)
+    private fun handleSubmitPagedList(pagedList: PagedList<QUser>) {
+        leaderboardAdapter.submitList(pagedList)
+    }
+
+    private fun handleLoaded() {
         binding.pullToRefresh.isRefreshing = false
         binding.progressBar.gone()
     }

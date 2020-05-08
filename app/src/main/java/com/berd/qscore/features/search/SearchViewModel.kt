@@ -6,10 +6,10 @@ import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.search.SearchViewModel.SearchAction.SubmitPagedList
 import com.berd.qscore.features.search.SearchViewModel.SearchState.*
 import com.berd.qscore.features.shared.api.models.QUser
-import com.berd.qscore.features.shared.user.PagedListBuilder
-import com.berd.qscore.features.shared.user.PagedResult
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.utils.paging.PagedCursorResult
+import com.berd.qscore.utils.paging.PagedListCursorBuilder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,17 +35,17 @@ class SearchViewModel : RxViewModel<SearchViewModel.SearchAction, SearchViewMode
     }
 
     private suspend fun buildPagedList(query: String): PagedList<QUser> {
-        val builder = PagedListBuilder(
+        val builder = PagedListCursorBuilder(
             limit = 30,
             onLoadFirstPage = { limit ->
                 state = Loading
                 val result = UserRepository.searchUsers(query, limit)
                 state = Loaded
-                PagedResult(result.users, result.nextCursor)
+                PagedCursorResult(result.users, result.nextCursor)
             },
             onLoadNextPage = { cursor ->
                 val result = UserRepository.searchUsersWithCursor(cursor)
-                PagedResult(result.users, result.nextCursor)
+                PagedCursorResult(result.users, result.nextCursor)
             },
             onNoItemsLoaded = {
                 state = EmptyResults

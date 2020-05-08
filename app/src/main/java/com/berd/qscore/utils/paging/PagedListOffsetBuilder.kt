@@ -1,7 +1,6 @@
-package com.berd.qscore.features.shared.user
+package com.berd.qscore.utils.paging
 
 import androidx.paging.PagedList
-import com.berd.qscore.utils.paging.PagedListHelper
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -10,25 +9,23 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
-data class PagedListBuilder<T>(
-    val limit: Int,
-    val onLoadFirstPage: suspend (limit: Int) -> PagedResult<T>,
-    val onLoadNextPage: (suspend (cursor: String) -> PagedResult<T>)? = null,
+data class PagedListOffsetBuilder<T>(
+    val pageSize: Int,
+    val onLoadFirstPage: suspend (offset: Int, limit: Int) -> List<T>,
+    val onLoadNextPage: (suspend (offset: Int, limit: Int) -> List<T>)? = null,
     val onNoItemsLoaded: (() -> Unit)? = null
 ) {
     suspend fun build(): PagedList<T> = suspendCancellableCoroutine { cont ->
-        val pagedListHelper = object : PagedListHelper<T>() {
-            override fun loadFirstPage(limit: Int) = runBlocking {
-                val result = onLoadFirstPage(limit)
-                PagedResult(result.items, result.nextCursor)
+        val pagedListHelper = object : PagedListOffsetHelper<T>(pageSize) {
+            override fun loadFirstPage(offset: Int, limit: Int): List<T> = runBlocking {
+                onLoadFirstPage(offset, limit)
             }
 
-            override fun loadNextPage(cursor: String) = runBlocking {
+            override fun loadNextPage(offset: Int, limit: Int): List<T> = runBlocking {
                 onLoadNextPage?.let { loadNextPage ->
-                    val result = loadNextPage(cursor)
-                    PagedResult<T>(result.items, result.nextCursor)
+                    loadNextPage(offset, limit)
                 } ?: run {
-                    PagedResult<T>(emptyList(), null)
+                    emptyList<T>()
                 }
             }
 

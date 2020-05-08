@@ -2,10 +2,9 @@ package com.berd.qscore.utils.paging
 
 import androidx.lifecycle.LiveData
 import androidx.paging.*
-import com.berd.qscore.features.shared.user.PagedResult
 import io.reactivex.Observable
 
-abstract class PagedListHelper<T>(
+abstract class PagedListCursorHelper<T>(
     private val pageSize: Int = 30,
     private val enablePlaceHolders: Boolean = false
 ) {
@@ -40,10 +39,10 @@ abstract class PagedListHelper<T>(
         }
     }
 
-    abstract fun loadFirstPage(limit: Int): PagedResult<T>
+    abstract fun loadFirstPage(limit: Int): PagedCursorResult<T>
 
-    open fun loadNextPage(nextKey: String): PagedResult<T> {
-        return PagedResult(emptyList(), null)
+    open fun loadNextPage(nextKey: String): PagedCursorResult<T> {
+        return PagedCursorResult(emptyList(), null)
     }
 
     open fun onNoItemsLoaded() {

@@ -1,4 +1,4 @@
-package com.berd.qscore.features.shared.user
+package com.berd.qscore.utils.paging
 
 import androidx.recyclerview.widget.*
 

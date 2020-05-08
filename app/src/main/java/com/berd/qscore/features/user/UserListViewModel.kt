@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
-import com.berd.qscore.features.shared.user.PagedListBuilder
-import com.berd.qscore.features.shared.user.PagedResult
+import com.berd.qscore.utils.paging.PagedListCursorBuilder
+import com.berd.qscore.utils.paging.PagedCursorResult
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.user.UserListActivity.UserListType
@@ -43,17 +43,17 @@ class UserListViewModel(private val userId: String, private val userListType: Us
         firstPageCall: suspend (userId: String) -> Api.UserListResult,
         nextPageCall: suspend (cursor: String) -> Api.UserListResult
     ): PagedList<QUser> {
-        return PagedListBuilder(
+        return PagedListCursorBuilder(
             limit = 30,
             onLoadFirstPage = { limit ->
                 state = Loading
                 val result = firstPageCall(userId)
                 state = Loaded
-                PagedResult(result.users, result.nextCursor)
+                PagedCursorResult(result.users, result.nextCursor)
             },
             onLoadNextPage = { cursor ->
                 val result = nextPageCall(cursor)
-                PagedResult(result.users, result.nextCursor)
+                PagedCursorResult(result.users, result.nextCursor)
             },
             onNoItemsLoaded = {
                 state = NoUsersFound
