@@ -41,6 +41,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
 
         if (profileType is ProfileType.CurrentUser) {
             listenToGeofenceEvents()
+            UserRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
         }
     }
 
@@ -111,8 +112,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserActi
 
     fun onHiddenChanged(hidden: Boolean) {
         if (!hidden) {
-            val geofenceStatus = GeofenceBroadcastReceiver.currentStatus
-            action(SetGeofenceStatus(geofenceStatus))
+            UserRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
         }
     }
 

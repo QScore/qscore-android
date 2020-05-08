@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.*
+import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.fragment.UserFields
 import com.berd.qscore.type.*
@@ -40,6 +41,15 @@ object Api {
         val query = GetLeaderboardRangeQuery(input)
         val result = apolloClient.query(query).call()
         return result.getLeaderboardRange.users.map {
+            it.fragments.userFields.toQUser()
+        }
+    }
+
+    suspend fun getSocialLeaderboardRange(start: Int, end: Int): List<QUser> {
+        val input = LeaderboardRangeInput(start, end)
+        val query = GetSocialLeaderboardRangeQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.getSocialLeaderboardRange.users.map {
             it.fragments.userFields.toQUser()
         }
     }
@@ -80,7 +90,13 @@ object Api {
         val query = CurrentUserQuery()
         val result = apolloClient.query(query).call()
         val currentUser = result.currentUser.user
-        return currentUser.fragments.userFields.toQUser()
+        val user = currentUser.fragments.userFields.toQUser()
+        val geofenceStatus = when (currentUser.geofenceStatus) {
+            "HOME" -> GeofenceStatus.HOME
+            "AWAY" -> GeofenceStatus.AWAY
+            else -> null
+        }
+        return user.copy(geofenceStatus = geofenceStatus)
     }
 
     suspend fun createGeofenceEvent(eventType: GeofenceEventType) {

@@ -4,20 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.berd.qscore.R
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardState.Ready
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.user.UserActivity
+import com.berd.qscore.utils.extensions.createViewModel
 import com.berd.qscore.utils.extensions.gone
-import com.berd.qscore.utils.extensions.setStatusbarColor
 
 class LeaderboardFragment : BaseFragment() {
 
-    private val viewModel by viewModels<LeaderboardViewModel>()
+    private val viewModel by lazy {
+        createViewModel { LeaderboardViewModel(leaderboardType) }
+    }
+
+    private val leaderboardType by lazy {
+        arguments?.getSerializable(KEY_LEADERBOARD_TYPE) as LeaderboardType
+    }
 
     private val leaderboardAdapter = LeaderboardAdapter(::handleLeaderboardClick)
 
@@ -45,12 +49,7 @@ class LeaderboardFragment : BaseFragment() {
     }
 
     private fun setupViews() {
-        setStatusbarColor(R.color.colorPrimary)
         binding.pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        setStatusbarColor(R.color.colorPrimary)
     }
 
     private fun observeEvents() {
@@ -73,6 +72,14 @@ class LeaderboardFragment : BaseFragment() {
     }
 
     companion object {
-        fun newInstance() = LeaderboardFragment()
+        const val KEY_LEADERBOARD_TYPE = "KEY_LEADERBOARD_TYPE"
+
+        fun newInstance(leaderboardType: LeaderboardType) =
+            LeaderboardFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(KEY_LEADERBOARD_TYPE, leaderboardType)
+                }
+            }
     }
 }
+

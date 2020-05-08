@@ -7,9 +7,16 @@ import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.Serializable
 
+enum class LeaderboardType : Serializable {
+    SOCIAL,
+    GLOBAL
+}
 
-class LeaderboardViewModel : RxViewModel<LeaderboardViewModel.LeaderboardAction, LeaderboardViewModel.LeaderboardState>() {
+class LeaderboardViewModel(private val leaderboardType: LeaderboardType) :
+    RxViewModel<LeaderboardViewModel.LeaderboardAction, LeaderboardViewModel.LeaderboardState>() {
+
     fun onViewCreated() {
         loadLeaderboard()
     }
@@ -21,7 +28,10 @@ class LeaderboardViewModel : RxViewModel<LeaderboardViewModel.LeaderboardAction,
     private fun loadLeaderboard() {
         viewModelScope.launch {
             try {
-                val leaderboard = UserRepository.getLeaderboardRange(0, 100)
+                val leaderboard = when (leaderboardType) {
+                    LeaderboardType.GLOBAL -> UserRepository.getLeaderboardRange(0, 100)
+                    LeaderboardType.SOCIAL -> UserRepository.getSocialLeaderboardRange(0, 100)
+                }
                 state = LeaderboardState.Ready(leaderboard)
             } catch (e: ApolloException) {
                 Timber.d("Unable to fetch leaderboard range: $e")

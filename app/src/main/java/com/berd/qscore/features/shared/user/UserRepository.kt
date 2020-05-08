@@ -75,6 +75,10 @@ object UserRepository {
         return Api.getLeaderboardRange(start, end).also { saveUsers(it) }
     }
 
+    suspend fun getSocialLeaderboardRange(start: Int, end: Int): List<QUser> {
+        return Api.getSocialLeaderboardRange(start, end).also { saveUsers(it) }
+    }
+
     suspend fun getFollowers(userId: String): Api.UserListResult {
         return Api.getFollowers(userId).also { saveUsers(it.users) }
     }
