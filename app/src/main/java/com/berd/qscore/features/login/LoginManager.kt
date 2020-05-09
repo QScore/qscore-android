@@ -2,16 +2,21 @@ package com.berd.qscore.features.login
 
 import android.content.Intent
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
+import com.berd.qscore.utils.activityresult.startForResult
 import com.berd.qscore.utils.injection.Injector
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.util.regex.Pattern
@@ -22,6 +27,7 @@ object LoginManager {
     private val fbCallbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
     private val fbLoginManager = Injector.fbLoginmanager
     private val firebaseAuth = Injector.firebaseAuth
+    private val googleSignInClient = Injector.googleSignInClient
 
     val isLoggedIn get() = firebaseAuth.currentUser != null
     val emailPattern: Pattern by lazy {
@@ -46,6 +52,28 @@ object LoginManager {
     suspend fun login(email: String, password: String) = suspendCancellableCoroutine<AuthEvent> {
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             it.resume(task.resultEvent)
+        }
+    }
+
+    suspend fun loginGoogle(activity: FragmentActivity) = suspendCancellableCoroutine<AuthEvent> { cont ->
+        val signInIntent = googleSignInClient.signInIntent
+        activity.startForResult(signInIntent) { activityResult ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.dataIntent)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)
+                if (account == null) {
+                    cont.resume(Error(IllegalStateException("Account is null")))
+                    return@startForResult
+                }
+
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+                    cont.resume(task.resultEvent)
+                }
+            } catch (e: ApiException) {
+                cont.resume(Error(e))
+            }
         }
     }
 
@@ -82,7 +110,13 @@ object LoginManager {
 
 
     fun logout() {
-        firebaseAuth.signOut()
+        try {
+            firebaseAuth.signOut()
+            fbLoginManager.logOut()
+            googleSignInClient.signOut()
+        } catch (e: Exception) {
+            Timber.d("Unable to sign out: $e")
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

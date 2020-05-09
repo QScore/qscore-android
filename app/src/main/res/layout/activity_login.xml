@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lighter_gray"
     tools:context=".features.login.LoginActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -131,12 +132,12 @@
                 app:layout_constraintStart_toStartOf="@+id/login"
                 app:layout_constraintTop_toBottomOf="@+id/password_layout" />
 
-            <FrameLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/fbLogin"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="30dp"
-                android:background="@color/com_facebook_button_background_color"
+                android:background="@drawable/ripple_rounded_rectangle_blue"
                 android:clickable="true"
                 android:elevation="2dp"
                 android:foreground="?android:attr/selectableItemBackground"
@@ -146,60 +147,77 @@
                 app:layout_constraintTop_toBottomOf="@+id/login">
 
                 <ImageView
+                    android:id="@+id/imageView2"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="start|center"
                     android:layout_marginLeft="12dp"
                     android:src="@drawable/facebook_f"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="56dp"
+                    android:layout_marginStart="20dp"
                     android:gravity="center|start"
-                    android:text="@string/login_fb"
+                    android:text="@string/continue_with_facebook"
                     android:textColor="@color/white"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <FrameLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/googleLogin"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:background="@color/google_blue"
+                android:background="@drawable/rounded_rectangle_button_white"
                 android:clickable="true"
                 android:elevation="2dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@+id/fbLogin"
                 app:layout_constraintStart_toStartOf="@+id/fbLogin"
-                app:layout_constraintTop_toBottomOf="@+id/fbLogin"
-                tools:visibility="visible">
+                app:layout_constraintTop_toBottomOf="@+id/fbLogin">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:id="@+id/imageView3"
+                    android:layout_width="24dp"
+                    android:layout_height="0dp"
                     android:layout_gravity="start|center"
-                    android:layout_marginLeft="0dp"
-                    android:src="@drawable/ic_btn_google_light_normal"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@drawable/ic_google"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
 
                 <TextView
+                    android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="56dp"
+                    android:layout_marginStart="20dp"
                     android:gravity="center|start"
-                    android:text="@string/login_google"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
+                    android:text="@string/continue_with_google"
+                    android:textColor="@color/raisin"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
                 android:id="@+id/gotoSignUpText"

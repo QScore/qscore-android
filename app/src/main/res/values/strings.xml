@@ -87,4 +87,6 @@
     <string name="search_for_your_friends">Search for your friends and follow them to compare scores!</string>
     <string name="continue_dialog">Continue</string>
     <string name="go_back">Go back</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
 </resources>
