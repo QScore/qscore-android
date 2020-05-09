@@ -3,9 +3,6 @@ package com.berd.qscore.features.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -140,14 +137,18 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
+        setStatusbarColor(R.color.lighter_gray)
+        val changeListener: () -> Unit = {
+            viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
+        }
+
+        email.onChange(changeListener)
+        password.onChange(changeListener)
+
         if (Prefs.userEmail.isNotEmpty()) {
             email.setText(Prefs.userEmail)
             viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
         }
-        email.onChangeDebounce(500, changeListener)
-        password.onChange(changeListener)
 
         login.setOnClickListener {
             val email = email.text.toString()
@@ -159,23 +160,20 @@ class LoginActivity : BaseActivity() {
             viewModel.loginFacebook(supportFragmentManager)
         }
 
-        gotoSignUpText.setOnClickListener {
-            launchSignUpActivity()
-        }
-        val spannable = SpannableString(getString(R.string.goto_sign_up))
-        spannable.setSpan(ForegroundColorSpan(getColor(R.color.grey_400)), 0, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        gotoSignUpText.text = spannable
-
         forgotPassword.setOnClickListener {
-            MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
-                .setTitle(getString(R.string.reset_password_title))
-                .setMessage(getString(R.string.reset_password_message, email.text.toString()))
-                .setPositiveButton(getString(R.string.ok)) { dialog, which ->
-                    viewModel.resetPassword(email.text.toString())
-                }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show()
+            showForgotPasswordDialog()
         }
+    }
+
+    fun showForgotPasswordDialog() = binding.apply {
+        MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
+            .setTitle(getString(R.string.reset_password_title))
+            .setMessage(getString(R.string.reset_password_message, email.text.toString()))
+            .setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                viewModel.resetPassword(email.text.toString())
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
