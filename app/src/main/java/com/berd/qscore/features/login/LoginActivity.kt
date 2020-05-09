@@ -12,7 +12,6 @@ import com.berd.qscore.features.login.LoginViewModel.State
 import com.berd.qscore.features.login.LoginViewModel.State.*
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
-import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
@@ -145,11 +144,6 @@ class LoginActivity : BaseActivity() {
         email.onChange(changeListener)
         password.onChange(changeListener)
 
-        if (Prefs.userEmail.isNotEmpty()) {
-            email.setText(Prefs.userEmail)
-            viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
-        }
-
         login.setOnClickListener {
             val email = email.text.toString()
             val password = password.text.toString()
@@ -158,6 +152,10 @@ class LoginActivity : BaseActivity() {
 
         fbLogin.setOnClickListener {
             viewModel.loginFacebook(supportFragmentManager)
+        }
+
+        googleLogin.setOnClickListener {
+            viewModel.loginGoogle(this@LoginActivity)
         }
 
         forgotPassword.setOnClickListener {

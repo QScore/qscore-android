@@ -1,5 +1,6 @@
 package com.berd.qscore.features.login
 
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
@@ -50,6 +51,18 @@ class LoginViewModel : RxViewModel<Action, State>() {
         state = InProgress
         try {
             when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
+                is Success -> handleSuccess("")
+                is Error -> handleError(result.error)
+            }
+        } catch (e: CancellationException) {
+            state = Ready
+        }
+    }
+
+    fun loginGoogle(activity: FragmentActivity) = viewModelScope.launch {
+        state = InProgress
+        try {
+            when (val result = LoginManager.loginGoogle(activity)) {
                 is Success -> handleSuccess("")
                 is Error -> handleError(result.error)
             }
