@@ -65,14 +65,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity> <!-- Services -->
-        <service
-            android:name=".features.geofence.GeofenceIntentService"
-            android:exported="false" />
-        <service
-            android:name=".features.geofence.QLocationService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location" />
 
         <receiver android:name=".features.geofence.GeofenceBroadcastReceiver" />
     </application>

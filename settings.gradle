@@ -1,3 +1,2 @@
-include ':wifitest'
 include ':app'
 rootProject.name = "QScore"

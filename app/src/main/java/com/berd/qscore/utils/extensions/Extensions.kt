@@ -33,6 +33,8 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.giphy.sdk.core.models.Media
+import com.giphy.sdk.ui.views.GiphyDialogFragment
 import java.util.*
 import kotlin.math.abs
 
@@ -225,4 +227,18 @@ fun Fragment.setStatusbarColor(colorResId: Int) = activity?.let { activity ->
 fun View.setBackgroundColorResId(colorResId: Int) {
     val color = ContextCompat.getColor(context, colorResId)
     setBackgroundColor(color)
+}
+
+fun GiphyDialogFragment.onGifSelected(callback: (Media) -> Unit) {
+    this.gifSelectionListener = object : GiphyDialogFragment.GifSelectionListener {
+        override fun didSearchTerm(term: String) {
+        }
+
+        override fun onDismissed() {
+        }
+
+        override fun onGifSelected(media: Media) {
+            callback(media)
+        }
+    }
 }

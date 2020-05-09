@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar">
+        app:layout_constraintTop_toTopOf="parent">
         <!-- fragment goes here -->
     </FrameLayout>
 

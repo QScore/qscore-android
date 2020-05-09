@@ -3,6 +3,15 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 apply plugin: 'com.apollographql.apollo'
+apply plugin: StringCare
+
+// default config
+stringcare {
+    debug false
+    assetsFiles = ["*.json"]
+    stringFiles = ['secrets.xml']
+    srcFolders = ['src/main']
+}
 
 android {
     compileSdkVersion 29
@@ -129,6 +138,11 @@ dependencies {
 
     //Swipe refresh
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    implementation "com.stringcare:library:$stringcare_version"
+
+    //AES
+    implementation 'com.scottyab:aescrypt:0.0.1'
 
     //Testing
     testImplementation 'junit:junit:4.12'

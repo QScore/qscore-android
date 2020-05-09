@@ -13,6 +13,7 @@ import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.features.shared.secrets.SecretManager
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWED
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWERS
@@ -202,26 +203,20 @@ class UserFragment : BaseFragment() {
     }
 
     private fun loadGiphy() = activity?.let { activity ->
-        Giphy.configure(activity.applicationContext, "LrZT9E87QWUQfNqmkWw6e86j64BSlCUR", verificationMode = true)
+        Giphy.configure(activity.applicationContext, SecretManager.giphyKey, verificationMode = true)
         val giphyDialog = GiphyDialogFragment.newInstance()
         giphyDialog.show(childFragmentManager, "giphy_dialog")
-        giphyDialog.gifSelectionListener = object : GiphyDialogFragment.GifSelectionListener {
-            override fun didSearchTerm(term: String) {
-            }
+        giphyDialog.onGifSelected { media -> setGifAsAvatar(media) }
+    }
 
-            override fun onDismissed() {
-            }
-
-            override fun onGifSelected(media: Media) {
-                var image = media.images.fixedWidthSmall ?: return
-                if (image.width > image.height) {
-                    image = media.images.fixedHeightSmall ?: return
-                }
-                val item = image.webPUrl ?: return
-                viewModel.onGifAvatarSelected(item)
-                updateAvatar(item)
-            }
+    private fun setGifAsAvatar(media: Media) {
+        var image = media.images.fixedWidthSmall ?: return
+        if (image.width > image.height) {
+            image = media.images.fixedHeightSmall ?: return
         }
+        val item = image.webPUrl ?: return
+        viewModel.onGifAvatarSelected(item)
+        updateAvatar(item)
     }
 
     companion object {
