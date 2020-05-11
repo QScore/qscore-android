@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.berd.qscore.utils.rx.RxEventSender
 import io.reactivex.disposables.CompositeDisposable
 
+
 abstract class RxViewModel<A, S> : ViewModel() {
 
     val compositeDisposable = CompositeDisposable()

@@ -21,6 +21,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.berd.qscore.R
@@ -199,17 +201,19 @@ fun Context.showProgressDialog(message: String) =
     ProgressDialog.show(this, null, message)
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : ViewModel> FragmentActivity.createViewModel(crossinline initializer: () -> T): T {
-    val factory = object : ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T = initializer() as T
+inline fun <reified T : ViewModel> FragmentActivity.createViewModel(crossinline initializer: (SavedStateHandle) -> T): T {
+    val factory = object : AbstractSavedStateViewModelFactory(this, null) {
+        override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T =
+            initializer(handle) as T
     }
     return ViewModelProvider(this, factory).get(T::class.java)
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : ViewModel> Fragment.createViewModel(crossinline initializer: () -> T): T {
-    val factory = object : ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T = initializer() as T
+inline fun <reified T : ViewModel> Fragment.createViewModel(crossinline initializer: (SavedStateHandle) -> T): T {
+    val factory = object : AbstractSavedStateViewModelFactory(this, null) {
+        override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T =
+            initializer(handle) as T
     }
     return ViewModelProvider(this, factory).get(T::class.java)
 }

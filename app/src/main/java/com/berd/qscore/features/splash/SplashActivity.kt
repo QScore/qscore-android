@@ -6,7 +6,6 @@ import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.geofence.UpdateLocationWorker
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.login.SelectUsernameActivity
-import com.berd.qscore.features.login.SignUpActivity
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.splash.Action.*
@@ -40,7 +39,6 @@ class SplashActivity : BaseActivity() {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchLoginActivity -> launchLoginActivity()
-                LaunchSignUpActivity -> launchSignUpActivity()
                 LaunchUsernameActivity -> launchUsernameActivity()
             }
         }
@@ -48,11 +46,6 @@ class SplashActivity : BaseActivity() {
 
     private fun launchUsernameActivity() {
         start<SelectUsernameActivity>()
-        finish()
-    }
-
-    private fun launchSignUpActivity() {
-        start<SignUpActivity>()
         finish()
     }
 

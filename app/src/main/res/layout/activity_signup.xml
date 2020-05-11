@@ -34,7 +34,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/loginMessage"
+                android:id="@+id/welcomeMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -57,7 +57,7 @@
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/email_layout"
                 app:layout_constraintStart_toStartOf="@+id/email_layout"
-                app:layout_constraintTop_toBottomOf="@+id/loginMessage"
+                app:layout_constraintTop_toBottomOf="@+id/welcomeMessage"
                 tools:text="@string/sign_up_error" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -128,7 +128,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/goto_forgot"
+                android:text="@string/forgot_password"
                 android:textColor="@color/grey_400"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/signup"

@@ -29,9 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".features.login.SignUpActivity"
-            android:label="SignUpActivity" />
         <activity android:name=".features.user.UserActivity" />
         <activity android:name=".features.user.UserListActivity" />
         <activity
@@ -39,13 +36,12 @@
             android:label="SelectUsernameActivity" />
         <activity
             android:name=".features.login.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.welcome.WelcomeActivity"
             android:theme="@style/AppTheme.Secondary" />
-        <activity
-            android:name=".features.main.MainActivity"
-            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".features.main.MainActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

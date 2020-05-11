@@ -5,6 +5,7 @@ apply plugin: "kotlin-kapt"
 apply plugin: 'com.apollographql.apollo'
 apply plugin: StringCare
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-android-extensions'
 
 // default config
 stringcare {
@@ -31,6 +32,10 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+    }
+
+    androidExtensions {
+        features = ["parcelize"]
     }
 
     buildTypes {

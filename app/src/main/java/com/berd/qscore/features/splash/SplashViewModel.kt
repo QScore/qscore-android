@@ -14,7 +14,6 @@ import timber.log.Timber
 
 
 sealed class Action {
-    object LaunchSignUpActivity : Action()
     object LaunchLoginActivity : Action()
     object LaunchWelcomeActivity : Action()
     object LaunchScoreActivity : Action()
@@ -36,14 +35,12 @@ class SplashViewModel : RxViewModel<Action, Unit>() {
                 } else {
                     action(LaunchUsernameActivity)
                 }
-            } else if (Prefs.userEmail.isNotEmpty()) {
-                action(LaunchLoginActivity)
             } else {
-                action(LaunchSignUpActivity)
+                action(LaunchLoginActivity)
             }
         } catch (e: ApolloException) {
             Timber.d("Unable to load current user: $e")
-            action(LaunchSignUpActivity)
+            action(LaunchLoginActivity)
         }
     }
 }
