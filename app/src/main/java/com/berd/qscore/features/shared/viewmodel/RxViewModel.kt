@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class RxViewModel<A, S> : ViewModel() {
 
-    val compositeDisposable = CompositeDisposable()
+    protected val compositeDisposable = CompositeDisposable()
 
     private val _actions = RxEventSender<A>()
     val actionsObservable = _actions.observable

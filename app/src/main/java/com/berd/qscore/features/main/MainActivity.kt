@@ -9,13 +9,12 @@ import com.berd.qscore.databinding.ActivityMainBinding
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
 import com.berd.qscore.features.main.bottomnav.BottomTab
-import com.berd.qscore.features.main.bottomnav.BottomTab.ME
 import com.berd.qscore.features.main.bottomnav.FragmentStateManager
-import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.features.shared.activity.BaseActivityWithState
 import splitties.activities.start
 
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivityWithState() {
 
     private val viewModel by viewModels<MainViewModel>()
 
@@ -32,15 +31,13 @@ class MainActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
         observeEvents()
-        setupViews()
+        viewModel.onCreate()
         setupBottomNav()
     }
 
     private fun setupBottomNav() = with(binding.bottomNavigation) {
-        changeFragment(ME)
         setOnNavigationItemSelectedListener {
-            val bottomTab = BottomTab.fromMenuItemId(it.itemId)
-            changeFragment(bottomTab)
+            viewModel.onBottomTabSelected(it.itemId)
             true
         }
         setOnNavigationItemReselectedListener {
@@ -48,20 +45,22 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun changeFragment(bottomTab: BottomTab) {
-        fragmentStateManager.changeTab(bottomTab)
-    }
-
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
                 LaunchLoginActivity -> launchLoginActivity()
+                is MainViewModel.MainAction.Initialize -> initialize(it.state)
+                is MainViewModel.MainAction.ChangeTab -> changeFragment(it.tab)
             }
         }
     }
 
-    private fun setupViews() = binding.apply {
-        //Set up bottom tabs
+    private fun initialize(state: MainViewModel.MainState) {
+        changeFragment(state.selectedTab)
+    }
+
+    private fun changeFragment(bottomTab: BottomTab) {
+        fragmentStateManager.changeTab(bottomTab)
     }
 
     private fun launchLoginActivity() {

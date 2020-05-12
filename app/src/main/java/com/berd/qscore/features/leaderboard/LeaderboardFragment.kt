@@ -8,17 +8,17 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardAction.SubmitPagedList
-import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardState.Loaded
-import com.berd.qscore.features.shared.activity.BaseFragment
+import com.berd.qscore.features.shared.activity.BaseFragmentWithState
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.createViewModel
 import com.berd.qscore.utils.extensions.gone
+import com.berd.qscore.utils.extensions.visible
 
-class LeaderboardFragment : BaseFragment() {
+class LeaderboardFragment : BaseFragmentWithState() {
 
     private val viewModel by lazy {
-        createViewModel { LeaderboardViewModel(leaderboardType) }
+        createViewModel { handle -> LeaderboardViewModel(handle, leaderboardType) }
     }
 
     private val leaderboardType by lazy {
@@ -55,26 +55,31 @@ class LeaderboardFragment : BaseFragment() {
     }
 
     private fun observeEvents() {
-        viewModel.observeState {
-            when (it) {
-                Loaded -> handleLoaded()
-            }
-        }
-
         viewModel.observeActions {
             when (it) {
+                is LeaderboardViewModel.LeaderboardAction.Initialize -> initialize(it.state)
                 is SubmitPagedList -> handleSubmitPagedList(it.pagedList)
+                is LeaderboardViewModel.LeaderboardAction.SetProgressShown -> setProgressShown(it.visible)
             }
+        }
+    }
+
+    private fun initialize(state: LeaderboardViewModel.LeaderboardState) {
+        setProgressShown(state.inProgress)
+        state.pagedList?.let { handleSubmitPagedList(it) }
+    }
+
+    private fun setProgressShown(visible: Boolean) {
+        if (visible) {
+            binding.progressBar.visible()
+        } else {
+            binding.pullToRefresh.isRefreshing = false
+            binding.progressBar.gone()
         }
     }
 
     private fun handleSubmitPagedList(pagedList: PagedList<QUser>) {
         leaderboardAdapter.submitList(pagedList)
-    }
-
-    private fun handleLoaded() {
-        binding.pullToRefresh.isRefreshing = false
-        binding.progressBar.gone()
     }
 
     private fun setupRecyclerView() = activity?.let { activity ->

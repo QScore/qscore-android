@@ -1,7 +1,7 @@
 package com.berd.qscore.features.shared.activity
 
 import android.os.Parcelable
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -9,7 +9,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 
-abstract class BaseActivityWithState : AppCompatActivity() {
+abstract class BaseFragmentWithState : Fragment() {
 
     protected val compositeDisposable = CompositeDisposable()
 
