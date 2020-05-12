@@ -203,7 +203,7 @@ class UserFragment : BaseFragment() {
     }
 
     private fun loadGiphy() = activity?.let { activity ->
-        Giphy.configure(activity.applicationContext, SecretManager.giphyKey, verificationMode = true)
+        Giphy.configure(activity.applicationContext, SecretManager.giphyKey, verificationMode = false)
         val giphyDialog = GiphyDialogFragment.newInstance()
         giphyDialog.show(childFragmentManager, "giphy_dialog")
         giphyDialog.onGifSelected { media -> setGifAsAvatar(media) }

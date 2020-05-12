@@ -6,12 +6,12 @@ import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.injection.InjectorImpl
 import com.berd.qscore.utils.logging.LogHelper
-import com.facebook.appevents.AppEventsLogger
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.stringcare.library.SC
 
 
 class QscoreApplication : Application() {
@@ -20,8 +20,12 @@ class QscoreApplication : Application() {
         super.onCreate()
         LogHelper.initializeLogging()
         setupInjection()
-        setupFacebook()
+        setupStringCare()
         setupGeofence()
+    }
+
+    private fun setupStringCare() {
+        SC.Companion.init(this)
     }
 
     private fun setupInjection() {
@@ -40,10 +44,6 @@ class QscoreApplication : Application() {
             .requestEmail()
             .build()
         return GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun setupFacebook() {
-        AppEventsLogger.activateApp(this)
     }
 
     private fun setupGeofence() {

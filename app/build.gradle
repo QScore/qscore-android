@@ -3,16 +3,16 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 apply plugin: 'com.apollographql.apollo'
-apply plugin: StringCare
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: StringCare
 
 // default config
 stringcare {
-    debug false
+    debug true
     assetsFiles = ["*.json"]
     stringFiles = ['secrets.xml']
-    srcFolders = ['src/main']
+    srcFolders = ['src/main, src/debug']
 }
 
 android {

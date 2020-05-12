@@ -16,14 +16,26 @@ import com.berd.qscore.features.login.LoginViewModel.State.ToggleState
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
-import com.berd.qscore.features.shared.viewmodel.StateAction
-import com.berd.qscore.features.shared.viewmodel.StateMutation
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithState<LoginAction, State>(handle) {
+
+    sealed class LoginAction {
+        object LaunchScoreActivity : LoginAction()
+        object LaunchWelcomeActivity : LoginAction()
+        object LaunchUsernameActivity : LoginAction()
+        object LaunchResetPasswordActivity : LoginAction()
+        object LaunchPasswordActivity : LoginAction()
+        object TransformToLogin : LoginAction()
+        object TransformToSignup : LoginAction()
+        class SetProgressVisible(val visible: Boolean) : LoginAction()
+        class SetLoginButtonEnabled(val enabled: Boolean) : LoginAction()
+        class ShowLoginError(val resId: Int) : LoginAction()
+        class Initialize(val state: State) : LoginAction()
+    }
 
     @Parcelize
     data class State(
@@ -38,38 +50,19 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
         }
     }
 
-    sealed class LoginAction(mutation: StateMutation<State>? = null) : StateAction<State>(mutation) {
-        object LaunchScoreActivity : LoginAction()
-        object LaunchWelcomeActivity : LoginAction()
-        object LaunchUsernameActivity : LoginAction()
-        object LaunchResetPasswordActivity : LoginAction()
-        object LaunchPasswordActivity : LoginAction()
-        class SetInitialState(val state: State) : LoginAction()
-
-        object TransformToLogin : LoginAction({
-            copy(toggleState = ToggleState.LOGIN)
-        })
-
-        object TransformToSignup : LoginAction({
-            copy(toggleState = ToggleState.SIGNUP)
-        })
-
-        class SetProgressVisible(val visible: Boolean) : LoginAction({
-            copy(progressVisible = visible)
-        })
-
-        class SetLoginButtonEnabled(val enabled: Boolean) : LoginAction({
-            copy(loginEnabled = enabled)
-        })
-
-        class ShowLoginError(val resId: Int) : LoginAction({
-            copy(errorResId = resId)
-        })
-    }
+    override fun updateState(action: LoginAction, state: State) =
+        when (action) {
+            is TransformToLogin -> state.copy(toggleState = ToggleState.LOGIN)
+            is TransformToSignup -> state.copy(toggleState = ToggleState.SIGNUP)
+            is SetProgressVisible -> state.copy(progressVisible = action.visible)
+            is SetLoginButtonEnabled -> state.copy(loginEnabled = action.enabled)
+            is ShowLoginError -> state.copy(errorResId = action.resId)
+            else -> state
+        }
 
     fun onCreate() {
         //Setup initial
-        action(SetInitialState(state))
+        action(Initialize(state))
     }
 
     override fun getInitialState() = State()
@@ -107,7 +100,7 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
         try {
             when (val result = LoginManager.loginGoogle(activity)) {
                 is Success -> handleLoginSuccess("")
-                is Error -> handleError(result.error)
+                is Error -> action(SetProgressVisible(false))
             }
         } catch (e: CancellationException) {
             action(SetProgressVisible(false))
@@ -144,6 +137,7 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
     }
 
     private fun handleError(error: Exception?) {
+        action(SetProgressVisible(false))
         Timber.d("Unable to log in: $error")
         action(ShowLoginError(R.string.login_error))
     }

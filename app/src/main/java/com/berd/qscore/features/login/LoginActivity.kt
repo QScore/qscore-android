@@ -61,7 +61,7 @@ class LoginActivity : BaseActivityWithState() {
             is SetProgressVisible -> setProgressVisible(it.visible)
             is SetLoginButtonEnabled -> setLoginButtonEnabled(it.enabled)
             is ShowLoginError -> showLoginError(it.resId)
-            is SetInitialState -> setInitialState(it.state)
+            is Initialize -> setInitialState(it.state)
         }
     }
 
