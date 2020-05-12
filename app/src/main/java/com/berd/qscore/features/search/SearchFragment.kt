@@ -9,8 +9,9 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.berd.qscore.R
 import com.berd.qscore.databinding.SearchFragmentBinding
-import com.berd.qscore.features.search.SearchViewModel.SearchState.*
-import com.berd.qscore.features.shared.activity.BaseFragment
+import com.berd.qscore.features.search.SearchViewModel.SearchAction.*
+import com.berd.qscore.features.search.SearchViewModel.SearchState.LoadingState
+import com.berd.qscore.features.shared.activity.BaseFragmentWithState
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserAdapter
 import com.berd.qscore.features.user.UserActivity
@@ -24,7 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class SearchFragment : BaseFragment() {
+class SearchFragment : BaseFragmentWithState() {
 
     private val viewModel by viewModels<SearchViewModel>()
 
@@ -46,6 +47,7 @@ class SearchFragment : BaseFragment() {
         setupViews()
         setupRecyclerView()
         observeEvents()
+        viewModel.onViewCreated()
     }
 
     private fun setupViews() = with(binding) {
@@ -67,17 +69,25 @@ class SearchFragment : BaseFragment() {
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
-                is SearchViewModel.SearchAction.SubmitPagedList -> handleSubmitPagedList(it.pagedList)
+                is SubmitPagedList -> handleSubmitPagedList(it.pagedList)
+                is UpdateLoadingState -> handleLoadingState(it.loadingState)
+                is Initialize -> initialize(it.state)
             }
         }
+    }
 
-        viewModel.observeState {
-            when (it) {
-                EmptyResults -> handleEmptyResults()
-                Loading -> handleLoading()
-                Error -> handleError()
-                Loaded -> handleLoaded()
-            }
+    private fun initialize(state: SearchViewModel.SearchState) {
+        handleLoadingState(state.loadingState)
+        state.pagedList?.let { handleSubmitPagedList(it) }
+    }
+
+    private fun handleLoadingState(loadingState: LoadingState) {
+        when (loadingState) {
+            LoadingState.LOADING -> handleLoading()
+            LoadingState.LOADED -> handleLoaded()
+            LoadingState.EMPTY_RESULTS -> handleEmptyResults()
+            LoadingState.ERROR -> handleError()
+            LoadingState.READY -> handleReady()
         }
     }
 
@@ -87,6 +97,15 @@ class SearchFragment : BaseFragment() {
 
     private fun handleError() {
         handleEmptyResults()
+    }
+
+    private fun handleReady() = with(binding) {
+        progressBar.gone()
+        clearButton.gone()
+        instructions.visible()
+        searching.gone()
+        noUsersFound.gone()
+        robot.visible()
     }
 
     private fun handleLoading() = with(binding) {
@@ -123,9 +142,10 @@ class SearchFragment : BaseFragment() {
         binding.recyclerView.adapter = searchAdapter
     }
 
-    private fun setupSearchBar() {
+    private fun setupSearchBar() = binding.searchField.post {
         binding.searchField
             .afterTextChangeEvents()
+            .skip(1)
             .map { it.editable.toString() }
             .distinctUntilChanged()
             .debounce(300, TimeUnit.MILLISECONDS)
