@@ -1,18 +1,19 @@
-package com.berd.qscore.features.login
+package com.berd.qscore.features.username
 
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
-import com.berd.qscore.features.login.SelectUsernameViewModel.State
-import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
+import com.berd.qscore.features.login.LoginManager
+import com.berd.qscore.features.username.UsernameViewModel.Action
+import com.berd.qscore.features.username.UsernameViewModel.Action.*
+import com.berd.qscore.features.username.UsernameViewModel.State
+import com.berd.qscore.features.username.UsernameViewModel.State.*
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class SelectUsernameViewModel : RxViewModel<Action, State>() {
+class UsernameViewModel : RxViewModel<Action, State>() {
 
     sealed class Action {
         object LaunchScoreActivity : Action()

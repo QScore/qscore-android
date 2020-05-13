@@ -96,4 +96,7 @@
     <string name="create_an_account">Create an account</string>
     <string name="sign_up_with_email">Sign up with email</string>
     <string name="choose_password">Choose a password</string>
+    <string name="unable_to_continue_please_try_again_later">Unable to continue. Please try again later.</string>
+    <string name="password_must_be_at_least_6_characters">Password must be at least 6 characters</string>
+    <string name="error_user_exists">A user already exists with that email address.</string>
 </resources>

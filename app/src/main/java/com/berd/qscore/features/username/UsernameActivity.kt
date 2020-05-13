@@ -1,4 +1,4 @@
-package com.berd.qscore.features.login
+package com.berd.qscore.features.username
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -11,10 +11,11 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
-import com.berd.qscore.features.login.SelectUsernameViewModel.Action.*
-import com.berd.qscore.features.login.SelectUsernameViewModel.State.*
+import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
+import com.berd.qscore.features.username.UsernameViewModel.Action.*
+import com.berd.qscore.features.username.UsernameViewModel.State.*
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.invisible
 import com.berd.qscore.utils.extensions.onChangeDebounce
@@ -22,8 +23,8 @@ import com.berd.qscore.utils.extensions.showProgressDialog
 import com.berd.qscore.utils.extensions.visible
 import splitties.activities.start
 
-class SelectUsernameActivity : BaseActivity() {
-    private val viewModel by viewModels<SelectUsernameViewModel>()
+class UsernameActivity : BaseActivity() {
+    private val viewModel by viewModels<UsernameViewModel>()
     private var progressDialog: ProgressDialog? = null
 
     private val binding: ActivityUsernameBinding by lazy {

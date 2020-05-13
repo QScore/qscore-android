@@ -32,7 +32,7 @@
         <activity android:name=".features.user.UserActivity" />
         <activity android:name=".features.user.UserListActivity" />
         <activity
-            android:name=".features.login.SelectUsernameActivity"
+            android:name=".features.username.UsernameActivity"
             android:label="SelectUsernameActivity" />
         <activity
             android:name=".features.login.LoginActivity"
@@ -42,6 +42,7 @@
             android:name=".features.welcome.WelcomeActivity"
             android:theme="@style/AppTheme.Secondary" />
         <activity android:name=".features.main.MainActivity" />
+        <activity android:name=".features.password.PasswordActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

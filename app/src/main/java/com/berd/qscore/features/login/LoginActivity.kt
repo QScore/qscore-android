@@ -15,7 +15,9 @@ import com.berd.qscore.databinding.ActivityLoginBinding
 import com.berd.qscore.features.login.LoginViewModel.LoginAction
 import com.berd.qscore.features.login.LoginViewModel.LoginAction.*
 import com.berd.qscore.features.main.MainActivity
+import com.berd.qscore.features.password.PasswordActivity
 import com.berd.qscore.features.shared.activity.BaseActivityWithState
+import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.onChange
 import com.berd.qscore.utils.extensions.setStatusbarColor
@@ -57,12 +59,17 @@ class LoginActivity : BaseActivityWithState() {
             TransformToLogin -> transformToLogIn()
             TransformToSignup -> transformToSignup()
             LaunchResetPasswordActivity -> TODO()
-            LaunchPasswordActivity -> TODO()
+            is LaunchPasswordActivity -> launchPasswordActivity(it.email)
             is SetProgressVisible -> setProgressVisible(it.visible)
             is SetLoginButtonEnabled -> setLoginButtonEnabled(it.enabled)
             is ShowLoginError -> showLoginError(it.resId)
             is Initialize -> setInitialState(it.state)
         }
+    }
+
+    private fun launchPasswordActivity(email: String) {
+        val intent = PasswordActivity.newIntent(this, email)
+        startActivity(intent)
     }
 
     private fun setInitialState(state: LoginViewModel.State) {
@@ -100,7 +107,7 @@ class LoginActivity : BaseActivityWithState() {
     }
 
     private fun launchUsernameActivity() {
-        start<SelectUsernameActivity>()
+        start<UsernameActivity>()
         progressDialog?.dismiss()
         finish()
     }
@@ -131,7 +138,7 @@ class LoginActivity : BaseActivityWithState() {
         loginButton.setOnClickListener {
             val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onLogin(email, password)
+            viewModel.loginEmail(email, password)
         }
 
         fbLogin.setOnClickListener {

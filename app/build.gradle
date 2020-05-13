@@ -15,6 +15,10 @@ stringcare {
     srcFolders = ['src/main, src/debug']
 }
 
+androidExtensions {
+    features = ["parcelize"]
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -32,10 +36,6 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
-    }
-
-    androidExtensions {
-        features = ["parcelize"]
     }
 
     buildTypes {

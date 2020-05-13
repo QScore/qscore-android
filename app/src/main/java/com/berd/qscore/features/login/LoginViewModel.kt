@@ -28,7 +28,7 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
         object LaunchWelcomeActivity : LoginAction()
         object LaunchUsernameActivity : LoginAction()
         object LaunchResetPasswordActivity : LoginAction()
-        object LaunchPasswordActivity : LoginAction()
+        class LaunchPasswordActivity(val email: String) : LoginAction()
         object TransformToLogin : LoginAction()
         object TransformToSignup : LoginAction()
         class SetProgressVisible(val visible: Boolean) : LoginAction()
@@ -67,20 +67,22 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
 
     override fun getInitialState() = State()
 
-    fun onLogin(email: String, password: String) = viewModelScope.launch {
-        action(SetProgressVisible(true))
+    fun loginEmail(email: String, password: String) = viewModelScope.launch {
         if (state.toggleState == ToggleState.LOGIN) {
+            action(SetProgressVisible(true))
             when (val result = LoginManager.login(email, password)) {
                 is Success -> handleLoginSuccess(email)
                 is Error -> handleError(result.error)
             }
+            action(SetProgressVisible(false))
         } else {
-            when (val result = LoginManager.signUp(email, password)) {
-                is Success -> action(LaunchPasswordActivity)
-                is Error -> handleError(result.error)
+            val exists = LoginManager.checkUserExists(email)
+            if (!exists) {
+                action(LaunchPasswordActivity(email))
+            } else {
+                action(ShowLoginError(R.string.error_user_exists))
             }
         }
-        action(SetProgressVisible(false))
     }
 
     fun loginFacebook(supportFragmentManager: FragmentManager) = viewModelScope.launch {
@@ -113,9 +115,13 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
 
     fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
         val matcher = LoginManager.emailPattern.matcher(email)
-        val emailError = !matcher.matches() || email.isEmpty()
+        val emailError = !matcher.matches() && email.isNotEmpty()
         val passwordError = password.isEmpty()
-        val loginEnabled = !emailError && !passwordError && email.isNotEmpty() && password.isNotEmpty()
+        val loginEnabled = if (state.toggleState == ToggleState.LOGIN) {
+            !emailError && !passwordError
+        } else {
+            !emailError
+        }
         action(SetLoginButtonEnabled(loginEnabled))
     }
 
