@@ -99,4 +99,6 @@
     <string name="unable_to_continue_please_try_again_later">Unable to continue. Please try again later.</string>
     <string name="password_must_be_at_least_6_characters">Password must be at least 6 characters</string>
     <string name="error_user_exists">A user already exists with that email address.</string>
+    <string name="choose_username">Choose username</string>
+    <string name="username_must_be_at_least_4_characters">Username must be at least 4 characters</string>
 </resources>

@@ -5,10 +5,10 @@ import androidx.activity.viewModels
 import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.geofence.UpdateLocationWorker
 import com.berd.qscore.features.login.LoginActivity
-import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.splash.Action.*
+import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import splitties.activities.start
 

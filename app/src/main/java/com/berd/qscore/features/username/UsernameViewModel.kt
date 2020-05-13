@@ -1,73 +1,56 @@
 package com.berd.qscore.features.username
 
+import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.apollographql.apollo.exception.ApolloException
-import com.berd.qscore.features.login.LoginManager
-import com.berd.qscore.features.username.UsernameViewModel.Action
-import com.berd.qscore.features.username.UsernameViewModel.Action.*
-import com.berd.qscore.features.username.UsernameViewModel.State
-import com.berd.qscore.features.username.UsernameViewModel.State.*
-import com.berd.qscore.features.shared.api.Api
-import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.berd.qscore.features.shared.user.UserRepository
+import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-class UsernameViewModel : RxViewModel<Action, State>() {
+class UsernameViewModel(handle: SavedStateHandle) :
+    RxViewModelWithState<UsernameViewModel.UsernameAction, UsernameViewModel.UsernameState>(handle) {
 
-    sealed class Action {
-        object LaunchScoreActivity : Action()
-        object LaunchWelcomeActivity : Action()
-        object ReturnToLogIn : Action()
+    @Parcelize
+    data class UsernameState(
+        val continueEnabled: Boolean = false,
+        val hasError: Boolean = false,
+        val progressVisible: Boolean = false
+    ) : Parcelable
+
+    sealed class UsernameAction {
+        class Initialize(val state: UsernameState) : UsernameAction()
+        class SetContinueEnabled(val enabled: Boolean) : UsernameAction()
+        object ShowError : UsernameAction()
+        class SetProgressVisible(val visible: Boolean) : UsernameAction()
+        object LaunchMainActivity : UsernameAction()
     }
 
-    sealed class State {
-        object InProgress : State()
-        object CheckingUsername : State()
-        object ContinueError : State()
-        object Ready : State()
-        class FieldsUpdated(
-            val usernameError: Boolean,
-            val signUpIsReady: Boolean
-        ) : State()
-    }
+    override fun getInitialState() = UsernameState()
 
-    fun onContinue(username: String) = viewModelScope.launch {
-        state = InProgress
-        try {
-            Api.createUser(username)
-            handleSuccess()
-        } catch (e: ApolloException) {
-            Timber.d("Unable to update username: $e")
-            //TODO: show error
+    override fun updateState(action: UsernameAction, state: UsernameState) =
+        when (action) {
+            is UsernameAction.SetContinueEnabled -> state.copy(continueEnabled = action.enabled)
+            is UsernameAction.ShowError -> state.copy(hasError = true)
+            is UsernameAction.SetProgressVisible -> state.copy(progressVisible = action.visible)
+            else -> state
         }
+
+    fun onPasswordChange(str: String) {
+        action(UsernameAction.SetContinueEnabled(str.length >= 4))
     }
 
-    private fun handleError(error: Exception?) {
-        Timber.d("Unable to log in : $error")
-        state = ContinueError
-    }
-
-    fun onFieldsUpdated(username: String) = viewModelScope.launch {
-        state = CheckingUsername
-
-        val usernameError = false
-        val signUpIsReady = !usernameError
-
-        state = FieldsUpdated(usernameError, signUpIsReady)
-    }
-
-    private fun handleSuccess() {
-        state = Ready
-        if (Prefs.userLocation != null) {
-            action(LaunchScoreActivity)
-        } else {
-            action(LaunchWelcomeActivity)
+    fun onContinue(username: String) {
+        viewModelScope.launch {
+            action(UsernameAction.SetProgressVisible(true))
+            try {
+                UserRepository.updateUserInfo(username)
+                action(UsernameAction.LaunchMainActivity)
+            } catch (e: ApolloHttpException) {
+                action(UsernameAction.ShowError)
+            }
+            action(UsernameAction.SetProgressVisible(false))
         }
-    }
-
-    fun onBackPressed() {
-        LoginManager.logout()
-        action(ReturnToLogIn)
     }
 }

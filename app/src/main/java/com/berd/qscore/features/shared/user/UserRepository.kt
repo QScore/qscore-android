@@ -95,6 +95,14 @@ object UserRepository {
         return Api.getFollowedUsersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
+    suspend fun updateUserInfo(username: String) {
+        Api.updateUserInfo(username).also {
+            currentUser = currentUser?.copy(
+                username = username
+            )
+        }
+    }
+
     private fun saveUsers(users: List<QUser>) {
         users.forEach {
             userMap[it.userId] = it
