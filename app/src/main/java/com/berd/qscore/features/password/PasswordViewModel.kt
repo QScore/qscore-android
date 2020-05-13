@@ -7,6 +7,7 @@ import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
 import com.berd.qscore.features.password.PasswordViewModel.PasswordAction.LaunchUsernameActivity
+import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
@@ -49,7 +50,10 @@ class PasswordViewModel(handle: SavedStateHandle) :
             action(PasswordAction.SetProgressVisible(true))
             val result = LoginManager.signUp(email, password)
             when (result) {
-                Success -> action(LaunchUsernameActivity)
+                Success -> {
+                    Prefs.userLocation = null
+                    action(LaunchUsernameActivity)
+                }
                 is Error -> {
                     val errorMessage = result.error?.message
                     action(PasswordAction.ShowError(errorMessage))

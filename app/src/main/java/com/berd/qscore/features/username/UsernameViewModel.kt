@@ -25,6 +25,7 @@ class UsernameViewModel(handle: SavedStateHandle) :
         object ShowError : UsernameAction()
         class SetProgressVisible(val visible: Boolean) : UsernameAction()
         object LaunchMainActivity : UsernameAction()
+        object LaunchWelcomeActivity : UsernameAction()
     }
 
     override fun getInitialState() = UsernameState()
@@ -46,7 +47,7 @@ class UsernameViewModel(handle: SavedStateHandle) :
             action(UsernameAction.SetProgressVisible(true))
             try {
                 UserRepository.updateUserInfo(username)
-                action(UsernameAction.LaunchMainActivity)
+                action(UsernameAction.LaunchWelcomeActivity)
             } catch (e: ApolloHttpException) {
                 action(UsernameAction.ShowError)
             }

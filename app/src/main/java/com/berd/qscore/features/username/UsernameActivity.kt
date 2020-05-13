@@ -1,13 +1,12 @@
 package com.berd.qscore.features.username
 
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUsernameBinding
-import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivityWithState
 import com.berd.qscore.features.username.UsernameViewModel.UsernameAction.*
+import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.setStatusbarColor
 import com.berd.qscore.utils.extensions.visible
@@ -38,16 +37,14 @@ class UsernameActivity : BaseActivityWithState() {
                 is Initialize -> initialize(it.state)
                 is SetContinueEnabled -> setContinueEnabled(it.enabled)
                 is ShowError -> showError()
-                LaunchMainActivity -> launchMainActivity()
                 is SetProgressVisible -> setProgressVisible(it.visible)
+                LaunchWelcomeActivity -> launchWelcomeActivity()
             }
         }
     }
 
-    private fun launchMainActivity() {
-        start<MainActivity> {
-            addFlags(FLAG_ACTIVITY_CLEAR_TASK)
-        }
+    private fun launchWelcomeActivity() {
+        start<WelcomeActivity>()
         finish()
     }
 
