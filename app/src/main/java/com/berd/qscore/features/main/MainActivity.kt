@@ -74,6 +74,8 @@ class MainActivity : BaseActivity() {
         return true
     }
 
+    override fun getScreenName() = "Main"
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
             launchSettingsActivity()

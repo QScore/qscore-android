@@ -8,10 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.berd.qscore.R
 import com.berd.qscore.databinding.LeaderboardTabFragmentBinding
+import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.utils.extensions.setStatusbarColor
 import com.google.android.material.tabs.TabLayoutMediator
 
-class LeaderboardTabFragment : Fragment() {
+class LeaderboardTabFragment : BaseFragment() {
 
     val binding by lazy {
         LeaderboardTabFragmentBinding.inflate(layoutInflater)
@@ -30,6 +31,8 @@ class LeaderboardTabFragment : Fragment() {
         super.onHiddenChanged(hidden)
         setStatusbarColor(R.color.colorPrimary)
     }
+
+    override fun getScreenName() = "leaderboards"
 
     private fun setupTabs() {
         binding.pager.adapter = DemoCollectionAdapter(this)
