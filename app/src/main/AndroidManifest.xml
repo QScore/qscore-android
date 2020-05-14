@@ -7,11 +7,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".QscoreApplication"
@@ -21,28 +21,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".features.login.SignUpActivity"
-            android:label="SignUpActivity"/>
-        <activity
-            android:name=".features.login.SelectUsernameActivity"
-            android:label="SelectUsernameActivity"/>
-        <activity
-            android:name=".features.login.LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity android:name=".features.splash.SplashActivity">
+            android:name=".features.splash.SplashActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".features.user.UserActivity" />
+        <activity android:name=".features.user.UserListActivity" />
         <activity
-            android:name=".features.friends.AddFriendsActivity"
-            android:label="AddFriendsActivity"/>
-        <activity android:name=".features.welcome.WelcomeActivity" />
+            android:name=".features.username.UsernameActivity"
+            android:label="SelectUsernameActivity" />
         <activity
-            android:name=".features.score.ScoreActivity"
-            android:theme="@style/ScoreTheme" /> <!-- Facebook -->
+            android:name=".features.login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".features.welcome.WelcomeActivity"
+            android:theme="@style/AppTheme.Secondary" />
+        <activity android:name=".features.main.MainActivity" />
+        <activity android:name=".features.password.PasswordActivity" />
+        <activity android:name=".features.settings.SettingsActivity" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -63,14 +65,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity> <!-- Services -->
-        <service
-            android:name=".features.geofence.GeofenceIntentService"
-            android:exported="false" />
-        <service
-            android:name=".features.geofence.QLocationService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location" />
+
+        <receiver android:name=".features.geofence.GeofenceBroadcastReceiver" />
     </application>
 
 </manifest>

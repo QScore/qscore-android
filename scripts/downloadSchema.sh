@@ -1,0 +1,1 @@
+./gradlew downloadApolloSchema -Pcom.apollographql.apollo.endpoint=http://localhost:3000/dev/graphql -Pcom.apollographql.apollo.schema=/src/main/graphql/com/berd/qscore/schema.json generateApolloSources
