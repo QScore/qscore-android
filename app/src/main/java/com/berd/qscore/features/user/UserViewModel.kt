@@ -14,6 +14,7 @@ import com.berd.qscore.features.user.UserViewModel.UserAction.*
 import com.berd.qscore.features.user.UserViewModel.UserState
 import com.berd.qscore.features.user.UserViewModel.UserState.Loading
 import com.berd.qscore.features.user.UserViewModel.UserState.Ready
+import com.berd.qscore.utils.analytics.Analytics
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.launch
@@ -114,6 +115,10 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
         if (!hidden) {
             UserRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
         }
+    }
+
+    fun onAvatarClicked() {
+        Analytics.trackAvatarClicked()
     }
 
     val ProfileType.userId

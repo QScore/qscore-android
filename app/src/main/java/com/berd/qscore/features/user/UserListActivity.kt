@@ -65,6 +65,11 @@ class UserListActivity : BaseActivity() {
         }
     }
 
+    override fun getScreenName() = when (listType) {
+        UserListType.FOLLOWERS -> "Followers"
+        UserListType.FOLLOWED -> "Following"
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             finish()

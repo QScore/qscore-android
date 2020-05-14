@@ -216,6 +216,8 @@ class LoginActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun getScreenName() = "Login"
+
     override fun onDestroy() {
         compositeDisposable.clear()
         super.onDestroy()

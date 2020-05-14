@@ -35,6 +35,8 @@ class UsernameActivity : BaseActivity() {
         ActivityUsernameBinding.inflate(layoutInflater)
     }
 
+    override fun getScreenName() = "SelectUsername"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

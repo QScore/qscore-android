@@ -44,6 +44,11 @@ class LeaderboardFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun getScreenName() = when (leaderboardType) {
+        LeaderboardType.SOCIAL -> "LeaderboardSocial"
+        else -> "LeaderboardGlobal"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
