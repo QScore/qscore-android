@@ -43,6 +43,8 @@ class WelcomeActivity : BaseActivity() {
         }
     }
 
+    override fun getScreenName() = "welcome"
+
     private fun setProgressVisible(visible: Boolean) {
         if (visible) {
             progressDialog = showProgressDialog("Setting home location...")

@@ -26,6 +26,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.berd.qscore.R
+import com.berd.qscore.utils.analytics.Analytics
 import com.berd.qscore.utils.location.LatLngPair
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.webp.decoder.WebpDrawable
@@ -240,6 +241,15 @@ fun Context.getColor(colorResId: Int): Int {
 fun Fragment.getColor(colorResId: Int): Int {
     return activity?.let { ContextCompat.getColor(it, colorResId) } ?: 0
 }
+
+fun Fragment.setScreenName(screenName: String) {
+    activity?.let { Analytics.setCurrentScreen(it, screenName) }
+}
+
+fun Activity.setScreenName(screenName: String) {
+    Analytics.setCurrentScreen(this, screenName)
+}
+
 
 fun GiphyDialogFragment.onGifSelected(callback: (Media) -> Unit) {
     this.gifSelectionListener = object : GiphyDialogFragment.GifSelectionListener {

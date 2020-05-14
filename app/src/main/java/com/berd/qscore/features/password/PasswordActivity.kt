@@ -29,6 +29,8 @@ class PasswordActivity : BaseActivity() {
         ActivityPasswordBinding.inflate(layoutInflater)
     }
 
+    override fun getScreenName() = "set_password"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

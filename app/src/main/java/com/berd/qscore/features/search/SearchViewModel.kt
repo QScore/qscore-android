@@ -11,6 +11,7 @@ import com.berd.qscore.features.search.SearchViewModel.SearchState.LoadingState
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
+import com.berd.qscore.utils.analytics.Analytics
 import com.berd.qscore.utils.paging.PagedCursorResult
 import com.berd.qscore.utils.paging.PagedListCursorBuilder
 import kotlinx.android.parcel.Parcelize
@@ -63,6 +64,7 @@ class SearchViewModel(handle: SavedStateHandle) : RxViewModelWithState<SearchVie
         if (query.isEmpty()) {
             return
         }
+        Analytics.trackSearch(query)
         searchJob = viewModelScope.launch {
             try {
                 val pagedList = buildPagedList(query)

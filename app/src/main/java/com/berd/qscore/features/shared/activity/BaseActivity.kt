@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
+import com.berd.qscore.utils.extensions.setScreenName
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -34,6 +35,13 @@ abstract class BaseActivity : AppCompatActivity() {
             stateListener(it)
         })
     }
+
+    override fun onResume() {
+        super.onResume()
+        setScreenName(getScreenName())
+    }
+
+    abstract fun getScreenName(): String
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
