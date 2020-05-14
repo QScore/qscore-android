@@ -39,13 +39,15 @@
                 android:id="@+id/username_layout"
                 style="@style/LoginTextInputLayoutStyle"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/hint_username"
                 app:counterEnabled="false"
-                app:helperTextEnabled="false"
+                app:helperText="@string/username_must_be_at_least_4_characters"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/raisin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,34 +80,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon" />
-
-            <TextView
-                android:id="@+id/errorText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/unable_to_continue_please_try_again_later"
-                android:textColor="@color/red"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/username_layout"
-                app:layout_constraintStart_toStartOf="@+id/username_layout"
-                app:layout_constraintTop_toBottomOf="@+id/continueButton"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/usernameHelp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="20dp"
-                android:text="@string/username_must_be_at_least_4_characters"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/continueButton"
-                app:layout_constraintEnd_toStartOf="@+id/continueButton"
-                app:layout_constraintStart_toStartOf="@+id/username_layout"
-                app:layout_constraintTop_toTopOf="@+id/continueButton" />
 
             <ProgressBar
                 android:id="@+id/progress"

@@ -165,6 +165,13 @@ object Api {
         )
     }
 
+    suspend fun checkUsernameExists(username: String): Boolean {
+        val input = CheckUsernameExistsInput(username)
+        val query = CheckUsernameExistsQuery(input)
+        val result = apolloClient.query(query).call()
+        return result.checkUsernameExists.exists
+    }
+
     suspend fun getFollowedUsersWithCursor(userId: String): UserListResult {
         val input = GetFollowedUsersWithCursorInput(userId)
         val query = GetFollowedUsersWithCursorQuery(input)

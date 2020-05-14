@@ -123,6 +123,12 @@ query GetSocialLeaderboardRange($input: LeaderboardRangeInput!) {
     }
 }
 
+query CheckUsernameExists($input: CheckUsernameExistsInput!) {
+    checkUsernameExists(input: $input) {
+        exists
+    }
+}
+
 fragment userFields on User {
     userId
     username

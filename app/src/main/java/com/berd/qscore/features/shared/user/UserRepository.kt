@@ -103,6 +103,10 @@ object UserRepository {
         }
     }
 
+    suspend fun checkUsernameExists(username: String): Boolean {
+        return Api.checkUsernameExists(username)
+    }
+
     private fun saveUsers(users: List<QUser>) {
         users.forEach {
             userMap[it.userId] = it
