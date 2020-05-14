@@ -5,11 +5,11 @@ import com.berd.qscore.utils.location.LatLngPair
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.preferences.Preferences
 
-@UseExperimental(ExperimentalSplittiesApi::class)
+@OptIn(ExperimentalSplittiesApi::class)
 object Prefs : Preferences("qscorePrefs") {
     private var locationPref by StringPref("location", "")
 
-    var userEmail by StringPref("email","")
+    var userEmail by StringPref("email", "")
 
     var userLocation: LatLngPair?
         get() {

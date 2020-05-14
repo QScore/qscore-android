@@ -2,7 +2,8 @@
 <resources>
     <declare-styleable name="ScoreProgressBar">
         <attr name="progress_width" format="dimension" />
-        <attr name="background_width" format="dimension" />
+        <attr name="progress_background_width" format="dimension" />
+        <attr name="progress_background_color" format="color" />
         <attr name="progress_color_start" format="color" />
         <attr name="progress_color_middle" format="color" />
         <attr name="progress_color_end" format="color" />

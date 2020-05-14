@@ -1,26 +1,32 @@
 package com.berd.qscore.features.login
 
+import android.animation.ValueAnimator
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
-import com.berd.qscore.features.login.LoginViewModel.Action
-import com.berd.qscore.features.login.LoginViewModel.Action.*
-import com.berd.qscore.features.login.LoginViewModel.State
-import com.berd.qscore.features.login.LoginViewModel.State.*
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.login.LoginViewModel.LoginAction
+import com.berd.qscore.features.login.LoginViewModel.LoginAction.*
+import com.berd.qscore.features.main.MainActivity
+import com.berd.qscore.features.password.PasswordActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
-import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.*
+import com.berd.qscore.utils.extensions.onChange
+import com.berd.qscore.utils.extensions.setStatusbarColor
+import com.berd.qscore.utils.extensions.showProgressDialog
+import com.berd.qscore.utils.extensions.visible
 import com.facebook.CallbackManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
+import splitties.dimensions.dp
 
 class LoginActivity : BaseActivity() {
 
@@ -38,82 +44,61 @@ class LoginActivity : BaseActivity() {
         setContentView(view)
         observeEvents()
         setupViews()
+        viewModel.onCreate()
     }
 
     private fun observeEvents() {
         viewModel.observeActions { handleActions(it) }
-        viewModel.observeState { handleState(it) }
     }
 
-    private fun handleActions(it: Action) {
+    private fun handleActions(it: LoginAction) {
         when (it) {
             LaunchScoreActivity -> launchScoreActivity()
             is LaunchWelcomeActivity -> launchWelcomeActivity()
             LaunchUsernameActivity -> launchUsernameActivity()
+            TransformToLogin -> transformToLogIn()
+            TransformToSignup -> transformToSignup()
+            LaunchResetPasswordActivity -> TODO()
+            is LaunchPasswordActivity -> launchPasswordActivity(it.email)
+            is SetProgressVisible -> setProgressVisible(it.visible)
+            is SetLoginButtonEnabled -> setLoginButtonEnabled(it.enabled)
+            is ShowLoginError -> showLoginError(it.resId)
+            is Initialize -> setInitialState(it.state)
         }
     }
 
+    private fun launchPasswordActivity(email: String) {
+        val intent = PasswordActivity.newIntent(this, email)
+        startActivity(intent)
+    }
 
-    private fun handleState(state: State) {
-        when (state) {
-            InProgress -> handleInProgress()
-            ResetInProgress -> handleResetInProgress()
-            LoginError -> handleLoginError()
-            ResetError -> handleResetError()
-            Ready -> handleReady()
-            PasswordReset -> handlePasswordReset()
-            is FieldsUpdated -> handleFieldsUpdated(
-                state.emailError,
-                state.passwordError,
-                state.signUpIsReady
-            )
+    private fun setInitialState(state: LoginViewModel.State) {
+        setProgressVisible(state.progressVisible)
+        state.errorResId?.let { showLoginError(it) }
+        if (state.toggleState == LoginViewModel.State.ToggleState.LOGIN) {
+            transformToLogIn()
+        } else {
+            transformToSignup()
+        }
+        setLoginButtonEnabled(state.loginEnabled)
+    }
+
+    private fun showLoginError(resId: Int) = binding.apply {
+        errorText.text = getString(resId)
+        errorText.visible()
+    }
+
+    private fun setLoginButtonEnabled(enabled: Boolean) {
+        binding.loginButton.isEnabled = enabled
+    }
+
+    private fun setProgressVisible(visible: Boolean) {
+        if (visible) {
+            progressDialog = showProgressDialog(getString(R.string.progress_message_login))
+        } else {
+            progressDialog?.dismiss()
         }
     }
-
-    private fun handleReady() = binding.apply {
-        progressDialog?.dismiss()
-        errorText.invisible()
-    }
-
-    private fun handleLoginError() = binding.apply {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.login_error)
-        errorText.visible()
-    }
-
-    private fun handleResetError() = binding.apply {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.reset_password_error)
-        errorText.visible()
-    }
-
-    private fun handleInProgress() = binding.apply {
-        progressDialog = showProgressDialog(getString(R.string.progress_message_login))
-        errorText.invisible()
-    }
-
-    private fun handleResetInProgress() = binding.apply {
-        progressDialog = showProgressDialog(getString(R.string.progress_message_reset_password))
-        errorText.invisible()
-    }
-
-    private fun handlePasswordReset() = binding.apply {
-        progressDialog?.dismiss()
-        errorText.text = getString(R.string.reset_password_success)
-        errorText.visible()
-    }
-
-    private fun handleFieldsUpdated(emailError: Boolean, passwordError: Boolean, signUpIsReady: Boolean) =
-        binding.apply {
-            if (emailError) {
-                emailLayout.error = getString(R.string.email_error)
-            } else if (!emailLayout.error.isNullOrEmpty()) {
-                emailLayout.error = null
-            }
-
-            login.isEnabled = signUpIsReady
-            gotoForgotText.isEnabled = !emailError
-        }
 
     private fun launchWelcomeActivity() {
         start<WelcomeActivity>()
@@ -122,61 +107,107 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun launchUsernameActivity() {
-        start<SelectUsernameActivity>()
+        val intent = UsernameActivity.newIntent(this, true)
+        startActivity(intent)
         progressDialog?.dismiss()
         finish()
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
-        progressDialog?.dismiss()
-        finish()
-    }
-
-    private fun launchSignUpActivity() {
-        start<SignUpActivity>()
+        start<MainActivity>()
         progressDialog?.dismiss()
         finish()
     }
 
     private fun setupViews() = binding.apply {
-        val changeListener: () -> Unit =
-            { viewModel.onFieldsUpdated(email.text.toString(), password.text.toString()) }
-        if (Prefs.userEmail.isNotEmpty()) {
-            email.setText(Prefs.userEmail)
+        setStatusbarColor(R.color.lighter_gray)
+        val changeListener: () -> Unit = {
             viewModel.onFieldsUpdated(email.text.toString(), password.text.toString())
         }
-        email.onChangeDebounce(500, changeListener)
+        email.onChange(changeListener)
         password.onChange(changeListener)
 
-        login.setOnClickListener {
+        email.setOnClickListener {
+            window.setSoftInputMode(SOFT_INPUT_STATE_HIDDEN)
+        }
+
+
+        signUpToggle.setOnClickListener {
+            viewModel.signUpToggleClicked()
+        }
+
+        loginButton.setOnClickListener {
             val email = email.text.toString()
             val password = password.text.toString()
-            viewModel.onLogin(email, password)
+            viewModel.loginEmail(email, password)
         }
 
         fbLogin.setOnClickListener {
             viewModel.loginFacebook(supportFragmentManager)
         }
 
-        gotoSignUpText.setOnClickListener {
-            launchSignUpActivity()
+        googleLogin.setOnClickListener {
+            viewModel.loginGoogle(this@LoginActivity)
         }
-        val spannable = SpannableString(getString(R.string.goto_sign_up))
-        spannable.setSpan(ForegroundColorSpan(getColor(R.color.grey_400)), 0, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        gotoSignUpText.text = spannable
 
-        gotoForgotText.setOnClickListener {
-            MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
-                .setTitle(getString(R.string.reset_password_title))
-                .setMessage(getString(R.string.reset_password_message) + " " + email.text.toString())
-                .setPositiveButton(getString(R.string.reset)) { dialog, which ->
-                    // Do something for button click
-                    // reset the password
-                    viewModel.resetPassword(email.text.toString())
-                }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show()
+        forgotPassword.setOnClickListener {
+            showForgotPasswordDialog()
+        }
+    }
+
+    private fun transformToSignup() = binding.apply {
+        passwordLayout.animateViewHeight(0)
+        forgotPassword.animateViewHeight(0)
+        loginWithEmail.text = getString(R.string.sign_up_with_email)
+        loginButton.text = getString(R.string.sign_up)
+        welcomeMessage.text = getString(R.string.create_an_account)
+        signUpToggle.text = getString(R.string.log_in)
+        welcomeMessage.fadeIn()
+        loginWithEmail.fadeIn()
+    }
+
+    private fun transformToLogIn() = binding.apply {
+        passwordLayout.animateViewHeight(dp(60).toInt())
+        forgotPassword.animateViewHeight(dp(60).toInt())
+        loginWithEmail.text = getString(R.string.login_with_email)
+        welcomeMessage.text = getString(R.string.welcome_back)
+        loginButton.text = getString(R.string.log_in)
+        signUpToggle.text = getString(R.string.sign_up)
+        password.setText("")
+        welcomeMessage.fadeIn()
+        loginWithEmail.fadeIn()
+    }
+
+    private fun showForgotPasswordDialog() = binding.apply {
+        MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
+            .setTitle(getString(R.string.reset_password_title))
+            .setMessage(getString(R.string.reset_password_message, email.text.toString()))
+            .setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                viewModel.resetPassword(email.text.toString())
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
+    }
+
+    private fun View.fadeIn() {
+        val animation = AlphaAnimation(0f, 1f).apply {
+            interpolator = AccelerateInterpolator() //add this
+            duration = 300L
+        }
+        this.startAnimation(animation)
+    }
+
+    private fun View.animateViewHeight(finalValue: Int) {
+        ValueAnimator.ofInt(measuredHeight, finalValue).let {
+            it.duration = 300L
+            it.interpolator = DecelerateInterpolator()
+            it.addUpdateListener {
+                val animatedValue = it.animatedValue as Int
+                val layoutParams = layoutParams
+                layoutParams.height = animatedValue
+                this.layoutParams = layoutParams
+            }
+            it.start()
         }
     }
 

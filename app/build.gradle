@@ -3,6 +3,21 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 apply plugin: 'com.apollographql.apollo'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: StringCare
+
+// default config
+stringcare {
+    debug true
+    assetsFiles = ["*.json"]
+    stringFiles = ['secrets.xml']
+    srcFolders = ['src/main, src/debug']
+}
+
+androidExtensions {
+    features = ["parcelize"]
+}
 
 android {
     compileSdkVersion 29
@@ -24,6 +39,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -52,10 +70,14 @@ dependencies {
 
     //KTX
     implementation 'androidx.core:core-ktx:1.2.0'
-    implementation "androidx.fragment:fragment-ktx:1.2.2"
+    implementation "androidx.fragment:fragment-ktx:1.2.4"
 
     //AppCompat
     implementation 'androidx.appcompat:appcompat:1.1.0'
+
+    //Architecture components
+    implementation "android.arch.paging:rxjava2:1.0.1"
+    implementation 'androidx.paging:paging-runtime:2.1.2'
 
     //UI
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -66,12 +88,13 @@ dependencies {
 
     //Play services
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-analytics:17.2.3'
+    implementation 'com.google.firebase:firebase-analytics:17.4.1'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.3.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
 
     //Splitties
     def splittiesVersion = "3.0.0-alpha06"
@@ -90,10 +113,20 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
+    //Giphy
+    implementation 'com.giphy.sdk:ui:1.2.6'
+
+    //Lottie
+    implementation 'com.airbnb.android:lottie:3.4.0'
+
+    //WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.3.4"
+
     //Rx
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
+    implementation 'com.jakewharton.rxbinding3:rxbinding:3.1.0'
 
     //Facebook
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
@@ -104,8 +137,22 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-runtime:1.4.3"
     implementation 'com.apollographql.apollo:apollo-coroutines-support:1.4.3'
 
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation "com.zlc.glide:webpdecoder:1.7.4.11.0"
+
     //OkHttp
     implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
+
+    //Swipe refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    implementation "com.stringcare:library:$stringcare_version"
+
+    //AES
+    implementation 'com.scottyab:aescrypt:0.0.1'
 
     //Testing
     testImplementation 'junit:junit:4.12'

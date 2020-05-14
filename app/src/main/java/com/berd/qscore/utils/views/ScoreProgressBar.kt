@@ -3,45 +3,46 @@ package com.berd.qscore.utils.views
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
-import android.os.CountDownTimer
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.annotation.ColorInt
-import androidx.core.graphics.*
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.berd.qscore.R
 import com.berd.qscore.utils.extensions.dpToPixels
-import com.berd.qscore.utils.extensions.spToPixels
-import timber.log.Timber
 import kotlin.math.roundToInt
 
-class ScoreProgressBar  @JvmOverloads constructor(
+class ScoreProgressBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val dm  = resources.displayMetrics
-    private var backgroundWidthPixels: Float
+    private val dm = resources.displayMetrics
+    private var progressBackgroundWidthPixels: Float
     private var progressWidthPixels: Float
     private var progressColorStart: Int
     private var progressColorMiddle: Int
     private var progressColorEnd: Int
     private var progressTextColor: Int
     private var progressTextSize: Float
+    private var progressBackgroundColor: Int
 
     init {
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.ScoreProgressBar,
-            0, 0).apply {
+            0, 0
+        ).apply {
             try {
-                backgroundWidthPixels = getDimensionPixelSize(R.styleable.ScoreProgressBar_background_width, 10).toFloat()
-                progressWidthPixels = getDimensionPixelSize(R.styleable.ScoreProgressBar_progress_width,10).toFloat()
-                progressColorStart = getColor(R.styleable.ScoreProgressBar_progress_color_start,Color.GREEN)
-                progressColorMiddle = getColor(R.styleable.ScoreProgressBar_progress_color_middle,Color.GREEN)
-                progressColorEnd = getColor(R.styleable.ScoreProgressBar_progress_color_end,Color.GREEN)
-                progressTextColor = getColor(R.styleable.ScoreProgressBar_progress_text_color,Color.DKGRAY)
-                progressTextSize = getDimensionPixelSize(R.styleable.ScoreProgressBar_progress_text_size,100).toFloat()
+                progressBackgroundWidthPixels = getDimensionPixelSize(R.styleable.ScoreProgressBar_progress_background_width, 10).toFloat()
+                progressBackgroundColor = getColor(R.styleable.ScoreProgressBar_progress_background_color, Color.LTGRAY)
+                progressWidthPixels = getDimensionPixelSize(R.styleable.ScoreProgressBar_progress_width, 10).toFloat()
+                progressColorStart = getColor(R.styleable.ScoreProgressBar_progress_color_start, Color.GREEN)
+                progressColorMiddle = getColor(R.styleable.ScoreProgressBar_progress_color_middle, Color.GREEN)
+                progressColorEnd = getColor(R.styleable.ScoreProgressBar_progress_color_end, Color.GREEN)
+                progressTextColor = getColor(R.styleable.ScoreProgressBar_progress_text_color, Color.DKGRAY)
+                progressTextSize = getDimensionPixelSize(R.styleable.ScoreProgressBar_progress_text_size, 100).toFloat()
             } finally {
                 recycle()
             }
@@ -49,9 +50,9 @@ class ScoreProgressBar  @JvmOverloads constructor(
     }
 
     private val backgroundPaint = Paint().apply {
-        color = Color.LTGRAY
+        color = progressBackgroundColor
         style = Paint.Style.STROKE
-        strokeWidth = backgroundWidthPixels
+        strokeWidth = progressBackgroundWidthPixels
         strokeCap = Paint.Cap.ROUND
         isAntiAlias = true
     }
@@ -91,37 +92,38 @@ class ScoreProgressBar  @JvmOverloads constructor(
             val green = ((progressColorMiddle.green - progressColorStart.green) * progress * 2 + progressColorStart.green).toInt()
             val blue = ((progressColorMiddle.blue - progressColorStart.blue) * progress * 2 + progressColorStart.blue).toInt()
             val alpha = ((progressColorMiddle.alpha - progressColorStart.alpha) * progress * 2 + progressColorStart.alpha).toInt()
-            progressPaint.color = Color.argb(alpha,red,green,blue)
+            progressPaint.color = Color.argb(alpha, red, green, blue)
         } else {
             val red = ((progressColorEnd.red - progressColorMiddle.red) * (progress - 0.5f) * 2 + progressColorMiddle.red).toInt()
             val green = ((progressColorEnd.green - progressColorMiddle.green) * (progress - 0.5f) * 2 + progressColorMiddle.green).toInt()
             val blue = ((progressColorEnd.blue - progressColorMiddle.blue) * (progress - 0.5f) * 2 + progressColorMiddle.blue).toInt()
             val alpha = ((progressColorEnd.alpha - progressColorMiddle.alpha) * (progress - 0.5f) * 2 + progressColorMiddle.alpha).toInt()
-            progressPaint.color = Color.argb(alpha,red,green,blue)
+            progressPaint.color = Color.argb(alpha, red, green, blue)
         }
     }
 
-    fun getBackgroundWidthPixels():Float {
-        return backgroundWidthPixels
+    fun getBackgroundWidthPixels(): Float {
+        return progressBackgroundWidthPixels
     }
 
-    fun setBackgroundWidthPixels(width:Float){
-        backgroundWidthPixels = width
+    fun setBackgroundWidthPixels(width: Float) {
+        progressBackgroundWidthPixels = width
         invalidate()
         requestLayout()
     }
 
-    fun getProgressWidthPixels():Float {
+    fun getProgressWidthPixels(): Float {
         return progressWidthPixels
     }
 
-    fun setProgressWidthPixels(width:Float){
+    fun setProgressWidthPixels(width: Float) {
         progressWidthPixels = width
         updateRadius()
         updateMaxProgress()
         invalidate()
         requestLayout()
     }
+
     private val oval = RectF()
     private val textBounds = Rect()
     private var centerX: Float = 100f
@@ -133,7 +135,7 @@ class ScoreProgressBar  @JvmOverloads constructor(
         val width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
         val height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
         val min = width.coerceAtMost(height)
-        setMeasuredDimension(min,min)
+        setMeasuredDimension(min, min)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -146,13 +148,15 @@ class ScoreProgressBar  @JvmOverloads constructor(
 
     private fun updateRadius() {
         radius = centerX - progressWidthPixels
-        oval.set(centerX - radius,
+        oval.set(
+            centerX - radius,
             centerY - radius,
             centerX + radius,
-            centerY + radius)
+            centerY + radius
+        )
     }
 
-    private fun updateMaxProgress(){
+    private fun updateMaxProgress() {
         val paddingDP = 1f
         val paddingPixels = paddingDP.dpToPixels(dm)
         val minSliver = Math.toDegrees(((progressWidthPixels + paddingPixels) / radius).toDouble()).toFloat()
@@ -168,8 +172,8 @@ class ScoreProgressBar  @JvmOverloads constructor(
             else -> progress
         }
         canvas?.drawArc(oval, 270f, 360f * finalProgress, false, progressPaint)
-        val score : String = (100 * progress).roundToInt().toString()
-        textPaint.getTextBounds(score,0, score.length, textBounds)
+        val score: String = (100 * progress).roundToInt().toString()
+        textPaint.getTextBounds(score, 0, score.length, textBounds)
         canvas?.drawText(score, centerX - textBounds.exactCenterX(), centerY - textBounds.exactCenterY(), textPaint)
     }
 }

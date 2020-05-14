@@ -3,12 +3,12 @@ package com.berd.qscore.features.splash
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.berd.qscore.databinding.ActivitySplashBinding
+import com.berd.qscore.features.geofence.UpdateLocationWorker
 import com.berd.qscore.features.login.LoginActivity
-import com.berd.qscore.features.login.SelectUsernameActivity
-import com.berd.qscore.features.login.SignUpActivity
-import com.berd.qscore.features.score.ScoreActivity
+import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.splash.Action.*
+import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import splitties.activities.start
 
@@ -25,7 +25,12 @@ class SplashActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
         observeViewModel()
+        setupLocationUpdates()
         viewModel.onCreate()
+    }
+
+    private fun setupLocationUpdates() {
+        UpdateLocationWorker.schedule(this)
     }
 
     private fun observeViewModel() {
@@ -34,19 +39,14 @@ class SplashActivity : BaseActivity() {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchLoginActivity -> launchLoginActivity()
-                LaunchSignUpActivity -> launchSignUpActivity()
                 LaunchUsernameActivity -> launchUsernameActivity()
             }
         }
     }
 
     private fun launchUsernameActivity() {
-        start<SelectUsernameActivity>()
-        finish()
-    }
-
-    private fun launchSignUpActivity() {
-        start<SignUpActivity>()
+        val intent = UsernameActivity.newIntent(this, true)
+        startActivity(intent)
         finish()
     }
 
@@ -56,7 +56,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchScoreActivity() {
-        start<ScoreActivity>()
+        start<MainActivity>()
         finish()
     }
 

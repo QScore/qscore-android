@@ -3,6 +3,7 @@ package com.berd.qscore.utils.location
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.IntentSender
+import android.os.Build
 import android.os.Looper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -15,6 +16,7 @@ import com.github.florent37.runtimepermission.kotlin.coroutines.experimental.ask
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -31,19 +33,18 @@ object LocationHelper {
         numUpdates = 1
     }
 
-    val hasFineLocationPermission get() = context.hasPermissions(ACCESS_FINE_LOCATION)
-    val hasBackgroundLocationPermission get() = context.hasPermissions(ACCESS_BACKGROUND_LOCATION)
-    val hasAllPermissions get() = context.hasPermissions(ACCESS_COARSE_LOCATION)
+    private val allPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        arrayOf(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION)
+    } else {
+        arrayOf(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)
+    }
+    val hasAllPermissions get() = context.hasPermissions(*allPermissions)
 
     suspend fun checkPermissions(activity: FragmentActivity): Boolean {
-        return if (activity.hasPermissions(ACCESS_FINE_LOCATION)) {
-            if (activity.hasPermissions(ACCESS_BACKGROUND_LOCATION)) {
-                true
-            } else {
-                activity.askPermission(ACCESS_BACKGROUND_LOCATION).isAccepted
-            }
+        return if (activity.hasPermissions(*allPermissions)) {
+            true
         } else {
-            activity.askPermission(ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION).isAccepted
+            activity.askPermission(*allPermissions).isAccepted
         }
     }
 
@@ -69,12 +70,27 @@ object LocationHelper {
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun fetchCurrentLocation() = suspendCoroutine<LatLngPair?> {
-        locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                it.resume(locationResult?.lastLocation?.toLatLngPair())
-            }
-        }, null)
+    suspend fun fetchCurrentLocation(looper: Looper? = null) = suspendCancellableCoroutine<LatLngPair?> {
+        if (!hasAllPermissions) {
+            it.resumeWithException(IllegalStateException("Cannot fetch current location, permissions not granted"))
+            return@suspendCancellableCoroutine
+        }
+        try {
+            locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
+                override fun onLocationAvailability(p0: LocationAvailability?) {
+                    super.onLocationAvailability(p0)
+                    Timber.d("Location availability: p0")
+                }
+
+                override fun onLocationResult(locationResult: LocationResult?) {
+                    Timber.d("Location result: $locationResult")
+                    it.resume(locationResult?.lastLocation?.toLatLngPair())
+                }
+            }, looper)
+        } catch (e: Exception) {
+            Timber.d("Unable to get location")
+            it.resumeWithException(e)
+        }
     }
 
     //Throws exception if settings are not adequate
