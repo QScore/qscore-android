@@ -16,7 +16,7 @@ import com.berd.qscore.features.login.LoginViewModel.LoginAction
 import com.berd.qscore.features.login.LoginViewModel.LoginAction.*
 import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.password.PasswordActivity
-import com.berd.qscore.features.shared.activity.BaseActivityWithState
+import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.utils.extensions.onChange
@@ -28,7 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
 import splitties.dimensions.dp
 
-class LoginActivity : BaseActivityWithState() {
+class LoginActivity : BaseActivity() {
 
     private val viewModel by viewModels<LoginViewModel>()
     private val callbackManager by lazy { CallbackManager.Factory.create() }
@@ -107,7 +107,8 @@ class LoginActivity : BaseActivityWithState() {
     }
 
     private fun launchUsernameActivity() {
-        start<UsernameActivity>()
+        val intent = UsernameActivity.newIntent(this, true)
+        startActivity(intent)
         progressDialog?.dismiss()
         finish()
     }

@@ -7,7 +7,7 @@ import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
-import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.features.user.UserFragment.ProfileType
 import com.berd.qscore.features.user.UserViewModel.UserAction
 import com.berd.qscore.features.user.UserViewModel.UserAction.*
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-class UserViewModel(private val profileType: ProfileType) : RxViewModel<UserAction, UserState>() {
+class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserAction, UserState>() {
     sealed class UserAction {
         class LaunchFollowingUserList(val userId: String) : UserAction()
         class LaunchFollowersUserList(val userId: String) : UserAction()

@@ -9,7 +9,7 @@ import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
 
-class UsernameViewModel(handle: SavedStateHandle) :
+class UsernameViewModel(handle: SavedStateHandle, private val shouldLaunchWelcome: Boolean) :
     RxViewModelWithState<UsernameViewModel.UsernameAction, UsernameViewModel.UsernameState>(handle) {
 
     @Parcelize
@@ -24,8 +24,8 @@ class UsernameViewModel(handle: SavedStateHandle) :
         class SetContinueEnabled(val enabled: Boolean) : UsernameAction()
         object ShowError : UsernameAction()
         class SetProgressVisible(val visible: Boolean) : UsernameAction()
-        object LaunchMainActivity : UsernameAction()
         object LaunchWelcomeActivity : UsernameAction()
+        object FinishActivity : UsernameAction()
     }
 
     override fun getInitialState() = UsernameState()
@@ -47,7 +47,11 @@ class UsernameViewModel(handle: SavedStateHandle) :
             action(UsernameAction.SetProgressVisible(true))
             try {
                 UserRepository.updateUserInfo(username)
-                action(UsernameAction.LaunchWelcomeActivity)
+                if (shouldLaunchWelcome) {
+                    action(UsernameAction.LaunchWelcomeActivity)
+                } else {
+                    action(UsernameAction.FinishActivity)
+                }
             } catch (e: ApolloHttpException) {
                 action(UsernameAction.ShowError)
             }

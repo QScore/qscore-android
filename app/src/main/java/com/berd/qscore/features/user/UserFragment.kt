@@ -145,6 +145,7 @@ class UserFragment : BaseFragment() {
             }
         setupAvatar(user)
         pullToRefresh.isRefreshing = false
+        pullToRefresh.setColorSchemeColors(getColor(R.color.colorAccent))
         followersNumber.text = user.followerCount.toString()
         followingNumber.text = user.followingCount.toString()
         progress.gone()

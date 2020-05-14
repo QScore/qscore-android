@@ -7,7 +7,7 @@ import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.utils.paging.PagedListCursorBuilder
 import com.berd.qscore.utils.paging.PagedCursorResult
 import com.berd.qscore.features.shared.user.UserRepository
-import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.features.user.UserListActivity.UserListType
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWERS
 import com.berd.qscore.features.user.UserListViewModel.UserListAction.SubmitPagedList
@@ -15,7 +15,7 @@ import com.berd.qscore.features.user.UserListViewModel.UserListState.*
 import kotlinx.coroutines.launch
 
 class UserListViewModel(private val userId: String, private val userListType: UserListType) :
-    RxViewModel<UserListViewModel.UserListAction, UserListViewModel.UserListState>() {
+    RxViewModelOld<UserListViewModel.UserListAction, UserListViewModel.UserListState>() {
     fun onCreate() {
         viewModelScope.launch {
             val users =

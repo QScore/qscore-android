@@ -7,7 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityWelcomeBinding
 import com.berd.qscore.features.main.MainActivity
-import com.berd.qscore.features.shared.activity.BaseActivityWithState
+import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.*
 import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.setStatusbarColor
@@ -19,7 +19,7 @@ import splitties.activities.start
 import splitties.toast.toast
 import timber.log.Timber
 
-class WelcomeActivity : BaseActivityWithState() {
+class WelcomeActivity : BaseActivity() {
 
     private val binding: ActivityWelcomeBinding by lazy { ActivityWelcomeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()

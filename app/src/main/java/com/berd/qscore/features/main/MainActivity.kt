@@ -10,11 +10,12 @@ import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.main.MainViewModel.MainAction.LaunchLoginActivity
 import com.berd.qscore.features.main.bottomnav.BottomTab
 import com.berd.qscore.features.main.bottomnav.FragmentStateManager
-import com.berd.qscore.features.shared.activity.BaseActivityWithState
+import com.berd.qscore.features.settings.SettingsActivity
+import com.berd.qscore.features.shared.activity.BaseActivity
 import splitties.activities.start
 
 
-class MainActivity : BaseActivityWithState() {
+class MainActivity : BaseActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
@@ -75,16 +76,13 @@ class MainActivity : BaseActivityWithState() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
+            launchSettingsActivity()
             true
         }
+        else -> super.onOptionsItemSelected(item)
+    }
 
-        R.id.action_logout -> {
-            viewModel.onLogout()
-            true
-        }
-
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
+    private fun launchSettingsActivity() {
+        start<SettingsActivity>()
     }
 }

@@ -11,7 +11,7 @@ import com.berd.qscore.R
 import com.berd.qscore.databinding.SearchFragmentBinding
 import com.berd.qscore.features.search.SearchViewModel.SearchAction.*
 import com.berd.qscore.features.search.SearchViewModel.SearchState.LoadingState
-import com.berd.qscore.features.shared.activity.BaseFragmentWithState
+import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserAdapter
 import com.berd.qscore.features.user.UserActivity
@@ -25,7 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class SearchFragment : BaseFragmentWithState() {
+class SearchFragment : BaseFragment() {
 
     private val viewModel by viewModels<SearchViewModel>()
 

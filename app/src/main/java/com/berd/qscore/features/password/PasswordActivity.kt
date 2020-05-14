@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityPasswordBinding
 import com.berd.qscore.features.password.PasswordViewModel.PasswordAction.*
-import com.berd.qscore.features.shared.activity.BaseActivityWithState
+import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.setStatusbarColor
@@ -15,10 +15,9 @@ import com.berd.qscore.utils.extensions.visible
 import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import splitties.activities.start
 import timber.log.Timber
 
-class PasswordActivity : BaseActivityWithState() {
+class PasswordActivity : BaseActivity() {
 
     private val viewModel by viewModels<PasswordViewModel>()
 
@@ -70,7 +69,8 @@ class PasswordActivity : BaseActivityWithState() {
     }
 
     private fun launchUsernameActivity() {
-        start<UsernameActivity>()
+        val intent = UsernameActivity.newIntent(this, true)
+        startActivity(intent)
         finish()
     }
 

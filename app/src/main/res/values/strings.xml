@@ -101,4 +101,5 @@
     <string name="error_user_exists">A user already exists with that email address.</string>
     <string name="choose_username">Choose username</string>
     <string name="username_must_be_at_least_4_characters">Username must be at least 4 characters</string>
+    <string name="settings">Settings</string>
 </resources>

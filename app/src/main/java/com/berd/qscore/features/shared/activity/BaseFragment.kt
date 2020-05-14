@@ -3,6 +3,7 @@ package com.berd.qscore.features.shared.activity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -13,7 +14,7 @@ abstract class BaseFragment : Fragment() {
 
     protected val compositeDisposable = CompositeDisposable()
 
-    protected inline fun <reified A : Any, reified S : Any> RxViewModel<A, S>.observeActions(
+    protected inline fun <reified A : Any> RxViewModel<A>.observeActions(
         crossinline actionListener: (A) -> Unit = {}
     ) {
         actionsObservable
@@ -25,7 +26,7 @@ abstract class BaseFragment : Fragment() {
             }).addTo(compositeDisposable)
     }
 
-    protected inline fun <reified A : Any, reified S : Any> RxViewModel<A, S>.observeState(
+    protected inline fun <reified A : Any, reified S : Any> RxViewModelOld<A, S>.observeState(
         crossinline stateListener: (S) -> Unit = {}
     ) {
         stateLiveData.observe(this@BaseFragment, Observer {

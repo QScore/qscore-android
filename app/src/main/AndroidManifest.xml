@@ -43,6 +43,7 @@
             android:theme="@style/AppTheme.Secondary" />
         <activity android:name=".features.main.MainActivity" />
         <activity android:name=".features.password.PasswordActivity" />
+        <activity android:name=".features.settings.SettingsActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

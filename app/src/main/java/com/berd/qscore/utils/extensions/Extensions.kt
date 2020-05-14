@@ -233,6 +233,14 @@ fun View.setBackgroundColorResId(colorResId: Int) {
     setBackgroundColor(color)
 }
 
+fun Context.getColor(colorResId: Int): Int {
+    return ContextCompat.getColor(this, colorResId)
+}
+
+fun Fragment.getColor(colorResId: Int): Int {
+    return activity?.let { ContextCompat.getColor(it, colorResId) } ?: 0
+}
+
 fun GiphyDialogFragment.onGifSelected(callback: (Media) -> Unit) {
     this.gifSelectionListener = object : GiphyDialogFragment.GifSelectionListener {
         override fun didSearchTerm(term: String) {

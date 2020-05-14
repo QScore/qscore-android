@@ -5,7 +5,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.user.UserRepository
-import com.berd.qscore.features.shared.viewmodel.RxViewModel
+import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.utils.location.LocationHelper
 import kotlinx.coroutines.delay
@@ -20,7 +20,7 @@ sealed class Action {
     object LaunchUsernameActivity : Action()
 }
 
-class SplashViewModel : RxViewModel<Action, Unit>() {
+class SplashViewModel : RxViewModelOld<Action, Unit>() {
     fun onCreate() = viewModelScope.launch {
         try {
             delay(1500)

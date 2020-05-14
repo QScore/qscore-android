@@ -45,7 +45,8 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun launchUsernameActivity() {
-        start<UsernameActivity>()
+        val intent = UsernameActivity.newIntent(this, true)
+        startActivity(intent)
         finish()
     }
 

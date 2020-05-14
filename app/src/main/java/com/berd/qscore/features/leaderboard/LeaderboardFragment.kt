@@ -6,16 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.berd.qscore.R
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardAction.SubmitPagedList
-import com.berd.qscore.features.shared.activity.BaseFragmentWithState
+import com.berd.qscore.features.shared.activity.BaseFragment
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.user.UserActivity
 import com.berd.qscore.utils.extensions.createViewModel
+import com.berd.qscore.utils.extensions.getColor
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
 
-class LeaderboardFragment : BaseFragmentWithState() {
+class LeaderboardFragment : BaseFragment() {
 
     private val viewModel by lazy {
         createViewModel { handle -> LeaderboardViewModel(handle, leaderboardType) }
@@ -52,6 +54,7 @@ class LeaderboardFragment : BaseFragmentWithState() {
 
     private fun setupViews() {
         binding.pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
+        binding.pullToRefresh.setColorSchemeColors(getColor(R.color.colorAccent), getColor(R.color.colorPrimary))
     }
 
     private fun observeEvents() {
