@@ -86,7 +86,7 @@ class UserFragment : BaseFragment() {
         viewModel.onResume()
     }
 
-    override fun getScreenName() = if (isCurrentUser) "current_user_profile" else "user_profile"
+    override fun getScreenName() = if (isCurrentUser) "CurrentUserProfile" else "UserProfile"
 
     private fun observeEvents() {
         viewModel.observeActions { action ->

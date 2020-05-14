@@ -59,7 +59,7 @@ class SearchFragment : BaseFragment() {
         setStatusbarColor(R.color.colorPrimary)
     }
 
-    override fun getScreenName() = "search"
+    override fun getScreenName() = "Search"
 
     private fun handleSearchItemClicked(user: QUser) {
         activity?.let { activity ->

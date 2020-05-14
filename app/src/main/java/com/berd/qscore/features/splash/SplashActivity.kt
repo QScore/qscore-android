@@ -65,7 +65,7 @@ class SplashActivity : BaseActivity() {
         finish()
     }
 
-    override fun getScreenName() = "splash"
+    override fun getScreenName() = "Splash"
 
     override fun onDestroy() {
         compositeDisposable.clear()

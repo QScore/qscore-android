@@ -43,7 +43,7 @@ class WelcomeActivity : BaseActivity() {
         }
     }
 
-    override fun getScreenName() = "welcome"
+    override fun getScreenName() = "Welcome"
 
     private fun setProgressVisible(visible: Boolean) {
         if (visible) {
