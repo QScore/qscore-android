@@ -86,6 +86,8 @@ class UserFragment : BaseFragment() {
         viewModel.onResume()
     }
 
+    override fun getScreenName() = if (isCurrentUser) "CurrentUserProfile" else "UserProfile"
+
     private fun observeEvents() {
         viewModel.observeActions { action ->
             when (action) {
@@ -184,7 +186,10 @@ class UserFragment : BaseFragment() {
     private fun setupViews() = binding.apply {
         if (isCurrentUser) {
             scoreProgress.progress = 1f
-            avatarBorder.setOnClickListener { loadGiphy() }
+            avatarBorder.setOnClickListener {
+                viewModel.onAvatarClicked()
+                loadGiphy()
+            }
             pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
         } else {
             pullToRefresh.isEnabled = false

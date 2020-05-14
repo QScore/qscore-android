@@ -20,6 +20,8 @@ class SettingsActivity : BaseActivity() {
         ActivitySettingsBinding.inflate(layoutInflater)
     }
 
+    override fun getScreenName() = "Settings"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
