@@ -45,8 +45,8 @@ class LeaderboardFragment : BaseFragment() {
     }
 
     override fun getScreenName() = when (leaderboardType) {
-        LeaderboardType.SOCIAL -> "leaderboard_social"
-        else -> "leaderboard_global"
+        LeaderboardType.SOCIAL -> "LeaderboardSocial"
+        else -> "LeaderboardGlobal"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

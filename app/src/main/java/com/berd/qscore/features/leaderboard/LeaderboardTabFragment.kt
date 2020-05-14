@@ -32,7 +32,7 @@ class LeaderboardTabFragment : BaseFragment() {
         setStatusbarColor(R.color.colorPrimary)
     }
 
-    override fun getScreenName() = "leaderboards"
+    override fun getScreenName() = "Leaderboards"
 
     private fun setupTabs() {
         binding.pager.adapter = DemoCollectionAdapter(this)

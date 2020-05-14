@@ -29,7 +29,7 @@ class PasswordActivity : BaseActivity() {
         ActivityPasswordBinding.inflate(layoutInflater)
     }
 
-    override fun getScreenName() = "set_password"
+    override fun getScreenName() = "SetPassword"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
