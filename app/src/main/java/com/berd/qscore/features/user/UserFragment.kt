@@ -213,7 +213,6 @@ class UserFragment : BaseFragment() {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun showTooltip() = binding.apply {
         val duration = 200L
         binding.tooltip.fadeIn(
