@@ -106,7 +106,7 @@
     <string name="space"> </string>
     <string name="are_you_sure_logout">Are you sure you want to log out?</string>
     <string name="log_out">Log out</string>
-    <string name="tooltip_message">The percentage of time you were home in the last 24 hours. The higher this number, the faster you will earn points!</string>
+    <string name="tooltip_message">The percentage of time you were home in the last 24 hours. The higher this number, the more respect you will earn</string>
     <string name="about">About</string>
     <string name="version">%1$s version %2$s</string>
 </resources>
