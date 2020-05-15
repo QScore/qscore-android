@@ -3,8 +3,10 @@ package com.berd.qscore.features.settings
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.berd.qscore.BuildConfig
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySettingsBinding
+import com.berd.qscore.features.about.AboutActivity
 import com.berd.qscore.features.login.LoginActivity
 import com.berd.qscore.features.settings.SettingsViewModel.SettingsAction
 import com.berd.qscore.features.shared.activity.BaseActivity
@@ -51,9 +53,20 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun setupViews() = binding.apply {
-        aboutButton.setOnClickListener { TODO() }
+        aboutButton.setOnClickListener { launchAboutActivity() }
         usernameButton.setOnClickListener { launchUsernameActivity() }
         logOutButton.setOnClickListener { showLogoutDialog() }
+        setupVersion()
+    }
+
+    private fun launchAboutActivity() {
+        start<AboutActivity>()
+    }
+
+    private fun setupVersion() {
+        val versionNumber = BuildConfig.VERSION_NAME
+        val appName = if (BuildConfig.DEBUG) getString(R.string.qscore) + " Debug" else getString(R.string.qscore)
+        binding.version.text = getString(R.string.version, appName, versionNumber)
     }
 
     private fun showLogoutDialog() {
