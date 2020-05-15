@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">QScore</string>
-    <string name="are_you_at_home">Are you at home?</string>
     <string name="i_m_home">I\'m home</string>
     <string name="welcome">Welcome!</string>
     <string name="location_error_title">Unable to determine location</string>
@@ -9,71 +8,22 @@
     <string name="location_error_not_now">Not now</string>
     <string name="qscore">QScore</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_username">Username</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="hint_username_required">Username*</string>
     <string name="hint_username">Username</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_verify">CODE</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="unable_to_login_facebook">Unable to login to Facebook, please try again later.</string>
     <string name="sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
-    <string name="goto_sign_up">New to Qscore? Sign Up.</string>
-    <string name="goto_sign_up_first">New to Qscore?</string>
-    <string name="goto_sign_up_second">Sign Up.</string>
-    <string name="goto_login">Already have an account? Log In</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="login_error">Unable to log in.  Please check your credentials and try again.</string>
-    <string name="sign_up_error">Unable to sign up.  Please check your credentials and try again.</string>
-    <string name="progress_message_sign_up">Signing Up…</string>
     <string name="progress_message_login">Logging In…</string>
-    <string name="progress_message_username">Setting Username…</string>
-
-    <string name="sign_up_fb">Sign up with Facebook</string>
-    <string name="sign_up_google">Sign up with Google</string>
-    <string name="login_fb">Log in with Facebook</string>
-    <string name="login_google">Log in with Google</string>
-
-    <string name="username_error">Username Not Available</string>
-    <string name="password_error">Must have 6 or more characters</string>
-    <string name="email_error">Must be a valid email address</string>
-
-    <string name="helper_username">How friends add you on Qscore</string>
-    <string name="helper_email">*Required</string>
-    <string name="helper_password">Must have 6 or more characters</string>
-
-    <string name="action_logout">Log out</string>
     <string name="action_settings">Settings</string>
-    <string name="action_add_friends">Add Qbuddies</string>
-
-    <string name="add_friends_title">Search and Add Qbuddies!</string>
-
     <string name="reset_password_title">Reset Password</string>
     <string name="reset_password_message">An email with instructions to reset your password will be sent to %1$s</string>
-    <string name="reset_password_success">Please check your email for a link to reset your password</string>
-    <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
-    <string name="progress_message_reset_password">Resetting Password…</string>
-    <string name="reset_password_error">Unable to reset password for email provided</string>
-
-    <string name="select_username">Select Username</string>
     <string name="continue_button">Continue</string>
-    <string name="continue_error">Unable to select username.  Please try again.</string>
-    <string name="checking_usernames">Checking available usernames…</string>
-
-    <string name="helper_search_username">Search Qbuddies by username</string>
-    <string name="connection_error">Failed to connect to servers, please try again later</string>
     <string name="me">Me</string>
     <string name="search">Search</string>
     <string name="leaderboards">Leaderboards</string>
-    <string name="all_time_score">All time score: %1$s</string>
     <string name="search_users">Search users</string>
     <string name="no_users_found">No users found</string>
     <string name="add">Add</string>
@@ -83,14 +33,12 @@
     <string name="follow">Follow</string>
     <string name="multiplier">Last 24 Hours</string>
     <string name="ok">Ok</string>
-    <string name="you_must_allow_permissions">You must allow permissions to continue</string>
     <string name="search_for_your_friends">Search for your friends and follow them to compare scores!</string>
     <string name="continue_dialog">Continue</string>
     <string name="go_back">Go back</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="welcome_back">Welcome back!</string>
-    <string name="or">Or</string>
     <string name="login_with_email">Login with email</string>
     <string name="signup">Sign Up</string>
     <string name="create_an_account">Create an account</string>
@@ -105,8 +53,18 @@
     <string name="username_exists">Username already exists</string>
     <string name="space"> </string>
     <string name="are_you_sure_logout">Are you sure you want to log out?</string>
-    <string name="log_out">Log out</string>
     <string name="tooltip_message">The percentage of time you were home in the last 24 hours. The higher this number, the more respect you will earn</string>
     <string name="about">About</string>
     <string name="version">%1$s version %2$s</string>
+    <string name="log_out">Log out</string>
+    <string name="about_qscore">About QScore</string>
+    <string name="change_username">Change username</string>
+    <string name="user">User</string>
+    <string name="general">General</string>
+    <string name="welcome_line_1">QScore is a fun new way to social distance together with your friends.</string>
+    <string name="welcome_line_2">The more time you spend at home, the more points you will earn!</string>
+    <string name="welcome_line_3">QScore requires location permissions to continue. Your location does not leave your device.</string>
+    <string name="welcome_line_4">When you\'re ready, mark yourself at home to start earning points!</string>
+    <string name="rank">Rank</string>
+    <string name="all_time">All Time</string>
 </resources>

@@ -23,13 +23,13 @@ interface DialogBuilder<T> {
 
     fun message(messageResId: Int)
 
-    fun yesButton(block: DialogCallback<T>)
+    fun positiveButton(block: DialogCallback<T>)
 
-    fun noButton(block: DialogCallback<T>)
+    fun negativeButton(block: DialogCallback<T>)
 
-    fun yesButtonResId(resId: Int)
+    fun positiveButtonResId(resId: Int)
 
-    fun noButtonResId(resId: Int)
+    fun negativeButtonResId(resId: Int)
 }
 
 typealias DialogCallback<T> = T.() -> Unit
@@ -64,19 +64,19 @@ private class DialogBuilderImpl<T> : DialogBuilder<T> {
         args = args.copy(message = appContext.getString(messageResId))
     }
 
-    override fun yesButton(block: T.() -> Unit) {
+    override fun positiveButton(block: T.() -> Unit) {
         args = args.copy(yesButton = block as Serializable)
     }
 
-    override fun noButton(block: T.() -> Unit) {
+    override fun negativeButton(block: T.() -> Unit) {
         args = args.copy(noButton = block as Serializable)
     }
 
-    override fun yesButtonResId(resId: Int) {
+    override fun positiveButtonResId(resId: Int) {
         args = args.copy(yesButtonResId = resId)
     }
 
-    override fun noButtonResId(resId: Int) {
+    override fun negativeButtonResId(resId: Int) {
         args = args.copy(noButtonResId = resId)
     }
 }

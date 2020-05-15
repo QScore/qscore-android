@@ -91,7 +91,7 @@ fun ImageView.loadUrl(
     customOptions: RequestOptions? = null
 ) {
 
-    fun getColorDrawable(photoColor: String) = if (photoColor.isNullOrEmpty()) {
+    fun getColorDrawable(photoColor: String) = if (photoColor.isEmpty()) {
         whiteColorDrawable
     } else {
         ColorDrawable().apply {
@@ -205,7 +205,7 @@ fun Context.hasPermissions(vararg permissions: String) =
         ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
-fun Context.showProgressDialog(message: String) =
+fun Context.showProgressDialog(message: String): ProgressDialog =
     ProgressDialog.show(this, null, message)
 
 @Suppress("UNCHECKED_CAST")
@@ -232,9 +232,7 @@ fun Activity.setStatusbarColor(colorResId: Int) {
     window.statusBarColor = ContextCompat.getColor(this, colorResId)
 }
 
-fun Fragment.setStatusbarColor(colorResId: Int) = activity?.let { activity ->
-    activity.setStatusbarColor(colorResId)
-}
+fun Fragment.setStatusbarColor(colorResId: Int) = activity?.setStatusbarColor(colorResId)
 
 fun View.setBackgroundColorResId(colorResId: Int) {
     val color = ContextCompat.getColor(context, colorResId)

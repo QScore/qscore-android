@@ -14,9 +14,9 @@ import com.berd.qscore.features.password.PasswordActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
+import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
 import splitties.dimensions.dp
 
@@ -170,15 +170,12 @@ class LoginActivity : BaseActivity() {
         loginWithEmail.fadeIn()
     }
 
-    private fun showForgotPasswordDialog() = binding.apply {
-        MaterialAlertDialogBuilder(this@LoginActivity, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
-            .setTitle(getString(R.string.reset_password_title))
-            .setMessage(getString(R.string.reset_password_message, email.text.toString()))
-            .setPositiveButton(getString(R.string.ok)) { dialog, which ->
-                viewModel.resetPassword(email.text.toString())
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .show()
+    private fun showForgotPasswordDialog() = showDialogFragment {
+        title(R.string.reset_password_title)
+        message(R.string.reset_password_message)
+        positiveButtonResId(R.string.ok)
+        positiveButton { viewModel.resetPassword(binding.email.text.toString()) }
+        negativeButtonResId(R.string.cancel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
