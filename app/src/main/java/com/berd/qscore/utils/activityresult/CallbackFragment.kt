@@ -16,10 +16,11 @@ abstract class CallbackFragment<T>(private val block: ActivityResultCallback<T>)
         retainInstance = true
     }
 
-    private val KEY_LAMBDA = "KEY_LAMBDA"
-    private val KEY_EXTRAS = "KEY_BUNDLE"
+    companion object {
+        private const val KEY_LAMBDA = "KEY_LAMBDA"
+    }
 
-    protected var savedBlock = block
+    private var savedBlock = block
     private var savedExtras: Bundle? = null
 
     abstract fun getParent(): T?
@@ -70,7 +71,7 @@ abstract class CallbackFragment<T>(private val block: ActivityResultCallback<T>)
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = null
+    ): Nothing? = null
 
     protected fun removeFragment() = activity?.supportFragmentManager?.let {
         it.beginTransaction().remove(this).commitNowAllowingStateLoss()

@@ -84,14 +84,12 @@ class WelcomeActivity : BaseActivity() {
         }
     }
 
-    private fun showNoPermissionConfirmationDialog() = binding.let {
-        showDialogFragment {
-            this.title("Are you sure you want to continue?")
-            this.message("QScore needs full location access to continue.  Your location will never leave the device.\n\nIf you continue without full location access, you will not be able to earn points.")
-            this.yesButtonResId(R.string.continue_dialog)
-            this.noButtonResId(R.string.go_back)
-            this.yesButton { viewModel.continueWithoutLocation() }
-            this.noButton { }
-        }
+    private fun showNoPermissionConfirmationDialog() = showDialogFragment {
+        this.title("Are you sure you want to continue?")
+        this.message("QScore needs full location access to continue.  Your location will never leave the device.\n\nIf you continue without full location access, you will not be able to earn points.")
+        this.positiveButtonResId(R.string.continue_dialog)
+        this.negativeButtonResId(R.string.go_back)
+        this.positiveButton { viewModel.continueWithoutLocation() }
+        this.negativeButton { }
     }
 }

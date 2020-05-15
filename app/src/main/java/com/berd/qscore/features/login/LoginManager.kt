@@ -51,19 +51,19 @@ object LoginManager {
     }
 
 
-    suspend fun signUp(email: String, password: String) = suspendCancellableCoroutine<LoginManager.AuthEvent> {
+    suspend fun signUp(email: String, password: String) = suspendCancellableCoroutine<AuthEvent> {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             it.resume(task.resultEvent)
         }
     }
 
-    suspend fun login(email: String, password: String) = suspendCancellableCoroutine<LoginManager.AuthEvent> {
+    suspend fun login(email: String, password: String) = suspendCancellableCoroutine<AuthEvent> {
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             it.resume(task.resultEvent)
         }
     }
 
-    suspend fun loginGoogle(activity: FragmentActivity) = suspendCancellableCoroutine<LoginManager.AuthEvent> { cont ->
+    suspend fun loginGoogle(activity: FragmentActivity) = suspendCancellableCoroutine<AuthEvent> { cont ->
         val signInIntent = googleSignInClient.signInIntent
         activity.startForResult(signInIntent) { activityResult ->
             val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.dataIntent)
@@ -76,8 +76,8 @@ object LoginManager {
                 }
 
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
-                    cont.resume(task.resultEvent)
+                firebaseAuth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
+                    cont.resume(signInTask.resultEvent)
                 }
             } catch (e: ApiException) {
                 cont.resume(Error(e))
@@ -85,13 +85,13 @@ object LoginManager {
         }
     }
 
-    suspend fun sendPasswordResetEmail(email: String) = suspendCancellableCoroutine<LoginManager.AuthEvent> {
+    suspend fun sendPasswordResetEmail(email: String) = suspendCancellableCoroutine<AuthEvent> {
         firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             it.resume(task.resultEvent)
         }
     }
 
-    suspend fun loginFacebook(supportFragmentManager: FragmentManager) = suspendCancellableCoroutine<LoginManager.AuthEvent> { cont ->
+    suspend fun loginFacebook(supportFragmentManager: FragmentManager) = suspendCancellableCoroutine<AuthEvent> { cont ->
         val fbTokenCallback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
                 val token = loginResult.accessToken.token

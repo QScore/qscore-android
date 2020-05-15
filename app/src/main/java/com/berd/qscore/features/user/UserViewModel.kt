@@ -34,7 +34,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
     }
 
     fun onCreate() {
-        UserRepository?.currentUser?.let {
+        UserRepository.currentUser?.let {
             state = Ready(it)
         } ?: run {
             state = Loading

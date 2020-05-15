@@ -2,13 +2,16 @@ package com.berd.qscore.utils.location
 
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Looper
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.berd.qscore.features.shared.ui.LocationServicesDialogFragment
+import com.berd.qscore.R
 import com.berd.qscore.utils.activityresult.intentSenderForResult
+import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.hasPermissions
 import com.berd.qscore.utils.extensions.toLatLngPair
 import com.berd.qscore.utils.injection.Injector
@@ -149,6 +152,17 @@ object LocationHelper {
 
     private fun handleManualSettingsRequired(activity: FragmentActivity) {
         Timber.e("Location settings are inadequate, and cannot be fixed here. Fix in Settings.")
-        LocationServicesDialogFragment().show(activity.supportFragmentManager, "dialog")
+        showLocationServicesDialog(activity)
+    }
+
+    private fun showLocationServicesDialog(activity: FragmentActivity) = activity.showDialogFragment {
+        title(R.string.location_error_title)
+        message(R.string.location_error_message)
+        positiveButtonResId(R.string.location_error_settings)
+        positiveButton {
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+        }
+        negativeButtonResId(R.string.location_error_not_now)
     }
 }

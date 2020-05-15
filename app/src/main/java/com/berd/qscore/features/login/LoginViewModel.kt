@@ -21,7 +21,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithState<LoginAction, State>(handle) {
+class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginAction, State>(handle) {
 
     sealed class LoginAction {
         object LaunchScoreActivity : LoginAction()
@@ -71,7 +71,7 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
         if (state.toggleState == ToggleState.LOGIN) {
             action(SetProgressVisible(true))
             when (val result = LoginManager.login(email, password)) {
-                is Success -> handleLoginSuccess(email)
+                is Success -> handleLoginSuccess()
                 is Error -> handleError(result.error)
             }
             action(SetProgressVisible(false))
@@ -89,7 +89,7 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
         action(SetProgressVisible(true))
         try {
             when (val result = LoginManager.loginFacebook(supportFragmentManager)) {
-                is Success -> handleLoginSuccess("")
+                is Success -> handleLoginSuccess()
                 is Error -> handleError(result.error)
             }
         } catch (e: CancellationException) {
@@ -100,8 +100,8 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
     fun loginGoogle(activity: FragmentActivity) = viewModelScope.launch {
         action(SetProgressVisible(true))
         try {
-            when (val result = LoginManager.loginGoogle(activity)) {
-                is Success -> handleLoginSuccess("")
+            when (LoginManager.loginGoogle(activity)) {
+                is Success -> handleLoginSuccess()
                 is Error -> action(SetProgressVisible(false))
             }
         } catch (e: CancellationException) {
@@ -125,13 +125,12 @@ class LoginViewModel(private val handle: SavedStateHandle) : RxViewModelWithStat
         action(SetLoginButtonEnabled(loginEnabled))
     }
 
-    private suspend fun handleLoginSuccess(email: String) {
-        Prefs.userEmail = email
+    private suspend fun handleLoginSuccess() {
         try {
             val currentUser = UserRepository.getCurrentUser()
             action(SetProgressVisible(false))
             when {
-                currentUser.username.isNullOrEmpty() -> action(LaunchUsernameActivity)
+                currentUser.username.isEmpty() -> action(LaunchUsernameActivity)
                 Prefs.userLocation != null -> action(LaunchScoreActivity)
                 else -> action(LaunchWelcomeActivity)
             }

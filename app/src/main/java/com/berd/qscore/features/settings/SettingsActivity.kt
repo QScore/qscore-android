@@ -72,9 +72,9 @@ class SettingsActivity : BaseActivity() {
     private fun showLogoutDialog() {
         showDialogFragment {
             title(R.string.are_you_sure_logout)
-            yesButton { viewModel.onLogOut() }
-            yesButtonResId(R.string.log_out)
-            noButton { }
+            positiveButton { viewModel.onLogOut() }
+            positiveButtonResId(R.string.log_out)
+            negativeButton { }
         }
     }
 
