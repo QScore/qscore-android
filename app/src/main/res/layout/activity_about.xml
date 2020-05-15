@@ -20,7 +20,6 @@
 
     <WebView
         android:id="@+id/webview"
-        android:padding="20dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/transparent"
