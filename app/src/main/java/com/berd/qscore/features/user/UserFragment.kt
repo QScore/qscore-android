@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.berd.qscore.R
@@ -35,6 +37,10 @@ class UserFragment : BaseFragment() {
 
     private val profileType by lazy {
         arguments?.getSerializable(KEY_PROFILE_TYPE) as ProfileType
+    }
+
+    private val tooltipHeight by lazy {
+        binding.tooltip.measuredHeight
     }
 
     private val binding: UserFragmentBinding by lazy {
@@ -191,8 +197,10 @@ class UserFragment : BaseFragment() {
                 loadGiphy()
             }
             pullToRefresh.setOnRefreshListener { viewModel.onRefresh() }
+            infoIcon.setOnClickListener { showTooltip() }
         } else {
             pullToRefresh.isEnabled = false
+            infoIcon.gone()
         }
 
         followersNumber.setOnClickListener {
@@ -201,6 +209,46 @@ class UserFragment : BaseFragment() {
 
         followingNumber.setOnClickListener {
             viewModel.onFollowingClicked()
+        }
+    }
+
+    private fun showTooltip() = binding.apply {
+        val duration = 200L
+        binding.tooltip.fadeIn(
+            duration = duration,
+            interpolator = DecelerateInterpolator()
+        )
+        binding.tooltip.animateViewHeight(
+            startValue = 0,
+            finalValue = tooltipHeight,
+            duration = duration,
+            doOnStart = { visible() },
+            interpolator = DecelerateInterpolator()
+        )
+        tooltip.setOnClickListener {
+            hideTooltip()
+        }
+        binding.infoIcon.setOnClickListener {
+            hideTooltip()
+        }
+    }
+
+
+    private fun hideTooltip() {
+        val duration = 200L
+        binding.tooltip.fadeOut(
+            duration = duration,
+            interpolator = AccelerateInterpolator()
+        )
+        binding.tooltip.animateViewHeight(
+            startValue = tooltipHeight,
+            finalValue = 0,
+            duration = duration,
+            doOnEnd = { gone() },
+            interpolator = AccelerateInterpolator()
+        )
+        binding.infoIcon.setOnClickListener {
+            showTooltip()
         }
     }
 
