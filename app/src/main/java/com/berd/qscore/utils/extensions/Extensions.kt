@@ -1,5 +1,6 @@
 package com.berd.qscore.utils.extensions
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
@@ -15,8 +16,14 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.BaseInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -264,3 +271,53 @@ fun GiphyDialogFragment.onGifSelected(callback: (Media) -> Unit) {
         }
     }
 }
+
+fun View.fadeIn(
+    duration: Long = 300L,
+    interpolator: BaseInterpolator = AccelerateInterpolator()
+) {
+    val animation = AlphaAnimation(0f, 1f).apply {
+        this.interpolator = interpolator //add this
+        this.duration = duration
+    }
+    this.startAnimation(animation)
+}
+
+fun View.fadeOut(
+    duration: Long = 300L,
+    interpolator: BaseInterpolator = AccelerateInterpolator()
+) {
+    val animation = AlphaAnimation(1f, 0f).apply {
+        this.interpolator = interpolator //add this
+        this.duration = duration
+    }
+    this.startAnimation(animation)
+}
+
+fun View.animateViewHeight(
+    finalValue: Int,
+    startValue: Int = measuredHeight,
+    duration: Long = 300L,
+    interpolator: BaseInterpolator = DecelerateInterpolator(),
+    doOnStart: View.() -> Unit = {},
+    doOnEnd: View.() -> Unit = {}
+) {
+    ValueAnimator.ofInt(startValue, finalValue).let {
+        it.duration = duration
+        it.interpolator = interpolator
+        it.addUpdateListener {
+            val animatedValue = it.animatedValue as Int
+            val layoutParams = layoutParams
+            layoutParams.height = animatedValue
+            this.layoutParams = layoutParams
+        }
+        it.doOnStart { doOnStart(this) }
+        it.doOnEnd { doOnEnd(this) }
+        it.start()
+    }
+}
+
+fun Context.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+fun Context.dip(value: Float): Int = (value * resources.displayMetrics.density).toInt()
+fun Fragment.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+fun Fragment.dip(value: Float): Int = (value * resources.displayMetrics.density).toInt()

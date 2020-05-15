@@ -1,14 +1,9 @@
 package com.berd.qscore.features.login
 
-import android.animation.ValueAnimator
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.DecelerateInterpolator
 import androidx.activity.viewModels
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityLoginBinding
@@ -19,10 +14,7 @@ import com.berd.qscore.features.password.PasswordActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
-import com.berd.qscore.utils.extensions.onChange
-import com.berd.qscore.utils.extensions.setStatusbarColor
-import com.berd.qscore.utils.extensions.showProgressDialog
-import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import splitties.activities.start
@@ -187,28 +179,6 @@ class LoginActivity : BaseActivity() {
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()
-    }
-
-    private fun View.fadeIn() {
-        val animation = AlphaAnimation(0f, 1f).apply {
-            interpolator = AccelerateInterpolator() //add this
-            duration = 300L
-        }
-        this.startAnimation(animation)
-    }
-
-    private fun View.animateViewHeight(finalValue: Int) {
-        ValueAnimator.ofInt(measuredHeight, finalValue).let {
-            it.duration = 300L
-            it.interpolator = DecelerateInterpolator()
-            it.addUpdateListener {
-                val animatedValue = it.animatedValue as Int
-                val layoutParams = layoutParams
-                layoutParams.height = animatedValue
-                this.layoutParams = layoutParams
-            }
-            it.start()
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

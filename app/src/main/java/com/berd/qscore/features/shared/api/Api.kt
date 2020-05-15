@@ -19,7 +19,7 @@ import kotlin.math.roundToInt
 
 object Api {
     const val STAGE_URL = "[STAGE_URL]"
-    const val LOCAL_URL = "https://359960b3.ngrok.io/dev/graphql"
+    const val LOCAL_URL = "https://58698a95.ngrok.io/dev/graphql"
 
     private val apolloClient by lazy { buildApolloClient() }
 
