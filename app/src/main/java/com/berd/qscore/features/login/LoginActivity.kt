@@ -1,6 +1,5 @@
 package com.berd.qscore.features.login
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
@@ -15,7 +14,6 @@ import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
 import com.berd.qscore.resetpassword.ResetPasswordActivity
-import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
 import splitties.activities.start
@@ -25,7 +23,6 @@ class LoginActivity : BaseActivity() {
 
     private val viewModel by viewModels<LoginViewModel>()
     private val callbackManager by lazy { CallbackManager.Factory.create() }
-    private var progressDialog: ProgressDialog? = null
 
     private val binding: ActivityLoginBinding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
@@ -51,7 +48,6 @@ class LoginActivity : BaseActivity() {
             LaunchUsernameActivity -> launchUsernameActivity()
             TransformToLogin -> transformToLogIn()
             TransformToSignup -> transformToSignup()
-            LaunchResetPasswordActivity -> TODO()
             is LaunchPasswordActivity -> launchPasswordActivity(it.email)
             is SetProgressVisible -> setProgressVisible(it.visible)
             is SetLoginButtonEnabled -> setLoginButtonEnabled(it.enabled)
@@ -87,28 +83,29 @@ class LoginActivity : BaseActivity() {
 
     private fun setProgressVisible(visible: Boolean) {
         if (visible) {
-            progressDialog = showProgressDialog(getString(R.string.progress_message_login))
+            binding.progress.visible()
+            binding.loginButton.text = ""
+            binding.loginButton.isEnabled = false
         } else {
-            progressDialog?.dismiss()
+            binding.progress.gone()
+            binding.loginButton.text = getString(R.string.i_m_home)
+            binding.loginButton.isEnabled = true
         }
     }
 
     private fun launchWelcomeActivity() {
         start<WelcomeActivity>()
-        progressDialog?.dismiss()
         finish()
     }
 
     private fun launchUsernameActivity() {
         val intent = UsernameActivity.newIntent(this, true)
         startActivity(intent)
-        progressDialog?.dismiss()
         finish()
     }
 
     private fun launchScoreActivity() {
         start<MainActivity>()
-        progressDialog?.dismiss()
         finish()
     }
 
@@ -173,14 +170,6 @@ class LoginActivity : BaseActivity() {
         password.setText("")
         welcomeMessage.fadeIn()
         loginWithEmail.fadeIn()
-    }
-
-    private fun showForgotPasswordDialog() = showDialogFragment {
-        title(R.string.reset_password_title)
-        message(R.string.reset_password_message)
-        positiveButtonResId(R.string.ok)
-        positiveButton { viewModel.resetPassword(binding.email.text.toString()) }
-        negativeButtonResId(R.string.cancel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

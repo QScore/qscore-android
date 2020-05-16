@@ -3,7 +3,6 @@ package com.berd.qscore.utils.extensions
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -46,7 +45,6 @@ import com.bumptech.glide.signature.ObjectKey
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import java.util.*
-import java.util.regex.Pattern
 import kotlin.math.abs
 
 private val whiteColorDrawable = ColorDrawable().apply { color = Color.parseColor("#FFFFFF") }
@@ -205,9 +203,6 @@ fun Context.hasPermissions(vararg permissions: String) =
     permissions.all {
         ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
-
-fun Context.showProgressDialog(message: String): ProgressDialog =
-    ProgressDialog.show(this, null, message)
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : ViewModel> FragmentActivity.createViewModel(crossinline initializer: (SavedStateHandle) -> T): T {
