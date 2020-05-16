@@ -17,6 +17,7 @@ import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import splitties.activities.start
+import splitties.toast.longToast
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -52,11 +53,16 @@ class UsernameActivity : BaseActivity() {
                 is SetContinueEnabled -> setContinueEnabled(it.enabled)
                 is SetContinueProgressVisible -> setProgressVisible(it.visible)
                 LaunchWelcomeActivity -> launchWelcomeActivity()
-                FinishActivity -> finish()
+                FinishActivity -> doFinishActivity()
                 is SetHint -> setHint(it.resId, it.colorResId)
                 is SetFieldEnabled -> setFieldEnabled(it.enabled)
             }
         }
+    }
+
+    private fun doFinishActivity() {
+        longToast(R.string.username_updated)
+        finish()
     }
 
     private fun setFieldEnabled(enabled: Boolean) {
