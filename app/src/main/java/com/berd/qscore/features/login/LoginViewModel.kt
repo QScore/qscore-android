@@ -27,7 +27,6 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
         object LaunchScoreActivity : LoginAction()
         object LaunchWelcomeActivity : LoginAction()
         object LaunchUsernameActivity : LoginAction()
-        object LaunchResetPasswordActivity : LoginAction()
         class LaunchPasswordActivity(val email: String) : LoginAction()
         object TransformToLogin : LoginAction()
         object TransformToSignup : LoginAction()
@@ -107,10 +106,6 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
         } catch (e: CancellationException) {
             action(SetProgressVisible(false))
         }
-    }
-
-    fun resetPassword(email: String) = viewModelScope.launch {
-        action(LaunchResetPasswordActivity)
     }
 
     fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
