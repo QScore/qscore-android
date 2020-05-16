@@ -1,32 +1,34 @@
-package com.berd.qscore.features.password
+package com.berd.qscore.resetpassword
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.berd.qscore.R
-import com.berd.qscore.databinding.ActivityPasswordBinding
-import com.berd.qscore.features.password.PasswordViewModel.PasswordAction.*
+import com.berd.qscore.databinding.ActivityForgotPasswordBinding
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
+import com.berd.qscore.resetpassword.ResetPasswordViewModel.*
+import com.berd.qscore.resetpassword.ResetPasswordViewModel.ResetPasswordAction.*
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.setStatusbarColor
 import com.berd.qscore.utils.extensions.visible
 import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import splitties.toast.longToast
 import timber.log.Timber
 
-class PasswordActivity : BaseActivity() {
+class ResetPasswordActivity : BaseActivity() {
 
-    private val viewModel by viewModels<PasswordViewModel>()
+    private val viewModel by viewModels<ResetPasswordViewModel>()
 
     private val email by lazy {
         intent.getStringExtra(KEY_EMAIL)
     }
 
-    private val binding: ActivityPasswordBinding by lazy {
-        ActivityPasswordBinding.inflate(layoutInflater)
+    private val binding: ActivityForgotPasswordBinding by lazy {
+        ActivityForgotPasswordBinding.inflate(layoutInflater)
     }
 
     override fun getScreenName() = "SetPassword"
@@ -36,38 +38,38 @@ class PasswordActivity : BaseActivity() {
         setContentView(binding.root)
         observeEvents()
         setupViews()
+        viewModel.onCreate()
     }
 
     private fun observeEvents() {
         viewModel.observeActions {
             when (it) {
                 is Initialize -> initialize(it.state)
-                is SetContinueEnabled -> setContinueEnabled(it.enabled)
-                is ShowError -> showError(it.message)
-                LaunchUsernameActivity -> launchUsernameActivity()
+                is SetResetEnabled -> setResetEnabled(it.enabled)
+                is FinishActivity -> finishWithToast(it.email)
                 is SetProgressVisible -> setProgressVisible(it.visible)
             }
         }
     }
 
-    private fun initialize(state: PasswordViewModel.PasswordState) {
-        if (state.hasError) {
-            showError(state.errorMessage)
-        }
-        setProgressVisible(state.progressVisible)
-        setContinueEnabled(state.continueEnabled)
+    private fun initialize(state: ResetPasswordState) {
+        setProgressVisible(state.showProgress)
+        setResetEnabled(state.resetEnabled)
     }
 
     private fun setProgressVisible(visible: Boolean) {
         if (visible) {
             binding.progress.visible()
-            binding.continueButton.text = ""
-            binding.password.isEnabled = false
+            binding.resetButton.text = ""
         } else {
             binding.progress.gone()
-            binding.continueButton.text = getString(R.string.continue_button)
-            binding.password.isEnabled = true
+            binding.resetButton.text = getString(R.string.reset)
         }
+    }
+
+    private fun finishWithToast(email: String) {
+        longToast(getString(R.string.reset_password_message, email))
+        finish()
     }
 
     private fun launchUsernameActivity() {
@@ -76,34 +78,28 @@ class PasswordActivity : BaseActivity() {
         finish()
     }
 
-    private fun showError(message: String?) {
-        binding.errorText.visible()
-        val finalMessage = message ?: getString(R.string.unable_to_continue_please_try_again_later)
-        binding.errorText.text = finalMessage
-    }
 
-
-    private fun setContinueEnabled(enabled: Boolean) {
-        binding.continueButton.isEnabled = enabled
+    private fun setResetEnabled(enabled: Boolean) {
+        binding.resetButton.isEnabled = enabled
     }
 
     private fun setupViews() {
         setStatusbarColor(R.color.lighter_gray)
-        setupPasswordField()
-        binding.continueButton.setOnClickListener {
-            val password = binding.password.text.toString()
-            viewModel.onContinue(email, password)
+        setupEmailField()
+        binding.resetButton.setOnClickListener {
+            val email = binding.email.text.toString()
+            viewModel.onReset(email)
         }
     }
 
-    private fun setupPasswordField() {
-        binding.password
+    private fun setupEmailField() {
+        binding.email
             .afterTextChangeEvents()
             .skip(1)
             .map { it.editable.toString() }
             .distinctUntilChanged()
             .subscribeBy(onNext = {
-                viewModel.onPasswordChange(it)
+                viewModel.onEmailChange(it)
             }, onError = {
                 Timber.d("Unable to handle textChange event: $it")
             }).addTo(compositeDisposable)
@@ -114,7 +110,7 @@ class PasswordActivity : BaseActivity() {
         const val KEY_EMAIL = "KEY_EMAIL"
 
         fun newIntent(context: Context, email: String) =
-            Intent(context, PasswordActivity::class.java).apply {
+            Intent(context, ResetPasswordActivity::class.java).apply {
                 putExtra(KEY_EMAIL, email)
             }
     }

@@ -18,7 +18,7 @@
     <string name="progress_message_login">Logging In…</string>
     <string name="action_settings">Settings</string>
     <string name="reset_password_title">Reset Password</string>
-    <string name="reset_password_message">An email with instructions to reset your password will be sent to %1$s</string>
+    <string name="reset_password_message">An email with instructions to reset your password was sent to %1$s</string>
     <string name="cancel">Cancel</string>
     <string name="continue_button">Continue</string>
     <string name="me">Me</string>
@@ -67,4 +67,6 @@
     <string name="welcome_line_4">When you\'re ready, mark yourself at home to start earning points!</string>
     <string name="rank">Rank</string>
     <string name="all_time">All Time</string>
+    <string name="reset">Reset</string>
+    <string name="email_address">Email Address</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.berd.qscore.features.password
+package com.berd.qscore.features.setpassword
 
 import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
-import com.berd.qscore.features.password.PasswordViewModel.PasswordAction.LaunchUsernameActivity
+import com.berd.qscore.features.setpassword.PasswordViewModel.PasswordAction.LaunchUsernameActivity
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import kotlinx.android.parcel.Parcelize

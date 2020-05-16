@@ -114,8 +114,8 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
     }
 
     fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
-        val matcher = LoginManager.emailPattern.matcher(email)
-        val emailError = !matcher.matches() && email.isNotEmpty()
+        val isValidEmail = LoginManager.isValidEmail(email)
+        val emailError = !isValidEmail && email.isNotEmpty()
         val passwordError = password.isEmpty()
         val loginEnabled = if (state.toggleState == ToggleState.LOGIN) {
             !emailError && !passwordError
