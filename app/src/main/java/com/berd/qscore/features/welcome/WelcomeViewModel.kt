@@ -16,9 +16,10 @@ import kotlinx.coroutines.launch
 class WelcomeViewModel(handle: SavedStateHandle) : RxViewModelWithState<WelcomeViewModel.Action, WelcomeViewModel.State>(handle) {
 
     sealed class Action {
+        class Initialize(val state: State) : Action()
         object LaunchScoreActivity : Action()
         object ShowLocationError : Action()
-        class SetProgressDialogVisible(val visible: Boolean) : Action()
+        class SetProgressVisible(val visible: Boolean) : Action()
     }
 
     @Parcelize
@@ -28,16 +29,20 @@ class WelcomeViewModel(handle: SavedStateHandle) : RxViewModelWithState<WelcomeV
 
     override fun updateState(action: Action, state: State) =
         when (action) {
-            is SetProgressDialogVisible -> state.copy(progressVisible = true)
+            is SetProgressVisible -> state.copy(progressVisible = action.visible)
             else -> state
         }
+
+    fun onCreate() {
+        action(Initialize(state))
+    }
 
     override fun getInitialState() = State()
 
     suspend fun onContinue() {
-        action(SetProgressDialogVisible(true))
+        action(SetProgressVisible(true))
         val location = LocationHelper.fetchCurrentLocation()
-        action(SetProgressDialogVisible(false))
+        action(SetProgressVisible(false))
         if (location != null) {
             Prefs.userLocation = location
             GeofenceHelper.setGeofence(location)
@@ -48,9 +53,11 @@ class WelcomeViewModel(handle: SavedStateHandle) : RxViewModelWithState<WelcomeV
     }
 
     fun continueWithoutLocation() = viewModelScope.launch {
+        action(SetProgressVisible(true))
         //Set status to AWAY
         GeofenceHelper.clearGeofences()
         Api.createGeofenceEvent(GeofenceEventType.AWAY)
+        action(SetProgressVisible(false))
         action(LaunchScoreActivity)
     }
 }
