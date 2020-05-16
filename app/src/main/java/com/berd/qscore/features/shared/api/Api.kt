@@ -12,14 +12,17 @@ import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.fragment.UserFields
 import com.berd.qscore.type.*
+import com.berd.qscore.utils.injection.Injector
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import kotlin.math.roundToInt
 
 
 object Api {
-    const val STAGE_URL = "[STAGE_URL]"
-    const val LOCAL_URL = "https://58698a95.ngrok.io/dev/graphql"
+    val context = Injector.appContext
+
+    val stageUrl = context.getString(R.string.stage_url)
+    val localUrl = context.getString(R.string.local_url)
 
     private val apolloClient by lazy { buildApolloClient() }
 
@@ -30,7 +33,7 @@ object Api {
             .build()
 
         return ApolloClient.builder()
-            .serverUrl(LOCAL_URL)
+            .serverUrl(localUrl)
             .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
             .okHttpClient(okHttpClient)
             .build()
