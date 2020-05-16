@@ -8,8 +8,8 @@ QScore is a fun new way to encourage social distancing together with your friend
 * Track your 24-hour progress
 
 ## Contributors
-[polson](https://github.com/polson)
-[olso4051](https://github.com/olso4051)
+* [polson](https://github.com/polson)
+* [olso4051](https://github.com/olso4051)
 
 
 ## License

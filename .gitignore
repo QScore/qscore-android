@@ -98,3 +98,9 @@ awsconfiguration.json
 amplifyconfiguration.json
 amplify-gradle-config.json
 amplifyxc.config
+
+#secrets
+app/src/main/res/values/secrets.xml
+./secrets.properties
+./app/src/main/google-services.json
+./keystore
