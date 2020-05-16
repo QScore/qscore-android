@@ -46,6 +46,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.math.abs
 
 private val whiteColorDrawable = ColorDrawable().apply { color = Color.parseColor("#FFFFFF") }

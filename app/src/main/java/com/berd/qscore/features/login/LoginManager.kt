@@ -30,7 +30,7 @@ object LoginManager {
     private val googleSignInClient = Injector.googleSignInClient
 
     val isLoggedIn get() = firebaseAuth.currentUser != null
-    val emailPattern: Pattern by lazy {
+    private val emailPattern: Pattern by lazy {
         val expression =
             "(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])"
         Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
@@ -39,6 +39,11 @@ object LoginManager {
     sealed class AuthEvent {
         object Success : AuthEvent()
         class Error(val error: Exception?) : AuthEvent()
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        val matcher = emailPattern.matcher(email)
+        return matcher.matches()
     }
 
     private val Task<*>.resultEvent get() = if (isSuccessful) Success else Error(exception)

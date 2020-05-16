@@ -18,6 +18,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import splitties.activities.start
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class UsernameActivity : BaseActivity() {
 
@@ -118,6 +119,7 @@ class UsernameActivity : BaseActivity() {
             .skip(1)
             .map { it.editable.toString() }
             .distinctUntilChanged()
+            .debounce(300, TimeUnit.MILLISECONDS)
             .subscribeBy(onNext = {
                 viewModel.onUsernameChange(it)
             }, onError = {
