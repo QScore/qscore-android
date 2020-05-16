@@ -247,6 +247,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon" />
 
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="1dp"
+                app:layout_constraintBottom_toTopOf="@+id/errorText"
+                app:layout_constraintEnd_toEndOf="@+id/loginButton"
+                app:layout_constraintStart_toStartOf="@+id/loginButton"
+                app:layout_constraintTop_toTopOf="@+id/loginButton" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

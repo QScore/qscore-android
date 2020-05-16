@@ -1,6 +1,5 @@
 package com.berd.qscore.features.welcome
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -10,8 +9,9 @@ import com.berd.qscore.features.main.MainActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.welcome.WelcomeViewModel.Action.*
 import com.berd.qscore.utils.dialog.showDialogFragment
+import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.setStatusbarColor
-import com.berd.qscore.utils.extensions.showProgressDialog
+import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.location.LocationHelper
 import com.github.florent37.runtimepermission.kotlin.PermissionException
 import kotlinx.coroutines.launch
@@ -23,7 +23,6 @@ class WelcomeActivity : BaseActivity() {
 
     private val binding: ActivityWelcomeBinding by lazy { ActivityWelcomeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()
-    private var progressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +30,7 @@ class WelcomeActivity : BaseActivity() {
         setContentView(view)
         observeActions()
         setupViews()
+        viewModel.onCreate()
     }
 
     private fun observeActions() {
@@ -38,18 +38,27 @@ class WelcomeActivity : BaseActivity() {
             when (it) {
                 LaunchScoreActivity -> launchScoreActivity()
                 ShowLocationError -> showLocationError()
-                is SetProgressDialogVisible -> setProgressVisible(it.visible)
+                is SetProgressVisible -> setProgressVisible(it.visible)
+                is Initialize -> initialize(it.state)
             }
         }
+    }
+
+    private fun initialize(state: WelcomeViewModel.State) {
+        setProgressVisible(state.progressVisible)
     }
 
     override fun getScreenName() = "Welcome"
 
     private fun setProgressVisible(visible: Boolean) {
         if (visible) {
-            progressDialog = showProgressDialog("Setting home location...")
+            binding.progress.visible()
+            binding.userHomeButton.text = ""
+            binding.userHomeButton.isEnabled = false
         } else {
-            progressDialog?.dismiss()
+            binding.userHomeButton.text = getString(R.string.i_m_home)
+            binding.progress.gone()
+            binding.userHomeButton.isEnabled = true
         }
     }
 
