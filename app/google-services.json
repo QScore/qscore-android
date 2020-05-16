@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1089188253162:android:a84e34520487e20ee3b693",
+        "mobilesdk_app_id": "1:1089188253162:android:9593d85065468251e3b693",
         "android_client_info": {
-          "package_name": "com.berd.qscore"
+          "package_name": "com.cms.qscore"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1089188253162-ji6uuaog17p19s82pipumks9q97cjkvu.apps.googleusercontent.com",
+          "client_id": "1089188253162-5gcbdqjin53d4lp3t15m57rp8ibscq1j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.berd.qscore",
+            "package_name": "com.cms.qscore",
             "certificate_hash": "6b03daaeee56776c141f76e2b212721747af84aa"
           }
         },
@@ -45,17 +45,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1089188253162:android:e0fedc51a86fa68fe3b693",
+        "mobilesdk_app_id": "1:1089188253162:android:fb336cea72187e24e3b693",
         "android_client_info": {
-          "package_name": "com.berd.qscore.debug"
+          "package_name": "com.cms.qscore.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1089188253162-ven9oall4e15io0tqnue3ntqsl38n826.apps.googleusercontent.com",
+          "client_id": "1089188253162-g3u3657fsv8is5grk251nnj36unucof1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.berd.qscore.debug",
+            "package_name": "com.cms.qscore.debug",
             "certificate_hash": "e2936662100d94697eb27fe0a350e5245ac6e430"
           }
         },
