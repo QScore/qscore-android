@@ -24,7 +24,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.berd.qscore"
+        applicationId "com.cms.qscore"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 4
