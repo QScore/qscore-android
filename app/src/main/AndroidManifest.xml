@@ -42,9 +42,10 @@
             android:name=".features.welcome.WelcomeActivity"
             android:theme="@style/AppTheme.Secondary" />
         <activity android:name=".features.main.MainActivity" />
-        <activity android:name=".features.password.PasswordActivity" />
+        <activity android:name=".features.setpassword.PasswordActivity" />
         <activity android:name=".features.settings.SettingsActivity" />
         <activity android:name=".features.about.AboutActivity" />
+        <activity android:name=".resetpassword.ResetPasswordActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

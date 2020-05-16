@@ -10,10 +10,11 @@ import com.berd.qscore.databinding.ActivityLoginBinding
 import com.berd.qscore.features.login.LoginViewModel.LoginAction
 import com.berd.qscore.features.login.LoginViewModel.LoginAction.*
 import com.berd.qscore.features.main.MainActivity
-import com.berd.qscore.features.password.PasswordActivity
+import com.berd.qscore.features.setpassword.PasswordActivity
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
+import com.berd.qscore.resetpassword.ResetPasswordActivity
 import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.*
 import com.facebook.CallbackManager
@@ -143,8 +144,12 @@ class LoginActivity : BaseActivity() {
         }
 
         forgotPassword.setOnClickListener {
-            showForgotPasswordDialog()
+            launchForgotPasswordActivity()
         }
+    }
+
+    private fun launchForgotPasswordActivity() {
+        start<ResetPasswordActivity>()
     }
 
     private fun transformToSignup() = binding.apply {
