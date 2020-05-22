@@ -20,9 +20,8 @@ import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWED
 import com.berd.qscore.features.user.UserListActivity.UserListType.FOLLOWERS
 import com.berd.qscore.features.user.UserViewModel.UserAction.*
-import com.berd.qscore.features.user.UserViewModel.UserState.Loading
-import com.berd.qscore.features.user.UserViewModel.UserState.Ready
 import com.berd.qscore.utils.extensions.*
+import com.berd.qscore.utils.injection.Injector
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.Giphy
 import com.giphy.sdk.ui.views.GiphyDialogFragment
@@ -30,9 +29,10 @@ import java.io.Serializable
 
 
 class UserFragment : BaseFragment() {
+    private val userRepository = Injector.userRepository
 
     private val viewModel by lazy {
-        createViewModel { UserViewModel(profileType) }
+        createViewModel { handle -> UserViewModel(handle, profileType) }
     }
 
     private val profileType by lazy {
@@ -51,7 +51,7 @@ class UserFragment : BaseFragment() {
         get() = profileType.let {
             when (it) {
                 is ProfileType.CurrentUser -> true
-                is ProfileType.User -> it.userId == UserRepository.currentUser?.userId
+                is ProfileType.User -> it.userId == userRepository.currentUser?.userId
             }
         }
 
@@ -100,13 +100,7 @@ class UserFragment : BaseFragment() {
                 is LaunchFollowingUserList -> launchFollowingUserList(action.userId)
                 is LaunchFollowersUserList -> launchFollowersUserList(action.userId)
                 is SetGeofenceStatus -> handleGeofenceStatus(action.status)
-            }
-        }
-
-        viewModel.observeState { state ->
-            when (state) {
-                is Loading -> handleLoading()
-                is Ready -> handleReady(state.user)
+                is DisplayUser -> handleDisplayUser(action.user)
             }
         }
     }
@@ -141,7 +135,7 @@ class UserFragment : BaseFragment() {
         progress.visible()
     }
 
-    private fun handleReady(user: QUser) = with(binding) {
+    private fun handleDisplayUser(user: QUser) = with(binding) {
         username.text = user.username
         scoreProgress.progress = user.score.toFloat() / 100
         allTimeScore.text = user.allTimeScore

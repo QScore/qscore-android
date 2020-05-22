@@ -11,8 +11,8 @@ import com.berd.qscore.databinding.ActivityUserListBinding
 import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserAdapter
-import com.berd.qscore.features.user.UserListViewModel.UserListAction.SubmitPagedList
-import com.berd.qscore.features.user.UserListViewModel.UserListState.*
+import com.berd.qscore.features.user.UserListViewModel.*
+import com.berd.qscore.features.user.UserListViewModel.UserListAction.*
 import com.berd.qscore.utils.extensions.createViewModel
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
@@ -21,8 +21,8 @@ import java.io.Serializable
 class UserListActivity : BaseActivity() {
 
     private val viewModel by lazy {
-        createViewModel {
-            UserListViewModel(userId, listType)
+        createViewModel { handle ->
+            UserListViewModel(handle, userId, listType)
         }
     }
 
@@ -86,15 +86,20 @@ class UserListActivity : BaseActivity() {
         viewModel.observeActions {
             when (it) {
                 is SubmitPagedList -> submitPagedList(it.pagedList)
+                is Initialize -> initialize(it.state)
+                is SetLoading -> if (it.loading) handleLoading() else handleLoaded()
+                ShowNoUsersFound -> handleNoUsersFound()
             }
         }
+    }
 
-        viewModel.observeState {
-            when (it) {
-                Loading -> handleLoading()
-                Loaded -> handleLoaded()
-                NoUsersFound -> handleNoUsersFound()
-            }
+    private fun initialize(state: UserListState) {
+        if (state.noUsersFound) {
+            handleNoUsersFound()
+        } else if (state.isLoading) {
+            handleLoading()
+        } else {
+            handleLoaded()
         }
     }
 

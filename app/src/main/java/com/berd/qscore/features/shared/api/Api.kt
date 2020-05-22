@@ -15,15 +15,14 @@ import com.berd.qscore.type.*
 import com.berd.qscore.utils.injection.Injector
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
-object Api {
-    val context = Injector.appContext
-
-    val stageUrl = context.getString(R.string.stage_url)
-    val localUrl = context.getString(R.string.local_url)
-
+class Api {
+    private val context = Injector.appContext
+    private val stageUrl = context.getString(R.string.stage_url)
+    private val localUrl = context.getString(R.string.local_url)
     private val apolloClient by lazy { buildApolloClient() }
 
     private fun buildApolloClient(): ApolloClient {
@@ -33,7 +32,7 @@ object Api {
             .build()
 
         return ApolloClient.builder()
-            .serverUrl(localUrl)
+            .serverUrl(stageUrl)
             .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
             .okHttpClient(okHttpClient)
             .build()
@@ -102,7 +101,11 @@ object Api {
         return user.copy(geofenceStatus = geofenceStatus)
     }
 
-    suspend fun createGeofenceEvent(eventType: GeofenceEventType) {
+    suspend fun createGeofenceEvent(status: GeofenceStatus) {
+        val eventType = when (status) {
+            GeofenceStatus.HOME -> GeofenceEventType.HOME
+            GeofenceStatus.AWAY -> GeofenceEventType.AWAY
+        }
         val input = CreateGeofenceEventInput(eventType)
         val mutation = CreateGeofenceEventMutation(input)
         apolloClient.mutate(mutation).call()

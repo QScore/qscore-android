@@ -4,14 +4,17 @@ import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
+import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardAction.*
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
+import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.paging.PagedListOffsetBuilder
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.Serializable
 
 enum class LeaderboardType : Serializable {
@@ -21,6 +24,8 @@ enum class LeaderboardType : Serializable {
 
 class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType: LeaderboardType) :
     RxViewModelWithState<LeaderboardViewModel.LeaderboardAction, LeaderboardViewModel.LeaderboardState>(handle) {
+
+    private val userRepository = Injector.userRepository
 
     @Parcelize
     data class LeaderboardState(
@@ -67,16 +72,26 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
         val builder = PagedListOffsetBuilder(
             pageSize = 30,
             onLoadFirstPage = { offset, limit ->
-                when (leaderboardType) {
-                    LeaderboardType.GLOBAL -> UserRepository.getLeaderboardRange(offset, limit)
-                    LeaderboardType.SOCIAL -> UserRepository.getSocialLeaderboardRange(offset, limit)
-                }.also { action(SetProgressShown(false)) }
+                try {
+                    when (leaderboardType) {
+                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, limit)
+                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, limit)
+                    }.also { action(SetProgressShown(false)) }
+                } catch (e: ApolloException) {
+                    Timber.d("Unable to fetch leaderboard: $e")
+                    emptyList<QUser>()
+                }
             },
             onLoadNextPage = { offset, limit ->
-                when (leaderboardType) {
-                    LeaderboardType.GLOBAL -> UserRepository.getLeaderboardRange(offset, limit)
-                    LeaderboardType.SOCIAL -> UserRepository.getSocialLeaderboardRange(offset, limit)
-                }.also { action(SetProgressShown(false)) }
+                try {
+                    when (leaderboardType) {
+                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, limit)
+                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, limit)
+                    }.also { action(SetProgressShown(false)) }
+                } catch (e: ApolloException) {
+                    Timber.d("Unable to fetch leaderboard: $e")
+                    emptyList<QUser>()
+                }
             }
         )
         return builder.build()

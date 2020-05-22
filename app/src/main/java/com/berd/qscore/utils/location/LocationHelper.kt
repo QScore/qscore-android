@@ -26,9 +26,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-object LocationHelper {
+class LocationHelper(private val locationClient: FusedLocationProviderClient) {
     private val context = Injector.appContext
-    private val locationClient = LocationServices.getFusedLocationProviderClient(context)
 
     val singleLocationRequest = LocationRequest().apply {
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -80,11 +79,6 @@ object LocationHelper {
         }
         try {
             locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
-                override fun onLocationAvailability(p0: LocationAvailability?) {
-                    super.onLocationAvailability(p0)
-                    Timber.d("Location availability: p0")
-                }
-
                 override fun onLocationResult(locationResult: LocationResult?) {
                     Timber.d("Location result: $locationResult")
                     it.resume(locationResult?.lastLocation?.toLatLngPair())
