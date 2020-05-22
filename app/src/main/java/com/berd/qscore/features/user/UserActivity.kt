@@ -8,8 +8,10 @@ import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUserBinding
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.user.UserFragment.ProfileType
+import com.berd.qscore.utils.injection.Injector
 
 class UserActivity : AppCompatActivity() {
+    private val userRepository = Injector.userRepository
 
     private val binding: ActivityUserBinding by lazy {
         ActivityUserBinding.inflate(layoutInflater)
@@ -23,7 +25,7 @@ class UserActivity : AppCompatActivity() {
 
     private fun setupFragment() {
         val userId = intent.extras?.getString(KEY_USER_ID) as String
-        val profileType = if (userId == UserRepository.currentUser?.userId) {
+        val profileType = if (userId == userRepository.currentUser?.userId) {
             ProfileType.CurrentUser
         } else {
             ProfileType.User(userId)

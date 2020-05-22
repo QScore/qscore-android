@@ -26,9 +26,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-object LocationHelper {
-    private val context = Injector.appContext
-    private val locationClient = LocationServices.getFusedLocationProviderClient(context)
+class LocationHelper(private val locationClient: FusedLocationProviderClient) {
+    private val context by lazy { Injector.appContext }
 
     val singleLocationRequest = LocationRequest().apply {
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -41,6 +40,7 @@ object LocationHelper {
     } else {
         arrayOf(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)
     }
+
     val hasAllPermissions get() = context.hasPermissions(*allPermissions)
 
     suspend fun checkPermissions(activity: FragmentActivity): Boolean {
@@ -80,11 +80,6 @@ object LocationHelper {
         }
         try {
             locationClient.requestLocationUpdates(singleLocationRequest, object : LocationCallback() {
-                override fun onLocationAvailability(p0: LocationAvailability?) {
-                    super.onLocationAvailability(p0)
-                    Timber.d("Location availability: p0")
-                }
-
                 override fun onLocationResult(locationResult: LocationResult?) {
                     Timber.d("Location result: $locationResult")
                     it.resume(locationResult?.lastLocation?.toLatLngPair())

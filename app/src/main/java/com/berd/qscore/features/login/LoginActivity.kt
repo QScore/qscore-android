@@ -45,11 +45,11 @@ class LoginActivity : BaseActivity() {
         when (it) {
             LaunchScoreActivity -> launchScoreActivity()
             is LaunchWelcomeActivity -> launchWelcomeActivity()
-            LaunchUsernameActivity -> launchUsernameActivity()
+            is LaunchUsernameActivity -> launchUsernameActivity(it.isNewUser)
             TransformToLogin -> transformToLogIn()
             TransformToSignup -> transformToSignup()
             is LaunchPasswordActivity -> launchPasswordActivity(it.email)
-            is SetProgressVisible -> setProgressVisible(it.visible)
+            is SetProgressVisible -> setProgressVisible(it.visible, it.buttonResId)
             is SetLoginButtonEnabled -> setLoginButtonEnabled(it.enabled)
             is ShowLoginError -> showLoginError(it.resId)
             is Initialize -> setInitialState(it.state)
@@ -62,7 +62,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun setInitialState(state: LoginViewModel.State) {
-        setProgressVisible(state.progressVisible)
+        setProgressVisible(state.progressVisible, state.buttonResId)
         state.errorResId?.let { showLoginError(it) }
         if (state.toggleState == LoginViewModel.State.ToggleState.LOGIN) {
             transformToLogIn()
@@ -81,14 +81,14 @@ class LoginActivity : BaseActivity() {
         binding.loginButton.isEnabled = enabled
     }
 
-    private fun setProgressVisible(visible: Boolean) {
+    private fun setProgressVisible(visible: Boolean, buttonResId: Int) {
         if (visible) {
             binding.progress.visible()
             binding.loginButton.text = ""
             binding.loginButton.isEnabled = false
         } else {
             binding.progress.gone()
-            binding.loginButton.text = getString(R.string.i_m_home)
+            binding.loginButton.text = getString(buttonResId)
             binding.loginButton.isEnabled = true
         }
     }
@@ -98,8 +98,8 @@ class LoginActivity : BaseActivity() {
         finish()
     }
 
-    private fun launchUsernameActivity() {
-        val intent = UsernameActivity.newIntent(this, true)
+    private fun launchUsernameActivity(newUser: Boolean) {
+        val intent = UsernameActivity.newIntent(this, newUser, shouldLaunchWelcomeActivity = true)
         startActivity(intent)
         finish()
     }

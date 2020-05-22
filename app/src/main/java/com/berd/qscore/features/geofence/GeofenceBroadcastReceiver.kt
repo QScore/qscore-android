@@ -5,7 +5,8 @@ import android.content.Context
 import android.content.Intent
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.shared.api.Api
-import com.berd.qscore.type.GeofenceEventType
+import com.berd.qscore.features.shared.user.UserRepository
+import com.berd.qscore.utils.injection.Injector
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
@@ -25,6 +26,7 @@ enum class GeofenceStatus {
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
+    private val userRepository = Injector.userRepository
 
     companion object {
         private val eventSubject = ReplaySubject.create<GeofenceStatus>(1)
@@ -61,16 +63,16 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun handleEntered() = scope.launch {
-        submitEvent(GeofenceEventType.HOME)
+        submitEvent(GeofenceStatus.HOME)
     }
 
     private fun handleExited() = scope.launch {
-        submitEvent(GeofenceEventType.AWAY)
+        submitEvent(GeofenceStatus.AWAY)
     }
 
-    private suspend fun submitEvent(eventType: GeofenceEventType) {
+    private suspend fun submitEvent(status: GeofenceStatus) {
         try {
-            Api.createGeofenceEvent(eventType)
+            userRepository.createGeofenceEvent(status)
         } catch (e: ApolloException) {
             Timber.w("Unable to submit event: $e")
         }

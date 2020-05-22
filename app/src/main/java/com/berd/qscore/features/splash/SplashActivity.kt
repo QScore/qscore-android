@@ -39,13 +39,13 @@ class SplashActivity : BaseActivity() {
                 LaunchWelcomeActivity -> launchWelcomeActivity()
                 LaunchScoreActivity -> launchScoreActivity()
                 LaunchLoginActivity -> launchLoginActivity()
-                LaunchUsernameActivity -> launchUsernameActivity()
+                is LaunchUsernameActivity -> launchUsernameActivity(action.isNewUser)
             }
         }
     }
 
-    private fun launchUsernameActivity() {
-        val intent = UsernameActivity.newIntent(this, true)
+    private fun launchUsernameActivity(isNewUser: Boolean) {
+        val intent = UsernameActivity.newIntent(this, isNewUser = isNewUser, shouldLaunchWelcomeActivity = isNewUser)
         startActivity(intent)
         finish()
     }

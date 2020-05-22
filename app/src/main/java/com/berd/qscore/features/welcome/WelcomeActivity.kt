@@ -12,6 +12,7 @@ import com.berd.qscore.utils.dialog.showDialogFragment
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.setStatusbarColor
 import com.berd.qscore.utils.extensions.visible
+import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.location.LocationHelper
 import com.github.florent37.runtimepermission.kotlin.PermissionException
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class WelcomeActivity : BaseActivity() {
 
     private val binding: ActivityWelcomeBinding by lazy { ActivityWelcomeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()
+    private val locationHelper = Injector.locationHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +83,7 @@ class WelcomeActivity : BaseActivity() {
     private fun setupHomeLocation() {
         lifecycleScope.launch {
             try {
-                if (LocationHelper.checkPermissions(this@WelcomeActivity)) {
+                if (locationHelper.checkPermissions(this@WelcomeActivity)) {
                     viewModel.onContinue()
                 } else {
                     showNoPermissionConfirmationDialog()

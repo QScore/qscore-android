@@ -13,20 +13,20 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import timber.log.Timber
 
-object GeofenceHelper {
+class GeofenceHelper {
+    private val userRepository by lazy { Injector.userRepository }
+    private val geofencingClient by lazy { Injector.geofencingClient }
+    private val locationHelper by lazy { Injector.locationHelper }
+    private val appContext by lazy { Injector.appContext }
 
-    private val context = Injector.appContext
-    const val REQUEST_ID = "GEOFENCE_REQUEST_ID"
-
-    private val pendingIntentBroadcast: PendingIntent by lazy {
-        val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    companion object {
+        const val REQUEST_ID = "GEOFENCE_REQUEST_ID"
+        const val GEOFENCE_RADIUS = 150f //meters
     }
 
-    private val geofenceClient: GeofencingClient by lazy {
-        LocationServices.getGeofencingClient(
-            context
-        )
+    private val pendingIntentBroadcast: PendingIntent by lazy {
+        val intent = Intent(appContext, GeofenceBroadcastReceiver::class.java)
+        PendingIntent.getBroadcast(appContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     fun setGeofence(location: LatLngPair) {
@@ -36,7 +36,7 @@ object GeofenceHelper {
             .setCircularRegion(
                 location.lat,
                 location.lng,
-                50f
+                GEOFENCE_RADIUS
             )
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
@@ -48,8 +48,8 @@ object GeofenceHelper {
         }.build()
 
         @SuppressLint("MissingPermission")
-        if (LocationHelper.hasAllPermissions) {
-            geofenceClient.addGeofences(request, pendingIntentBroadcast)
+        if (locationHelper.hasAllPermissions) {
+            geofencingClient.addGeofences(request, pendingIntentBroadcast)
                 .addOnSuccessListener {
                     Timber.d("Successfully created geofence: $geofence")
                 }.addOnFailureListener {
@@ -59,7 +59,7 @@ object GeofenceHelper {
     }
 
     fun clearGeofences() {
-        geofenceClient.removeGeofences(pendingIntentBroadcast)
+        geofencingClient.removeGeofences(pendingIntentBroadcast)
             .addOnSuccessListener {
                 Timber.d("Successfully cleared geofences")
             }.addOnFailureListener {
