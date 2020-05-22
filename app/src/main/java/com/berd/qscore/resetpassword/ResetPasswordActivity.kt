@@ -73,7 +73,7 @@ class ResetPasswordActivity : BaseActivity() {
     }
 
     private fun launchUsernameActivity() {
-        val intent = UsernameActivity.newIntent(this, true)
+        val intent = UsernameActivity.newIntent(this, true, false)
         startActivity(intent)
         finish()
     }

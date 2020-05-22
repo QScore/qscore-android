@@ -12,6 +12,7 @@ import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import com.berd.qscore.utils.analytics.Analytics
+import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.paging.PagedCursorResult
 import com.berd.qscore.utils.paging.PagedListCursorBuilder
 import kotlinx.android.parcel.Parcelize
@@ -21,6 +22,7 @@ import timber.log.Timber
 
 class SearchViewModel(handle: SavedStateHandle) : RxViewModelWithState<SearchViewModel.SearchAction, SearchViewModel.SearchState>(handle) {
     private var searchJob: Job? = null
+    private val userRepository = Injector.userRepository
 
     @Parcelize
     data class SearchState(
@@ -81,13 +83,23 @@ class SearchViewModel(handle: SavedStateHandle) : RxViewModelWithState<SearchVie
         val builder = PagedListCursorBuilder(
             limit = 30,
             onLoadFirstPage = { limit ->
-                val result = UserRepository.searchUsers(query, limit)
-                action(UpdateLoadingState(LoadingState.LOADED))
-                PagedCursorResult(result.users, result.nextCursor)
+                try {
+                    val result = userRepository.searchUsers(query, limit)
+                    action(UpdateLoadingState(LoadingState.LOADED))
+                    PagedCursorResult<QUser>(result.users, result.nextCursor)
+                } catch (e: ApolloException) {
+                    Timber.d("Unable to search for users: $e")
+                    PagedCursorResult<QUser>(emptyList(), null)
+                }
             },
             onLoadNextPage = { cursor ->
-                val result = UserRepository.searchUsersWithCursor(cursor)
-                PagedCursorResult(result.users, result.nextCursor)
+                try {
+                    val result = userRepository.searchUsersWithCursor(cursor)
+                    PagedCursorResult(result.users, result.nextCursor)
+                } catch (e: ApolloException) {
+                    Timber.d("Unable to search for users: $e")
+                    PagedCursorResult<QUser>(emptyList(), null)
+                }
             },
             onNoItemsLoaded = {
                 action(UpdateLoadingState(LoadingState.EMPTY_RESULTS))

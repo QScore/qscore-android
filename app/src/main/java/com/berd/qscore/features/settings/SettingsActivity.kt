@@ -79,7 +79,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun launchUsernameActivity() {
-        val intent = UsernameActivity.newIntent(this, false)
+        val intent = UsernameActivity.newIntent(this, false, false)
         startActivity(intent)
     }
 }

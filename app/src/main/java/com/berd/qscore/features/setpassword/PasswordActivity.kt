@@ -71,7 +71,7 @@ class PasswordActivity : BaseActivity() {
     }
 
     private fun launchUsernameActivity() {
-        val intent = UsernameActivity.newIntent(this, true)
+        val intent = UsernameActivity.newIntent(this, true, shouldLaunchWelcomeActivity = true)
         startActivity(intent)
         finish()
     }

@@ -28,6 +28,7 @@ object LoginManager {
     private val fbLoginManager = Injector.fbLoginmanager
     private val firebaseAuth = Injector.firebaseAuth
     private val googleSignInClient = Injector.googleSignInClient
+    private val geofenceHelper = Injector.geofenceHelper
 
     val isLoggedIn get() = firebaseAuth.currentUser != null
     private val emailPattern: Pattern by lazy {
@@ -127,6 +128,7 @@ object LoginManager {
             firebaseAuth.signOut()
             fbLoginManager.logOut()
             googleSignInClient.signOut()
+            geofenceHelper.clearGeofences()
         } catch (e: Exception) {
             Timber.d("Unable to sign out: $e")
         }

@@ -1,24 +1,37 @@
 package com.berd.qscore.features.shared.user
 
+import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
+import com.berd.qscore.type.GeofenceEventType
+import com.berd.qscore.utils.geofence.GeofenceHelper
+import com.berd.qscore.utils.injection.Injector
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-object UserRepository {
+class UserRepository {
     var currentUser: QUser? = null
         private set
 
+    private val api = Injector.api
     private val userMap = hashMapOf<String, QUser>()
 
+    suspend fun createGeofenceEvent(status: GeofenceStatus) {
+        api.createGeofenceEvent(status).also {
+            currentUser = currentUser?.copy(
+                geofenceStatus = status
+            )
+        }
+    }
+
     suspend fun getCurrentUser(): QUser {
-        val currentUser = Api.getCurrentUser()
+        val currentUser = api.getCurrentUser()
         this.currentUser = currentUser
         return currentUser
     }
 
     suspend fun followUser(userId: String) {
-        GlobalScope.launch { Api.followUser(userId) }
+        GlobalScope.launch { api.followUser(userId) }
         val existing = userMap[userId]
         if (existing != null) {
             val updated = existing.copy(
@@ -36,7 +49,7 @@ object UserRepository {
     }
 
     suspend fun unfollowUser(userId: String) {
-        GlobalScope.launch { Api.unfollowUser(userId) }
+        GlobalScope.launch { api.unfollowUser(userId) }
         val existing = userMap[userId]
         if (existing != null) {
             val updated = existing.copy(
@@ -56,7 +69,7 @@ object UserRepository {
         if (userMap.contains(userId)) {
             return userMap[userId]
         }
-        val user = Api.getUser(userId)
+        val user = api.getUser(userId)
         if (user != null) {
             userMap[user.userId] = user
         }
@@ -64,47 +77,59 @@ object UserRepository {
     }
 
     suspend fun searchUsers(query: String, limit: Int = 30): Api.UserListResult {
-        return Api.searchUsers(query, limit).also { saveUsers(it.users) }
+        return api.searchUsers(query, limit).also { saveUsers(it.users) }
     }
 
     suspend fun searchUsersWithCursor(cursor: String): Api.UserListResult {
-        return Api.searchUsersWithCursor(cursor).also { saveUsers(it.users) }
+        return api.searchUsersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
     suspend fun getLeaderboardRange(start: Int, end: Int): List<QUser> {
-        return Api.getLeaderboardRange(start, end).also { saveUsers(it) }
+        return api.getLeaderboardRange(start, end).also { saveUsers(it) }
     }
 
     suspend fun getSocialLeaderboardRange(start: Int, end: Int): List<QUser> {
-        return Api.getSocialLeaderboardRange(start, end).also { saveUsers(it) }
+        return api.getSocialLeaderboardRange(start, end).also { saveUsers(it) }
     }
 
     suspend fun getFollowers(userId: String): Api.UserListResult {
-        return Api.getFollowers(userId).also { saveUsers(it.users) }
+        return api.getFollowers(userId).also { saveUsers(it.users) }
     }
 
     suspend fun getFollowersWithCursor(cursor: String): Api.UserListResult {
-        return Api.getFollowersWithCursor(cursor).also { saveUsers(it.users) }
+        return api.getFollowersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
     suspend fun getFollowedUsers(userId: String): Api.UserListResult {
-        return Api.getFollowedUsers(userId).also { saveUsers(it.users) }
+        return api.getFollowedUsers(userId).also { saveUsers(it.users) }
     }
 
     suspend fun getFollowedUsersWithCursor(cursor: String): Api.UserListResult {
-        return Api.getFollowedUsersWithCursor(cursor).also { saveUsers(it.users) }
+        return api.getFollowedUsersWithCursor(cursor).also { saveUsers(it.users) }
     }
 
-    suspend fun updateUserInfo(username: String) {
-        Api.updateUserInfo(username).also {
+    suspend fun updateUsername(username: String) {
+        api.updateUserInfo(username).also {
             currentUser = currentUser?.copy(
                 username = username
             )
         }
     }
 
+    suspend fun updateAvatar(avatar: String) {
+        api.updateUserInfo(avatar = avatar).also {
+            currentUser = currentUser?.copy(
+                avatar = avatar
+            )
+        }
+    }
+
+    suspend fun createUser(username: String) {
+        api.createUser(username)
+    }
+
     suspend fun checkUsernameExists(username: String): Boolean {
-        return Api.checkUsernameExists(username)
+        return api.checkUsernameExists(username)
     }
 
     private fun saveUsers(users: List<QUser>) {

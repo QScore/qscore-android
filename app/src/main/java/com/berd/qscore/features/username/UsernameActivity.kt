@@ -27,9 +27,17 @@ class UsernameActivity : BaseActivity() {
         intent.getBooleanExtra(KEY_LAUNCH_WELCOME, false)
     }
 
+    private val isNewUser by lazy {
+        intent.getBooleanExtra(KEY_NEW_USER, false)
+    }
+
     private val viewModel by lazy {
         createViewModel { handle ->
-            UsernameViewModel(handle, shouldLaunchWelcomeActivity)
+            UsernameViewModel(
+                handle,
+                shouldLaunchWelcome = shouldLaunchWelcomeActivity,
+                isNewUser = isNewUser
+            )
         }
     }
 
@@ -135,10 +143,12 @@ class UsernameActivity : BaseActivity() {
 
     companion object {
         const val KEY_LAUNCH_WELCOME = "KEY_LAUNCH_WELCOME"
+        const val KEY_NEW_USER = "KEY_NEW_USER"
 
-        fun newIntent(context: Context, shouldLaunchWelcomeActivity: Boolean) =
+        fun newIntent(context: Context, isNewUser: Boolean, shouldLaunchWelcomeActivity: Boolean) =
             Intent(context, UsernameActivity::class.java).apply {
                 putExtra(KEY_LAUNCH_WELCOME, shouldLaunchWelcomeActivity)
+                putExtra(KEY_NEW_USER, isNewUser)
             }
     }
 }

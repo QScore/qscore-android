@@ -1,48 +1,63 @@
 package com.berd.qscore.features.user
 
+import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver
 import com.berd.qscore.features.geofence.GeofenceStatus
 import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
-import com.berd.qscore.features.shared.user.UserRepository
+import com.berd.qscore.features.shared.prefs.Prefs
+import com.berd.qscore.features.shared.viewmodel.RxViewModel
 import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
+import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import com.berd.qscore.features.user.UserFragment.ProfileType
 import com.berd.qscore.features.user.UserViewModel.UserAction
 import com.berd.qscore.features.user.UserViewModel.UserAction.*
-import com.berd.qscore.features.user.UserViewModel.UserState
-import com.berd.qscore.features.user.UserViewModel.UserState.Loading
-import com.berd.qscore.features.user.UserViewModel.UserState.Ready
 import com.berd.qscore.utils.analytics.Analytics
+import com.berd.qscore.utils.geofence.GeofenceHelper
+import com.berd.qscore.utils.injection.Injector
+import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserAction, UserState>() {
+class UserViewModel(private val handle: SavedStateHandle, private val profileType: ProfileType) :
+    RxViewModelWithState<UserAction, UserViewModel.UserState>(handle) {
     sealed class UserAction {
         class LaunchFollowingUserList(val userId: String) : UserAction()
         class LaunchFollowersUserList(val userId: String) : UserAction()
         class SetGeofenceStatus(val status: GeofenceStatus) : UserAction()
+        class DisplayUser(val user: QUser) : UserAction()
     }
 
-    sealed class UserState {
-        object Loading : UserState()
-        class Ready(val user: QUser) : UserState()
+    private val geofenceHelper = Injector.geofenceHelper
+    private val userRepository = Injector.userRepository
+    private val locationHelper = Injector.locationHelper
+
+    override fun getInitialState() = UserState()
+
+    override fun updateState(action: UserAction, state: UserState) = when (action) {
+        is SetGeofenceStatus -> state.copy(geofenceStatus = action.status)
+        is DisplayUser -> state.copy(user = action.user)
+        else -> state
     }
+
+    @Parcelize
+    data class UserState(
+        val geofenceStatus: GeofenceStatus = GeofenceStatus.HOME,
+        val user: QUser? = null
+    ) : Parcelable
 
     fun onCreate() {
-        UserRepository.currentUser?.let {
-            state = Ready(it)
-        } ?: run {
-            state = Loading
-        }
-
+        userRepository.currentUser?.let { action(DisplayUser(it)) }
         if (profileType is ProfileType.CurrentUser) {
             listenToGeofenceEvents()
-            UserRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
+            userRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
         }
     }
 
@@ -57,14 +72,17 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
     fun onResume() {
         viewModelScope.launch {
             try {
+                if (profileType is ProfileType.CurrentUser) {
+                    locationHelper.fetchCurrentLocation()
+                }
                 val user = when (profileType) {
-                    is ProfileType.CurrentUser -> UserRepository.getCurrentUser()
-                    is ProfileType.User -> UserRepository.getUser(profileType.userId)
+                    is ProfileType.CurrentUser -> userRepository.getCurrentUser()
+                    is ProfileType.User -> userRepository.getUser(profileType.userId)
                         ?: throw ApolloException("No user found for id: ${profileType.userId}")
                 }
-                state = Ready(user)
+                action(DisplayUser(user))
             } catch (e: ApolloException) {
-                Timber.d("Error getting score: $e")
+                Timber.d("Unable to fetch user: $e")
             }
         }
     }
@@ -72,7 +90,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
     fun onGifAvatarSelected(url: String) {
         viewModelScope.launch {
             try {
-                Api.updateUserInfo(avatar = url)
+                userRepository.updateAvatar(avatar = url)
             } catch (e: ApolloException) {
                 Timber.d("Unable to update avatar: $e")
             }
@@ -90,14 +108,18 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
 
     fun onFollowButtonClicked(userId: String, followType: FollowType) {
         viewModelScope.launch {
-            if (followType == FollowType.FOLLOW) {
-                UserRepository.followUser(userId)
-            } else {
-                UserRepository.unfollowUser(userId)
+            try {
+                if (followType == FollowType.FOLLOW) {
+                    userRepository.followUser(userId)
+                } else {
+                    userRepository.unfollowUser(userId)
+                }
+                val updatedUser = userRepository.getUser(userId)
+                updatedUser?.let { action(DisplayUser(it)) }
+                    ?: Timber.d("Unable to update user after follow button clicked, no user found")
+            } catch (e: ApolloException) {
+                Timber.d("Unable to follow user: $e")
             }
-            val updatedUser = UserRepository.getUser(userId)
-            updatedUser?.let { state = Ready(it) }
-                ?: Timber.d("Unable to update user after follow button clicked, no user found")
         }
     }
 
@@ -113,7 +135,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
 
     fun onHiddenChanged(hidden: Boolean) {
         if (!hidden) {
-            UserRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
+            userRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
         }
     }
 
@@ -123,7 +145,7 @@ class UserViewModel(private val profileType: ProfileType) : RxViewModelOld<UserA
 
     val ProfileType.userId
         get() = when (this) {
-            ProfileType.CurrentUser -> UserRepository.currentUser?.userId
+            ProfileType.CurrentUser -> userRepository.currentUser?.userId
                 ?: throw  Exception("Unable to launch user list activity, missing current user")
             is ProfileType.User -> userId
         }
