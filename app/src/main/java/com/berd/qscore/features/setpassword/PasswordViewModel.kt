@@ -6,11 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
-import com.berd.qscore.features.setpassword.PasswordViewModel.PasswordAction.LaunchUsernameActivity
+import com.berd.qscore.features.setpassword.PasswordViewModel.PasswordAction.*
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PasswordViewModel(handle: SavedStateHandle) :
     RxViewModelWithState<PasswordViewModel.PasswordAction, PasswordViewModel.PasswordState>(handle) {
@@ -35,19 +36,19 @@ class PasswordViewModel(handle: SavedStateHandle) :
 
     override fun updateState(action: PasswordAction, state: PasswordState) =
         when (action) {
-            is PasswordAction.SetContinueEnabled -> state.copy(continueEnabled = action.enabled)
-            is PasswordAction.ShowError -> state.copy(hasError = true, errorMessage = action.message)
-            is PasswordAction.SetProgressVisible -> state.copy(progressVisible = action.visible)
+            is SetContinueEnabled -> state.copy(continueEnabled = action.enabled)
+            is ShowError -> state.copy(hasError = true, errorMessage = action.message)
+            is SetProgressVisible -> state.copy(progressVisible = action.visible)
             else -> state
         }
 
-    fun onPasswordChange(str: String) {
-        action(PasswordAction.SetContinueEnabled(str.length >= 6))
+    fun onPasswordChange(password: String) {
+        action(SetContinueEnabled(password.length >= 6))
     }
 
     fun onContinue(email: String, password: String) {
         viewModelScope.launch {
-            action(PasswordAction.SetProgressVisible(true))
+            action(SetProgressVisible(true))
             val result = LoginManager.signUp(email, password)
             when (result) {
                 Success -> {
@@ -56,10 +57,10 @@ class PasswordViewModel(handle: SavedStateHandle) :
                 }
                 is Error -> {
                     val errorMessage = result.error?.message
-                    action(PasswordAction.ShowError(errorMessage))
+                    action(ShowError(errorMessage))
                 }
             }
-            action(PasswordAction.SetProgressVisible(false))
+            action(SetProgressVisible(false))
         }
     }
 }

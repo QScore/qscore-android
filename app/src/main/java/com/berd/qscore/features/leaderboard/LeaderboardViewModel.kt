@@ -74,8 +74,8 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
             onLoadFirstPage = { offset, limit ->
                 try {
                     when (leaderboardType) {
-                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, limit)
-                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, limit)
+                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
+                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
                     }.also { action(SetProgressShown(false)) }
                 } catch (e: ApolloException) {
                     Timber.d("Unable to fetch leaderboard: $e")
@@ -85,8 +85,8 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
             onLoadNextPage = { offset, limit ->
                 try {
                     when (leaderboardType) {
-                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, limit)
-                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, limit)
+                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
+                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
                     }.also { action(SetProgressShown(false)) }
                 } catch (e: ApolloException) {
                     Timber.d("Unable to fetch leaderboard: $e")

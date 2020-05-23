@@ -37,11 +37,6 @@ class MainViewModel(handle: SavedStateHandle) : RxViewModelWithState<MainAction,
         action(Initialize(state))
     }
 
-    fun onLogout() = viewModelScope.launch {
-        LoginManager.logout()
-        action(LaunchLoginActivity)
-    }
-
     fun onBottomTabSelected(itemId: Int) {
         val bottomTab = BottomTab.fromMenuItemId(itemId)
         action(ChangeTab(bottomTab))

@@ -7,19 +7,25 @@ import com.google.firebase.auth.GetTokenResult
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import timber.log.Timber
 
 class FirebaseUserIdTokenInterceptor : Interceptor {
     private val firebaseAuth = Injector.firebaseAuth
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request: Request = chain.request()
-        val user = checkNotNull(firebaseAuth.currentUser) { "User is not logged in" }
-        val task: Task<GetTokenResult> = user.getIdToken(true)
-        val tokenResult = Tasks.await(task)
-        val idToken = checkNotNull(tokenResult.token) { "idToken is null" }
-        val modifiedRequest: Request = request.newBuilder()
-            .addHeader("Authorization", "bearer $idToken")
-            .build()
-        return chain.proceed(modifiedRequest)
+        try {
+            val request: Request = chain.request()
+            val user = checkNotNull(firebaseAuth.currentUser) { "User is not logged in" }
+            val task: Task<GetTokenResult> = user.getIdToken(true)
+            val tokenResult = Tasks.await(task)
+            val idToken = checkNotNull(tokenResult.token) { "idToken is null" }
+            val modifiedRequest: Request = request.newBuilder()
+                .addHeader("Authorization", "bearer $idToken")
+                .build()
+            return chain.proceed(modifiedRequest)
+        } catch (e: Exception) {
+            Timber.d("Unable to proceed as logged in user: $e")
+            return chain.proceed(chain.request())
+        }
     }
 }

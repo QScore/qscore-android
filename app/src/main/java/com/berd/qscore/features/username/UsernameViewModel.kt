@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.R
-import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import com.berd.qscore.features.username.UsernameViewModel.UsernameAction.*
 import com.berd.qscore.utils.injection.Injector
@@ -29,7 +28,7 @@ class UsernameViewModel(
         val continueEnabled: Boolean = false,
         val hasError: Boolean = false,
         val continueProgressVisible: Boolean = false,
-        val hintResId: Int = R.string.username_must_be_at_least_4_characters,
+        val hintResId: Int = R.string.username_must_be_at_least_3_characters,
         val hintColorResId: Int = R.color.text
     ) : Parcelable
 
@@ -57,11 +56,11 @@ class UsernameViewModel(
     fun onUsernameChange(username: String) {
         job?.cancel()
         job = viewModelScope.launch {
-            val validUsername = username.length >= 4
+            val validUsername = username.length >= 3
             try {
                 if (!validUsername) {
                     action(SetContinueProgressVisible(false))
-                    action(SetHint(R.string.username_must_be_at_least_4_characters, R.color.text))
+                    action(SetHint(R.string.username_must_be_at_least_3_characters, R.color.text))
                     action(SetContinueEnabled(false))
                 } else {
                     action(SetContinueProgressVisible(true))
@@ -78,7 +77,7 @@ class UsernameViewModel(
             } catch (e: ApolloException) {
                 action(SetContinueProgressVisible(false))
                 action(SetHint(R.string.error_checking_username, R.color.punch_red))
-                Timber.d("Unable to check if username exists for users: $e")
+                Timber.d("Unable to check if username exists: $e")
             }
         }
     }

@@ -62,11 +62,11 @@ class PasswordActivity : BaseActivity() {
         if (visible) {
             binding.progress.visible()
             binding.continueButton.text = ""
-            binding.password.isEnabled = false
+            binding.passwordField.isEnabled = false
         } else {
             binding.progress.gone()
             binding.continueButton.text = getString(R.string.continue_button)
-            binding.password.isEnabled = true
+            binding.passwordField.isEnabled = true
         }
     }
 
@@ -91,13 +91,13 @@ class PasswordActivity : BaseActivity() {
         setStatusbarColor(R.color.lighter_gray)
         setupPasswordField()
         binding.continueButton.setOnClickListener {
-            val password = binding.password.text.toString()
+            val password = binding.passwordField.text.toString()
             viewModel.onContinue(email, password)
         }
     }
 
     private fun setupPasswordField() {
-        binding.password
+        binding.passwordField
             .afterTextChangeEvents()
             .skip(1)
             .map { it.editable.toString() }

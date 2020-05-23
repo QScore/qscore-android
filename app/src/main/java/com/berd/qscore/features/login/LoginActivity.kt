@@ -53,7 +53,12 @@ class LoginActivity : BaseActivity() {
             is SetLoginButtonEnabled -> setLoginButtonEnabled(it.enabled)
             is ShowLoginError -> showLoginError(it.resId)
             is Initialize -> setInitialState(it.state)
+            HideLoginError -> hideLoginError()
         }
+    }
+
+    private fun hideLoginError() {
+        binding.errorText.invisible()
     }
 
     private fun launchPasswordActivity(email: String) {
@@ -63,7 +68,13 @@ class LoginActivity : BaseActivity() {
 
     private fun setInitialState(state: LoginViewModel.State) {
         setProgressVisible(state.progressVisible, state.buttonResId)
-        state.errorResId?.let { showLoginError(it) }
+        if (state.errorShown) {
+            if (state.errorResId != null) {
+                showLoginError(state.errorResId)
+            }
+        } else {
+            hideLoginError()
+        }
         if (state.toggleState == LoginViewModel.State.ToggleState.LOGIN) {
             transformToLogIn()
         } else {
@@ -158,6 +169,7 @@ class LoginActivity : BaseActivity() {
         signUpToggle.text = getString(R.string.log_in)
         welcomeMessage.fadeIn()
         loginWithEmail.fadeIn()
+        password.setText("")
     }
 
     private fun transformToLogIn() = binding.apply {
@@ -167,9 +179,9 @@ class LoginActivity : BaseActivity() {
         welcomeMessage.text = getString(R.string.welcome_back)
         loginButton.text = getString(R.string.log_in)
         signUpToggle.text = getString(R.string.sign_up)
-        password.setText("")
         welcomeMessage.fadeIn()
         loginWithEmail.fadeIn()
+        setLoginButtonEnabled(false)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
