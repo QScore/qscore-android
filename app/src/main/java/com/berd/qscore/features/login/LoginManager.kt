@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Error
 import com.berd.qscore.features.login.LoginManager.AuthEvent.Success
+import com.berd.qscore.utils.activityresult.CallbackFragment
 import com.berd.qscore.utils.activityresult.startForResult
 import com.berd.qscore.utils.injection.Injector
 import com.facebook.CallbackManager
@@ -25,10 +26,10 @@ import kotlin.coroutines.resume
 
 object LoginManager {
     private val fbCallbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
-    private val fbLoginManager = Injector.fbLoginmanager
-    private val firebaseAuth = Injector.firebaseAuth
-    private val googleSignInClient = Injector.googleSignInClient
-    private val geofenceHelper = Injector.geofenceHelper
+    private val fbLoginManager by lazy { Injector.fbLoginmanager }
+    private val firebaseAuth by lazy { Injector.firebaseAuth }
+    private val googleSignInClient by lazy { Injector.googleSignInClient }
+    private val geofenceHelper by lazy { Injector.geofenceHelper }
 
     val isLoggedIn get() = firebaseAuth.currentUser != null
     private val emailPattern: Pattern by lazy {
@@ -74,7 +75,6 @@ object LoginManager {
         activity.startForResult(signInIntent) { activityResult ->
             val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.dataIntent)
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 if (account == null) {
                     cont.resume(Error(IllegalStateException("Account is null")))
@@ -82,6 +82,8 @@ object LoginManager {
                 }
 
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+
+                // Google Sign In was successful, authenticate with Firebase
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
                     cont.resume(signInTask.resultEvent)
                 }

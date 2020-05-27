@@ -25,7 +25,7 @@ enum class LeaderboardType : Serializable {
 class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType: LeaderboardType) :
     RxViewModelWithState<LeaderboardViewModel.LeaderboardAction, LeaderboardViewModel.LeaderboardState>(handle) {
 
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy { Injector.userRepository }
 
     @Parcelize
     data class LeaderboardState(
@@ -45,14 +45,15 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
 
     override fun updateState(action: LeaderboardAction, state: LeaderboardState) =
         when (action) {
-            is SetProgressShown -> state.copy(inProgress = action.visible)
+            is SetProgressShown -> state.copy(inProgress = action.visible).apply { pagedList = state.pagedList }
             is SubmitPagedList -> state.apply { pagedList = action.pagedList }
             else -> state
         }
 
     fun onViewCreated() {
         action(Initialize(state))
-        if (state.inProgress) {
+        if (state.pagedList == null) {
+            action(SetProgressShown(true))
             setupPagedList()
         }
     }
@@ -74,8 +75,8 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
             onLoadFirstPage = { offset, limit ->
                 try {
                     when (leaderboardType) {
-                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, limit)
-                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, limit)
+                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
+                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
                     }.also { action(SetProgressShown(false)) }
                 } catch (e: ApolloException) {
                     Timber.d("Unable to fetch leaderboard: $e")
@@ -85,8 +86,8 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
             onLoadNextPage = { offset, limit ->
                 try {
                     when (leaderboardType) {
-                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, limit)
-                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, limit)
+                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
+                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
                     }.also { action(SetProgressShown(false)) }
                 } catch (e: ApolloException) {
                     Timber.d("Unable to fetch leaderboard: $e")

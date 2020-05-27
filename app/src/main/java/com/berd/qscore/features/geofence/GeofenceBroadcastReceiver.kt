@@ -26,7 +26,7 @@ enum class GeofenceStatus {
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy { Injector.userRepository }
 
     companion object {
         private val eventSubject = ReplaySubject.create<GeofenceStatus>(1)

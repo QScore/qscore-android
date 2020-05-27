@@ -26,9 +26,9 @@ import timber.log.Timber
 import java.lang.IllegalStateException
 
 class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginAction, State>(handle) {
-    private val userRepository = Injector.userRepository
-    private val geofenceHelper = Injector.geofenceHelper
-    private val locationHelper = Injector.locationHelper
+    private val userRepository by lazy { Injector.userRepository }
+    private val geofenceHelper by lazy { Injector.geofenceHelper }
+    private val locationHelper by lazy { Injector.locationHelper }
 
     sealed class LoginAction {
         object LaunchScoreActivity : LoginAction()
@@ -40,6 +40,7 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
         class SetProgressVisible(val visible: Boolean, val buttonResId: Int) : LoginAction()
         class SetLoginButtonEnabled(val enabled: Boolean) : LoginAction()
         class ShowLoginError(val resId: Int) : LoginAction()
+        object HideLoginError : LoginAction()
         class Initialize(val state: State) : LoginAction()
     }
 
@@ -49,7 +50,8 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
         val errorResId: Int? = null,
         val buttonResId: Int = R.string.sign_up,
         val toggleState: ToggleState = ToggleState.SIGNUP,
-        val loginEnabled: Boolean = false
+        val loginEnabled: Boolean = false,
+        val errorShown: Boolean = false
     ) : Parcelable {
         enum class ToggleState {
             SIGNUP,
@@ -63,7 +65,8 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
             is TransformToSignup -> state.copy(toggleState = ToggleState.SIGNUP)
             is SetProgressVisible -> state.copy(progressVisible = action.visible, buttonResId = action.buttonResId)
             is SetLoginButtonEnabled -> state.copy(loginEnabled = action.enabled)
-            is ShowLoginError -> state.copy(errorResId = action.resId)
+            is ShowLoginError -> state.copy(errorResId = action.resId, errorShown = true)
+            is HideLoginError -> state.copy(errorShown = false)
             else -> state
         }
 
@@ -125,7 +128,7 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
 
     fun onFieldsUpdated(email: String, password: String) = viewModelScope.launch {
         val isValidEmail = LoginManager.isValidEmail(email)
-        val emailError = !isValidEmail && email.isNotEmpty()
+        val emailError = !isValidEmail || email.isEmpty()
         val passwordError = password.isEmpty()
         val loginEnabled = if (state.toggleState == ToggleState.LOGIN) {
             !emailError && !passwordError
@@ -140,9 +143,8 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
             val currentUser = userRepository.getCurrentUser()
             when {
                 currentUser.username.isEmpty() -> action(LaunchUsernameActivity(isNewUser = false))
-                Prefs.userLocation != null -> {
+                Prefs.userLocation != null && locationHelper.hasAllPermissions -> {
                     Prefs.userLocation?.let { geofenceHelper.setGeofence(it) }
-                    locationHelper.fetchCurrentLocation()
                     action(LaunchScoreActivity)
                 }
                 else -> action(LaunchWelcomeActivity)
@@ -150,10 +152,6 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
         } catch (e: ApolloException) {
             Timber.d("Unable to get current user $e")
             action(LaunchUsernameActivity(isNewUser = true))
-        } catch (e: IllegalStateException) {
-            Timber.d("Unable to fetch location, permission not enabled")
-            userRepository.createGeofenceEvent(GeofenceStatus.AWAY)
-            action(LaunchScoreActivity)
         }
     }
 
@@ -164,6 +162,7 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
     }
 
     fun signUpToggleClicked() {
+        action(HideLoginError)
         if (state.toggleState == ToggleState.SIGNUP) {
             action(TransformToLogin)
             ToggleState.LOGIN

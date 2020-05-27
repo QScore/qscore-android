@@ -35,7 +35,7 @@ interface DialogBuilder<T> {
 typealias DialogCallback<T> = T.() -> Unit
 
 private class DialogBuilderImpl<T> : DialogBuilder<T> {
-    private val appContext = Injector.appContext
+    private val appContext by lazy {  Injector.appContext }
 
     data class DialogArgs<T>(
         val title: String? = null,
@@ -84,7 +84,7 @@ private class DialogBuilderImpl<T> : DialogBuilder<T> {
 
 class MyDialog<T> : DialogFragment() {
 
-    private val appContext = Injector.appContext
+    private val appContext by lazy {  Injector.appContext }
 
     companion object {
         val KEY_ARGS = "KEY_ARGS"

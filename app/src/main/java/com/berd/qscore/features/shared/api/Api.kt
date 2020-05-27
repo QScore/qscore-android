@@ -20,9 +20,9 @@ import kotlin.math.roundToInt
 
 
 class Api {
-    private val context = Injector.appContext
-    private val stageUrl = context.getString(R.string.stage_url)
-    private val localUrl = context.getString(R.string.local_url)
+    private val context by lazy { Injector.appContext }
+    private val stageUrl by lazy { context.getString(R.string.stage_url) }
+    private val localUrl by lazy { context.getString(R.string.local_url) }
     private val apolloClient by lazy { buildApolloClient() }
 
     private fun buildApolloClient(): ApolloClient {

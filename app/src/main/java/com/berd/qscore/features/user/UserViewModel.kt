@@ -6,24 +6,21 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver
 import com.berd.qscore.features.geofence.GeofenceStatus
-import com.berd.qscore.features.shared.api.Api
 import com.berd.qscore.features.shared.api.models.QUser
 import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import com.berd.qscore.features.user.UserFragment.ProfileType
 import com.berd.qscore.features.user.UserViewModel.UserAction
 import com.berd.qscore.features.user.UserViewModel.UserAction.*
 import com.berd.qscore.utils.analytics.Analytics
-import com.berd.qscore.utils.geofence.GeofenceHelper
 import com.berd.qscore.utils.injection.Injector
-import com.berd.qscore.utils.location.LocationHelper
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.IllegalStateException
 
 
 class UserViewModel(private val handle: SavedStateHandle, private val profileType: ProfileType) :
@@ -35,9 +32,9 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
         class DisplayUser(val user: QUser) : UserAction()
     }
 
-    private val geofenceHelper = Injector.geofenceHelper
-    private val userRepository = Injector.userRepository
-    private val locationHelper = Injector.locationHelper
+    private val geofenceHelper by lazy { Injector.geofenceHelper }
+    private val userRepository by lazy { Injector.userRepository }
+    private val locationHelper by lazy { Injector.locationHelper }
 
     override fun getInitialState() = UserState()
 
@@ -57,7 +54,6 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
         userRepository.currentUser?.let { action(DisplayUser(it)) }
         if (profileType is ProfileType.CurrentUser) {
             listenToGeofenceEvents()
-            userRepository.currentUser?.geofenceStatus?.let { action(SetGeofenceStatus(it)) }
         }
     }
 
@@ -73,7 +69,7 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
         viewModelScope.launch {
             try {
                 if (profileType is ProfileType.CurrentUser) {
-                    locationHelper.fetchCurrentLocation()
+                    async { updateGeofenceStatus() }
                 }
                 val user = when (profileType) {
                     is ProfileType.CurrentUser -> userRepository.getCurrentUser()
@@ -84,6 +80,24 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
             } catch (e: ApolloException) {
                 Timber.d("Unable to fetch user: $e")
             }
+        }
+    }
+
+    private suspend fun updateGeofenceStatus() {
+        try {
+            val currentLocation = locationHelper.fetchCurrentLocation()
+            val geofenceLocation = Prefs.userLocation
+            if (currentLocation != null && geofenceLocation != null) {
+                val isInsideGeofence = geofenceHelper.checkGeofence(
+                    geofenceLocation = geofenceLocation,
+                    userLocation = currentLocation
+                )
+                val geofenceEvent = if (isInsideGeofence) GeofenceStatus.HOME else GeofenceStatus.AWAY
+                userRepository.createGeofenceEvent(geofenceEvent)
+                action(SetGeofenceStatus(geofenceEvent))
+            }
+        } catch (e: IllegalStateException) {
+            Timber.d("Unable to update geofence status, permissions not enabled for user location")
         }
     }
 

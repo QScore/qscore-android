@@ -19,9 +19,9 @@ import timber.log.Timber
 
 class WelcomeViewModel(handle: SavedStateHandle) : RxViewModelWithState<WelcomeViewModel.Action, WelcomeViewModel.State>(handle) {
 
-    private val geofenceHelper = Injector.geofenceHelper
-    private val userRepository = Injector.userRepository
-    private val locationHelper = Injector.locationHelper
+    private val geofenceHelper by lazy {  Injector.geofenceHelper }
+    private val userRepository by lazy {  Injector.userRepository }
+    private val locationHelper by lazy {  Injector.locationHelper }
 
     sealed class Action {
         class Initialize(val state: State) : Action()

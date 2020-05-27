@@ -22,7 +22,7 @@ import timber.log.Timber
 
 class SearchViewModel(handle: SavedStateHandle) : RxViewModelWithState<SearchViewModel.SearchAction, SearchViewModel.SearchState>(handle) {
     private var searchJob: Job? = null
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy { Injector.userRepository }
 
     @Parcelize
     data class SearchState(
@@ -49,11 +49,8 @@ class SearchViewModel(handle: SavedStateHandle) : RxViewModelWithState<SearchVie
 
     override fun updateState(action: SearchAction, state: SearchState) =
         when (action) {
-            is SubmitPagedList -> {
-                state.pagedList = action.pagedList
-                state
-            }
-            is UpdateLoadingState -> state.copy(loadingState = action.loadingState)
+            is SubmitPagedList -> state.apply { pagedList = action.pagedList }
+            is UpdateLoadingState -> state.copy(loadingState = action.loadingState).apply { pagedList = state.pagedList }
             else -> state
         }
 

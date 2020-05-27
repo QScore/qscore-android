@@ -10,7 +10,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class UpdateLocationWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
-    private val locationHelper = Injector.locationHelper
+    private val locationHelper by lazy { Injector.locationHelper }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.Main.immediate) {
         try {

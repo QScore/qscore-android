@@ -52,6 +52,7 @@ class UsernameActivity : BaseActivity() {
         setContentView(binding.root)
         observeEvents()
         setupViews()
+        viewModel.onCreate()
     }
 
     private fun observeEvents() {
@@ -93,6 +94,7 @@ class UsernameActivity : BaseActivity() {
         }
         setProgressVisible(state.continueProgressVisible)
         setContinueEnabled(state.continueEnabled)
+        setHint(state.hintResId, state.hintColorResId)
     }
 
     private fun setProgressVisible(visible: Boolean) {

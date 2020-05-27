@@ -97,6 +97,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
     implementation 'com.google.firebase:firebase-analytics-ktx:17.4.1'
 
+    //Jetpack
+    implementation "androidx.recyclerview:recyclerview:1.2.0-alpha03"
+
     //Splitties
     def splittiesVersion = "3.0.0-alpha06"
     implementation "com.louiscad.splitties:splitties-fun-pack-android-base:$splittiesVersion"

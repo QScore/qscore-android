@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.berd.qscore.R
 import com.berd.qscore.databinding.LeaderboardFragmentBinding
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardAction.SubmitPagedList
@@ -16,6 +17,7 @@ import com.berd.qscore.utils.extensions.createViewModel
 import com.berd.qscore.utils.extensions.getColor
 import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.visible
+import timber.log.Timber
 
 class LeaderboardFragment : BaseFragment() {
 
@@ -93,6 +95,7 @@ class LeaderboardFragment : BaseFragment() {
     private fun setupRecyclerView() = activity?.let { activity ->
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.adapter = leaderboardAdapter
+        leaderboardAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
 
     companion object {

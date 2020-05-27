@@ -13,7 +13,7 @@ class UserRepository {
     var currentUser: QUser? = null
         private set
 
-    private val api = Injector.api
+    private val api by lazy { Injector.api }
     private val userMap = hashMapOf<String, QUser>()
 
     suspend fun createGeofenceEvent(status: GeofenceStatus) {

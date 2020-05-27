@@ -2,6 +2,9 @@ package com.berd.qscore.features.shared.viewmodel
 
 import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
+import timber.log.Timber
+import kotlin.properties.Delegates
+import kotlin.properties.ObservableProperty
 
 @Suppress("LeakingThis")
 abstract class RxViewModelWithState<A, S : Parcelable>(private val handle: SavedStateHandle) : RxViewModel<A>() {
@@ -10,8 +13,7 @@ abstract class RxViewModelWithState<A, S : Parcelable>(private val handle: Saved
         const val KEY_STATE = "KEY_STATE"
     }
 
-    protected var state = handle.get<S>(KEY_STATE) ?: getInitialState()
-        private set
+    protected var state = (handle.get<S>(KEY_STATE) ?: getInitialState())
 
     protected abstract fun getInitialState(): S
 

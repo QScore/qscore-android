@@ -6,18 +6,15 @@ import android.content.Intent
 import com.berd.qscore.features.geofence.GeofenceBroadcastReceiver
 import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.location.LatLngPair
-import com.berd.qscore.utils.location.LocationHelper
 import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationServices
 import timber.log.Timber
 
 class GeofenceHelper {
-    private val userRepository = Injector.userRepository
-    private val geofencingClient = Injector.geofencingClient
-    private val locationHelper = Injector.locationHelper
-    private val appContext = Injector.appContext
+    private val userRepository by lazy { Injector.userRepository }
+    private val geofencingClient by lazy { Injector.geofencingClient }
+    private val locationHelper by lazy { Injector.locationHelper }
+    private val appContext by lazy { Injector.appContext }
 
     companion object {
         const val REQUEST_ID = "GEOFENCE_REQUEST_ID"
@@ -67,5 +64,20 @@ class GeofenceHelper {
             }
     }
 
+    fun checkGeofence(geofenceLocation: LatLngPair, userLocation: LatLngPair) =
+        calculateDistance(geofenceLocation, userLocation) < GEOFENCE_RADIUS
 
+    //Haversine fomula: https://stackoverflow.com/a/30761966/5451130
+    private fun calculateDistance(
+        latLngPair1: LatLngPair,
+        latLngPair2: LatLngPair
+    ): Double {
+        var c = Math.sin(Math.toRadians(latLngPair1.lat)) *
+                Math.sin(Math.toRadians(latLngPair2.lat)) +
+                Math.cos(Math.toRadians(latLngPair1.lat)) *
+                Math.cos(Math.toRadians(latLngPair2.lat)) *
+                Math.cos(Math.toRadians(latLngPair2.lng) - Math.toRadians(latLngPair1.lng))
+        c = if (c > 0) Math.min(1.0, c) else Math.max(-1.0, c)
+        return 3959 * 1.609 * 1000 * Math.acos(c)
+    }
 }
