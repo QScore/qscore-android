@@ -20,6 +20,7 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.IllegalStateException
 
 
 class UserViewModel(private val handle: SavedStateHandle, private val profileType: ProfileType) :
@@ -31,9 +32,9 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
         class DisplayUser(val user: QUser) : UserAction()
     }
 
-    private val geofenceHelper by lazy {  Injector.geofenceHelper }
-    private val userRepository by lazy {  Injector.userRepository }
-    private val locationHelper by lazy {  Injector.locationHelper }
+    private val geofenceHelper by lazy { Injector.geofenceHelper }
+    private val userRepository by lazy { Injector.userRepository }
+    private val locationHelper by lazy { Injector.locationHelper }
 
     override fun getInitialState() = UserState()
 
@@ -83,16 +84,20 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
     }
 
     private suspend fun updateGeofenceStatus() {
-        val currentLocation = locationHelper.fetchCurrentLocation()
-        val geofenceLocation = Prefs.userLocation
-        if (currentLocation != null && geofenceLocation != null) {
-            val isInsideGeofence = geofenceHelper.checkGeofence(
-                geofenceLocation = geofenceLocation,
-                userLocation = currentLocation
-            )
-            val geofenceEvent = if (isInsideGeofence) GeofenceStatus.HOME else GeofenceStatus.AWAY
-            userRepository.createGeofenceEvent(geofenceEvent)
-            action(SetGeofenceStatus(geofenceEvent))
+        try {
+            val currentLocation = locationHelper.fetchCurrentLocation()
+            val geofenceLocation = Prefs.userLocation
+            if (currentLocation != null && geofenceLocation != null) {
+                val isInsideGeofence = geofenceHelper.checkGeofence(
+                    geofenceLocation = geofenceLocation,
+                    userLocation = currentLocation
+                )
+                val geofenceEvent = if (isInsideGeofence) GeofenceStatus.HOME else GeofenceStatus.AWAY
+                userRepository.createGeofenceEvent(geofenceEvent)
+                action(SetGeofenceStatus(geofenceEvent))
+            }
+        } catch (e: IllegalStateException) {
+            Timber.d("Unable to update geofence status, permissions not enabled for user location")
         }
     }
 

@@ -2,6 +2,8 @@ package com.berd.qscore.features.splash
 
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.shared.prefs.Prefs
 import com.berd.qscore.features.shared.user.UserRepository
@@ -36,6 +38,12 @@ class SplashViewModel : RxViewModel<Action>() {
                 } else {
                     action(LaunchWelcomeActivity)
                 }
+            } catch (e: ApolloHttpException) {
+                Timber.d("Unable to fetch current user: $e")
+                action(LaunchLoginActivity)
+            } catch (e: ApolloNetworkException) {
+                Timber.d("Unable to fetch current user: $e")
+                action(LaunchLoginActivity)
             } catch (e: ApolloException) {
                 //Need to create a new user
                 action(LaunchUsernameActivity(isNewUser = true))

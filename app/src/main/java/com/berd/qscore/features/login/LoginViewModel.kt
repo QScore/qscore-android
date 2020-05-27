@@ -143,9 +143,8 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
             val currentUser = userRepository.getCurrentUser()
             when {
                 currentUser.username.isEmpty() -> action(LaunchUsernameActivity(isNewUser = false))
-                Prefs.userLocation != null -> {
+                Prefs.userLocation != null && locationHelper.hasAllPermissions -> {
                     Prefs.userLocation?.let { geofenceHelper.setGeofence(it) }
-                    locationHelper.fetchCurrentLocation()
                     action(LaunchScoreActivity)
                 }
                 else -> action(LaunchWelcomeActivity)
@@ -153,10 +152,6 @@ class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginActio
         } catch (e: ApolloException) {
             Timber.d("Unable to get current user $e")
             action(LaunchUsernameActivity(isNewUser = true))
-        } catch (e: IllegalStateException) {
-            Timber.d("Unable to fetch location, permission not enabled")
-            userRepository.createGeofenceEvent(GeofenceStatus.AWAY)
-            action(LaunchScoreActivity)
         }
     }
 

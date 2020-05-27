@@ -32,7 +32,7 @@ class Api {
             .build()
 
         return ApolloClient.builder()
-            .serverUrl(localUrl)
+            .serverUrl(stageUrl)
             .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
             .okHttpClient(okHttpClient)
             .build()
