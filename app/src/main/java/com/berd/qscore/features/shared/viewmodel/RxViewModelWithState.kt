@@ -9,17 +9,11 @@ import kotlin.properties.ObservableProperty
 @Suppress("LeakingThis")
 abstract class RxViewModelWithState<A, S : Parcelable>(private val handle: SavedStateHandle) : RxViewModel<A>() {
 
-    init {
-        Timber.d(">>Initializng viewmodel: $this")
-    }
-
     companion object {
         const val KEY_STATE = "KEY_STATE"
     }
 
-    protected var state by Delegates.observable((handle.get<S>(KEY_STATE) ?: getInitialState())) { prop, old, new ->
-        Timber.d(">>state changed: $new")
-    }
+    protected var state = (handle.get<S>(KEY_STATE) ?: getInitialState())
 
     protected abstract fun getInitialState(): S
 

@@ -51,7 +51,6 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
         }
 
     fun onViewCreated() {
-        Timber.d(">>View created, state: $state")
         action(Initialize(state))
         if (state.pagedList == null) {
             action(SetProgressShown(true))
