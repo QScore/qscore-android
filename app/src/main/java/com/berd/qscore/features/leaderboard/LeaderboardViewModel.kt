@@ -54,6 +54,7 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
         Timber.d(">>View created, state: $state")
         action(Initialize(state))
         if (state.pagedList == null) {
+            action(SetProgressShown(true))
             setupPagedList()
         }
     }
@@ -70,7 +71,6 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
     }
 
     private suspend fun buildPagedList(): PagedList<QUser> {
-        action(SetProgressShown(true))
         val builder = PagedListOffsetBuilder(
             pageSize = 30,
             onLoadFirstPage = { offset, limit ->

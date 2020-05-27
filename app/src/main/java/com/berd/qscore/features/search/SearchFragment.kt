@@ -44,16 +44,21 @@ class SearchFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSearchBar()
         setupViews()
         setupRecyclerView()
         observeEvents()
+        val isRestoring = savedInstanceState != null
+        setupSearchBar(isRestoring)
         viewModel.onViewCreated()
     }
 
     private fun setupViews() = with(binding) {
         setStatusbarColor(R.color.colorPrimary)
         clearButton.setOnClickListener { searchField.setText("") }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -146,11 +151,12 @@ class SearchFragment : BaseFragment() {
         searchAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
 
-    private fun setupSearchBar() = binding.searchField.post {
+    private fun setupSearchBar(isRestoring: Boolean) = binding.searchField.post {
         binding.searchField
             .afterTextChangeEvents()
-            .skip(1)
+            .apply { if (!isRestoring) skip(1) }
             .map { it.editable.toString() }
+            .filter { it.isNotEmpty() }
             .distinctUntilChanged()
             .debounce(300, TimeUnit.MILLISECONDS)
             .subscribeBy(onNext = {
