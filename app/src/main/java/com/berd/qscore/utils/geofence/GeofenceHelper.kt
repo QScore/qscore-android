@@ -11,10 +11,10 @@ import com.google.android.gms.location.GeofencingRequest
 import timber.log.Timber
 
 class GeofenceHelper {
-    private val userRepository = Injector.userRepository
-    private val geofencingClient = Injector.geofencingClient
-    private val locationHelper = Injector.locationHelper
-    private val appContext = Injector.appContext
+    private val userRepository by lazy { Injector.userRepository }
+    private val geofencingClient by lazy { Injector.geofencingClient }
+    private val locationHelper by lazy { Injector.locationHelper }
+    private val appContext by lazy { Injector.appContext }
 
     companion object {
         const val REQUEST_ID = "GEOFENCE_REQUEST_ID"

@@ -27,7 +27,7 @@ import kotlin.coroutines.suspendCoroutine
 
 
 class LocationHelper(private val locationClient: FusedLocationProviderClient) {
-    private val context = Injector.appContext
+    private val context by lazy { Injector.appContext }
 
     val singleLocationRequest = LocationRequest().apply {
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY

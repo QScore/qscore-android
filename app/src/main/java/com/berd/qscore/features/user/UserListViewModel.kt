@@ -22,7 +22,7 @@ import timber.log.Timber
 class UserListViewModel(private val handle: SavedStateHandle, private val userId: String, private val userListType: UserListType) :
     RxViewModelWithState<UserListViewModel.UserListAction, UserListViewModel.UserListState>(handle) {
 
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy {  Injector.userRepository }
 
     override fun getInitialState() = UserListState()
 

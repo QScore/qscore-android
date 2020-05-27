@@ -31,9 +31,9 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
         class DisplayUser(val user: QUser) : UserAction()
     }
 
-    private val geofenceHelper = Injector.geofenceHelper
-    private val userRepository = Injector.userRepository
-    private val locationHelper = Injector.locationHelper
+    private val geofenceHelper by lazy {  Injector.geofenceHelper }
+    private val userRepository by lazy {  Injector.userRepository }
+    private val locationHelper by lazy {  Injector.locationHelper }
 
     override fun getInitialState() = UserState()
 

@@ -11,7 +11,7 @@ import com.berd.qscore.features.user.UserFragment.ProfileType
 import com.berd.qscore.utils.injection.Injector
 
 class UserActivity : AppCompatActivity() {
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy {  Injector.userRepository }
 
     private val binding: ActivityUserBinding by lazy {
         ActivityUserBinding.inflate(layoutInflater)

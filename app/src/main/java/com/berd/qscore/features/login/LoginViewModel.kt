@@ -26,9 +26,9 @@ import timber.log.Timber
 import java.lang.IllegalStateException
 
 class LoginViewModel(handle: SavedStateHandle) : RxViewModelWithState<LoginAction, State>(handle) {
-    private val userRepository = Injector.userRepository
-    private val geofenceHelper = Injector.geofenceHelper
-    private val locationHelper = Injector.locationHelper
+    private val userRepository by lazy { Injector.userRepository }
+    private val geofenceHelper by lazy { Injector.geofenceHelper }
+    private val locationHelper by lazy { Injector.locationHelper }
 
     sealed class LoginAction {
         object LaunchScoreActivity : LoginAction()

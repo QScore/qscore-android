@@ -10,7 +10,7 @@ import okhttp3.Response
 import timber.log.Timber
 
 class FirebaseUserIdTokenInterceptor : Interceptor {
-    private val firebaseAuth = Injector.firebaseAuth
+    private val firebaseAuth by lazy {  Injector.firebaseAuth }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         try {

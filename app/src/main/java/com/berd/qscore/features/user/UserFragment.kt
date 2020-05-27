@@ -29,7 +29,7 @@ import java.io.Serializable
 
 
 class UserFragment : BaseFragment() {
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy {  Injector.userRepository }
 
     private val viewModel by lazy {
         createViewModel { handle -> UserViewModel(handle, profileType) }

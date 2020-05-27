@@ -23,8 +23,8 @@ sealed class Action {
 }
 
 class SplashViewModel : RxViewModel<Action>() {
-    private val userRepository = Injector.userRepository
-    private val locationHelper = Injector.locationHelper
+    private val userRepository by lazy { Injector.userRepository }
+    private val locationHelper by lazy { Injector.locationHelper }
 
     fun onCreate() = viewModelScope.launch {
         delay(200)

@@ -22,7 +22,7 @@ import timber.log.Timber
 
 class SearchViewModel(handle: SavedStateHandle) : RxViewModelWithState<SearchViewModel.SearchAction, SearchViewModel.SearchState>(handle) {
     private var searchJob: Job? = null
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy {  Injector.userRepository }
 
     @Parcelize
     data class SearchState(

@@ -24,7 +24,7 @@ class WelcomeActivity : BaseActivity() {
 
     private val binding: ActivityWelcomeBinding by lazy { ActivityWelcomeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()
-    private val locationHelper = Injector.locationHelper
+    private val locationHelper by lazy {  Injector.locationHelper }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -13,7 +13,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class SettingsViewModel : RxViewModel<SettingsViewModel.SettingsAction>() {
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy { Injector.userRepository }
 
     sealed class SettingsAction {
         object LaunchLoginActivity : SettingsAction()

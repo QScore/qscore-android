@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.R
+import com.berd.qscore.features.setpassword.PasswordViewModel
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import com.berd.qscore.features.username.UsernameViewModel.UsernameAction.*
 import com.berd.qscore.utils.injection.Injector
@@ -21,7 +22,7 @@ class UsernameViewModel(
     RxViewModelWithState<UsernameViewModel.UsernameAction, UsernameViewModel.UsernameState>(handle) {
 
     private var job: Job? = null
-    private val userRepository = Injector.userRepository
+    private val userRepository by lazy { Injector.userRepository }
 
     @Parcelize
     data class UsernameState(
