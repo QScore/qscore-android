@@ -92,15 +92,25 @@ class LoginActivity : BaseActivity() {
         binding.loginButton.isEnabled = enabled
     }
 
-    private fun setProgressVisible(visible: Boolean, buttonResId: Int) {
+    private fun setProgressVisible(visible: Boolean, buttonResId: Int) = binding.apply {
         if (visible) {
-            binding.progress.visible()
-            binding.loginButton.text = ""
-            binding.loginButton.isEnabled = false
+            progress.visible()
+            loginButton.text = ""
+            loginButton.isEnabled = false
+            signUpToggle.isEnabled = false
+            email.isEnabled = false
+            password.isEnabled = false
+            fbLogin.isEnabled = false
+            googleLogin.isEnabled = false
         } else {
-            binding.progress.gone()
-            binding.loginButton.text = getString(buttonResId)
-            binding.loginButton.isEnabled = true
+            progress.gone()
+            loginButton.text = getString(buttonResId)
+            loginButton.isEnabled = true
+            signUpToggle.isEnabled = true
+            email.isEnabled = true
+            password.isEnabled = true
+            fbLogin.isEnabled = true
+            googleLogin.isEnabled = true
         }
     }
 
