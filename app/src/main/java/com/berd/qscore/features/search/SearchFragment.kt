@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.berd.qscore.R
 import com.berd.qscore.databinding.SearchFragmentBinding
 import com.berd.qscore.features.search.SearchViewModel.SearchAction.*
@@ -142,6 +143,7 @@ class SearchFragment : BaseFragment() {
     private fun setupRecyclerView() = activity?.let { activity ->
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.adapter = searchAdapter
+        searchAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
 
     private fun setupSearchBar() = binding.searchField.post {

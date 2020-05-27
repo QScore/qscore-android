@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivityUserListBinding
 import com.berd.qscore.features.shared.activity.BaseActivity
@@ -80,6 +81,7 @@ class UserListActivity : BaseActivity() {
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = userAdapter
+        userAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
 
     private fun observeViewModel() {
