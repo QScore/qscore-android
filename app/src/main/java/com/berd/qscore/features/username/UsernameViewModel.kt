@@ -54,6 +54,10 @@ class UsernameViewModel(
             else -> state
         }
 
+    fun onCreate() {
+        action(Initialize(state))
+    }
+
     fun onUsernameChange(username: String) {
         job?.cancel()
         job = viewModelScope.launch {
