@@ -19,6 +19,10 @@ androidExtensions {
     features = ["parcelize"]
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties");
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -27,10 +31,19 @@ android {
         applicationId "com.cms.qscore"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 6
-        versionName "0.6"
+        versionCode 7
+        versionName "0.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
     }
 
     buildFeatures {
@@ -45,6 +58,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -133,7 +147,7 @@ dependencies {
     implementation 'com.jakewharton.rxbinding3:rxbinding:3.1.0'
 
     //Facebook
-    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.facebook.android:facebook-login:[5,6)'
 
     //Apollo
     implementation 'com.apollographql.apollo:apollo-http-cache:1.4.3'

@@ -108,6 +108,7 @@ secrets.properties
 app/google-services.json
 keystore
 replace.txt
+keystore.properties
 
 #other
 dump.rdb

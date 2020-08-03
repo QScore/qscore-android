@@ -68,9 +68,7 @@ private object ActivityResultManager {
 
         override fun getParent() = findFragmentById(fragmentId)
 
-        private fun findFragmentById(id: Int) = activity?.supportFragmentManager?.let {
-            it.findFragmentById(id) as F
-        }
+        private fun findFragmentById(id: Int) = activity?.supportFragmentManager?.findFragmentById(id) as F
 
         companion object {
             fun <F : Fragment> create(
