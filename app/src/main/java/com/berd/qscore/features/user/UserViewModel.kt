@@ -20,7 +20,6 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.IllegalStateException
 
 
 class UserViewModel(private val handle: SavedStateHandle, private val profileType: ProfileType) :
@@ -92,9 +91,9 @@ class UserViewModel(private val handle: SavedStateHandle, private val profileTyp
                     geofenceLocation = geofenceLocation,
                     userLocation = currentLocation
                 )
-                val geofenceEvent = if (isInsideGeofence) GeofenceStatus.HOME else GeofenceStatus.AWAY
-                userRepository.createGeofenceEvent(geofenceEvent)
-                action(SetGeofenceStatus(geofenceEvent))
+                val geofenceStatus = if (isInsideGeofence) GeofenceStatus.HOME else GeofenceStatus.AWAY
+                userRepository.createGeofenceEvent(geofenceStatus)
+                action(SetGeofenceStatus(geofenceStatus))
             }
         } catch (e: IllegalStateException) {
             Timber.d("Unable to update geofence status, permissions not enabled for user location")
