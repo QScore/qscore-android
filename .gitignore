@@ -110,5 +110,5 @@ keystore
 replace.txt
 
 #other
-dump.rbd
+dump.rdb
 .DS_Store
