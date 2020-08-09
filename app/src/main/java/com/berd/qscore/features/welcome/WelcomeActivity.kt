@@ -13,7 +13,6 @@ import com.berd.qscore.utils.extensions.gone
 import com.berd.qscore.utils.extensions.setStatusbarColor
 import com.berd.qscore.utils.extensions.visible
 import com.berd.qscore.utils.injection.Injector
-import com.berd.qscore.utils.location.LocationHelper
 import com.github.florent37.runtimepermission.kotlin.PermissionException
 import kotlinx.coroutines.launch
 import splitties.activities.start
@@ -24,7 +23,7 @@ class WelcomeActivity : BaseActivity() {
 
     private val binding: ActivityWelcomeBinding by lazy { ActivityWelcomeBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<WelcomeViewModel>()
-    private val locationHelper by lazy {  Injector.locationHelper }
+    private val locationHelper by lazy { Injector.locationHelper }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,11 +95,11 @@ class WelcomeActivity : BaseActivity() {
     }
 
     private fun showNoPermissionConfirmationDialog() = showDialogFragment {
-        this.title("Are you sure you want to continue?")
-        this.message("QScore needs full location access to continue.  Your location will never leave the device.\n\nIf you continue without full location access, you will not be able to earn points.")
-        this.positiveButtonResId(R.string.continue_dialog)
-        this.negativeButtonResId(R.string.go_back)
-        this.positiveButton { viewModel.continueWithoutLocation() }
-        this.negativeButton { }
+        title(R.string.are_you_sure)
+        message(R.string.needs_access)
+        positiveButtonResId(R.string.continue_dialog)
+        negativeButtonResId(R.string.go_back)
+        positiveButton { viewModel.continueWithoutLocation() }
+        negativeButton { }
     }
 }

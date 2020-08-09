@@ -6,14 +6,13 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.berd.qscore.databinding.RowUserBinding
-import com.berd.qscore.features.leaderboard.LeaderboardAdapter
 import com.berd.qscore.features.search.UserViewHolder
 import com.berd.qscore.features.shared.api.models.QUser
 import splitties.systemservices.layoutInflater
 
 typealias UserClickListener = (QUser) -> Unit
 
-class UserAdapter(private val userClickListener: UserClickListener) : PagedListAdapter<QUser, UserViewHolder>(LeaderboardAdapter.DiffCallback()) {
+class UserAdapter(private val userClickListener: UserClickListener) : PagedListAdapter<QUser, UserViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = RowUserBinding.inflate(parent.layoutInflater)
         binding.root.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)

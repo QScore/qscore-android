@@ -7,7 +7,6 @@ import androidx.paging.PagedList
 import com.apollographql.apollo.exception.ApolloException
 import com.berd.qscore.features.leaderboard.LeaderboardViewModel.LeaderboardAction.*
 import com.berd.qscore.features.shared.api.models.QUser
-import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModelWithState
 import com.berd.qscore.utils.injection.Injector
 import com.berd.qscore.utils.paging.PagedListOffsetBuilder
@@ -70,31 +69,21 @@ class LeaderboardViewModel(handle: SavedStateHandle, private val leaderboardType
     }
 
     private suspend fun buildPagedList(): PagedList<QUser> {
-        val builder = PagedListOffsetBuilder(
+        return PagedListOffsetBuilder(
             pageSize = 30,
-            onLoadFirstPage = { offset, limit ->
-                try {
-                    when (leaderboardType) {
-                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
-                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
-                    }.also { action(SetProgressShown(false)) }
-                } catch (e: ApolloException) {
-                    Timber.d("Unable to fetch leaderboard: $e")
-                    emptyList<QUser>()
-                }
-            },
-            onLoadNextPage = { offset, limit ->
-                try {
-                    when (leaderboardType) {
-                        LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
-                        LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
-                    }.also { action(SetProgressShown(false)) }
-                } catch (e: ApolloException) {
-                    Timber.d("Unable to fetch leaderboard: $e")
-                    emptyList<QUser>()
-                }
-            }
-        )
-        return builder.build()
+            onLoadFirstPage = ::doLoad,
+            onLoadNextPage = ::doLoad
+        ).build()
     }
+
+    private suspend fun doLoad(offset: Int, limit: Int) =
+        try {
+            when (leaderboardType) {
+                LeaderboardType.GLOBAL -> userRepository.getLeaderboardRange(offset, offset + limit)
+                LeaderboardType.SOCIAL -> userRepository.getSocialLeaderboardRange(offset, offset + limit)
+            }.also { action(SetProgressShown(false)) }
+        } catch (e: ApolloException) {
+            Timber.d("Unable to fetch leaderboard: $e")
+            emptyList<QUser>()
+        }
 }

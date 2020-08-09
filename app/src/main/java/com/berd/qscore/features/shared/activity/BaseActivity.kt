@@ -2,9 +2,7 @@ package com.berd.qscore.features.shared.activity
 
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.utils.extensions.setScreenName
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -26,14 +24,6 @@ abstract class BaseActivity : AppCompatActivity() {
             }, onError = {
                 Timber.e("Unable to listen for actions: $it")
             }).addTo(compositeDisposable)
-    }
-
-    protected inline fun <reified A : Any, reified S : Any> RxViewModelOld<A, S>.observeState(
-        crossinline stateListener: (S) -> Unit = {}
-    ) {
-        stateLiveData.observe(this@BaseActivity, Observer {
-            stateListener(it)
-        })
     }
 
     override fun onResume() {

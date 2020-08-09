@@ -1,9 +1,7 @@
 package com.berd.qscore.features.shared.activity
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.utils.extensions.setScreenName
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -25,14 +23,6 @@ abstract class BaseFragment : Fragment() {
             }, onError = {
                 Timber.e("Unable to listen for actions: $it")
             }).addTo(compositeDisposable)
-    }
-
-    protected inline fun <reified A : Any, reified S : Any> RxViewModelOld<A, S>.observeState(
-        crossinline stateListener: (S) -> Unit = {}
-    ) {
-        stateLiveData.observe(this@BaseFragment, Observer {
-            stateListener(it)
-        })
     }
 
     override fun onResume() {

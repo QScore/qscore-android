@@ -2,6 +2,7 @@ package com.berd.qscore.features.splash
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.berd.qscore.R
 import com.berd.qscore.databinding.ActivitySplashBinding
 import com.berd.qscore.features.geofence.UpdateLocationWorker
 import com.berd.qscore.features.login.LoginActivity
@@ -10,6 +11,7 @@ import com.berd.qscore.features.shared.activity.BaseActivity
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.features.username.UsernameActivity
 import com.berd.qscore.features.welcome.WelcomeActivity
+import com.berd.qscore.utils.extensions.setStatusbarColor
 import splitties.activities.start
 
 class SplashActivity : BaseActivity() {
@@ -26,6 +28,7 @@ class SplashActivity : BaseActivity() {
         setContentView(view)
         observeViewModel()
         setupLocationUpdates()
+        setStatusbarColor(R.color.lighter_gray)
         viewModel.onCreate()
     }
 

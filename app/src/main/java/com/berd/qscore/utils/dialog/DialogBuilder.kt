@@ -35,7 +35,7 @@ interface DialogBuilder<T> {
 typealias DialogCallback<T> = T.() -> Unit
 
 private class DialogBuilderImpl<T> : DialogBuilder<T> {
-    private val appContext by lazy {  Injector.appContext }
+    private val appContext by lazy { Injector.appContext }
 
     data class DialogArgs<T>(
         val title: String? = null,
@@ -84,7 +84,7 @@ private class DialogBuilderImpl<T> : DialogBuilder<T> {
 
 class MyDialog<T> : DialogFragment() {
 
-    private val appContext by lazy {  Injector.appContext }
+    private val appContext by lazy { Injector.appContext }
 
     companion object {
         val KEY_ARGS = "KEY_ARGS"
@@ -113,24 +113,19 @@ class MyDialog<T> : DialogFragment() {
     @NonNull
     @Suppress("UNCHECKED_CAST")
     override fun onCreateDialog(@Nullable savedInstanceState: Bundle?): Dialog {
+        checkNotNull(activity) { "Unable to show dialog, activity is null!" }
+
         args.run {
-            activity?.let { activity ->
-                return MaterialAlertDialogBuilder(activity).let { b ->
-                    title?.let { b.setTitle(it) }
-                    message?.let { b.setMessage(it) }
-                    yesButton?.let {
-                        b.setPositiveButton(yesButtonResId) { _, _ ->
-                            (it as DialogCallback<T>).invoke(getParent())
-                        }
-                    }
-                    noButton?.let {
-                        b.setNegativeButton(noButtonResId) { _, _ ->
-                            (it as DialogCallback<T>).invoke(getParent())
-                        }
-                    }
-                    b.show()
-                }
-            } ?: throw IllegalStateException("Unable to show dialog, activity is null!")
+            val b = MaterialAlertDialogBuilder(activity)
+            title?.let { b.setTitle(it) }
+            message?.let { b.setMessage(it) }
+            yesButton?.let {
+                b.setPositiveButton(yesButtonResId) { _, _ -> (it as DialogCallback<T>).invoke(getParent()) }
+            }
+            noButton?.let {
+                b.setNegativeButton(noButtonResId) { _, _ -> (it as DialogCallback<T>).invoke(getParent()) }
+            }
+            return b.show()
         }
     }
 }
@@ -156,3 +151,4 @@ fun <F : Fragment> F.showDialogFragment(init: DialogBuilder<F>.() -> Unit) {
     }
     dialogFragment.show(childFragmentManager, TAG)
 }
+
