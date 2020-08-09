@@ -71,4 +71,6 @@
     <string name="email_address">Email Address</string>
     <string name="username_updated">Username updated</string>
     <string name="error_checking_username">Unable to check if username exists.  Please try again later.</string>
+    <string name="are_you_sure">Are you sure you want to continue?</string>
+    <string name="needs_access">QScore needs full location access to continue.  Your location will never leave the device.\n\nIf you continue without full location access, you will not be able to earn points.</string>
 </resources>

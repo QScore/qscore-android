@@ -6,12 +6,9 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.berd.qscore.features.login.LoginManager
 import com.berd.qscore.features.shared.prefs.Prefs
-import com.berd.qscore.features.shared.user.UserRepository
 import com.berd.qscore.features.shared.viewmodel.RxViewModel
-import com.berd.qscore.features.shared.viewmodel.RxViewModelOld
 import com.berd.qscore.features.splash.Action.*
 import com.berd.qscore.utils.injection.Injector
-import com.berd.qscore.utils.location.LocationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
