@@ -1,5 +1,7 @@
 
 Welcome to the QScore Android App!  
+
+[Available on the Play Store](https://play.google.com/store/apps/details?id=com.philsoft.qscore)
   
 QScore is a fun new way to encourage social distancing together with your friends.    
 * Earn points for staying home  
@@ -17,7 +19,7 @@ Before you can run the app, you will need to set up a couple of things:
 ## Contributors  
 * [polson](https://github.com/polson)  
 * [olso4051](https://github.com/olso4051)  
-  
+
   
 ## License
 ```
